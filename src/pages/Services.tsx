@@ -1,20 +1,32 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ServiceCard from "@/components/home/ServiceCard";
-import { services, serviceCategories } from "@/data/services";
-import { Search } from "lucide-react";
+import { services, serviceCategories, categoryNames } from "@/data/services";
+import { Search, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
 
 const Services = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
-  const filteredServices = services.filter((service) => {
-    const matchesSearch = service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === "All" || service.category === activeCategory;
-    return matchesSearch && matchesCategory;
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(categoryId) 
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
+  const filteredCategories = serviceCategories.filter((category) => {
+    if (activeCategory !== "All" && category.name !== activeCategory) return false;
+    if (!searchTerm) return true;
+    return category.services.some(service =>
+      service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      service.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   });
 
   return (
@@ -32,7 +44,7 @@ const Services = () => {
               Services & Pricing
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Explore our full range of lash services. Each treatment is customized 
+              Explore our full range of beauty services. Each treatment is customized 
               to your unique features and preferences.
             </p>
           </div>
@@ -64,7 +76,7 @@ const Services = () => {
             >
               All Services
             </button>
-            {serviceCategories.map((category) => (
+            {categoryNames.map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
@@ -80,26 +92,68 @@ const Services = () => {
             ))}
           </div>
 
-          {/* Services Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredServices.map((service, index) => (
-              <ServiceCard key={service.id} service={service} index={index} />
-            ))}
+          {/* Services Accordion */}
+          <div className="space-y-4 max-w-4xl mx-auto">
+            {filteredCategories.map((category) => {
+              const isExpanded = expandedCategories.includes(category.id);
+              
+              return (
+                <Card key={category.id} className="overflow-hidden">
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className={cn(
+                      "w-full flex items-center justify-between p-6 text-left transition-colors",
+                      isExpanded ? "bg-cream/50" : "hover:bg-beige/50"
+                    )}
+                  >
+                    <div>
+                      <h3 className="font-serif text-xl font-semibold text-foreground">
+                        {category.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {category.services.length} service{category.services.length > 1 ? 's' : ''} available
+                      </p>
+                    </div>
+                    <ChevronDown
+                      className={cn(
+                        "h-6 w-6 text-muted-foreground transition-transform duration-300",
+                        isExpanded && "rotate-180"
+                      )}
+                    />
+                  </button>
+                  
+                  <div
+                    className={cn(
+                      "grid transition-all duration-300 ease-in-out",
+                      isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                    )}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="p-6 pt-0 grid gap-4 md:grid-cols-2">
+                        {category.services.map((service, index) => (
+                          <ServiceCard key={service.id} service={service} index={index} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
 
-          {filteredServices.length === 0 && (
+          {filteredCategories.length === 0 && (
             <div className="text-center py-16">
               <p className="text-muted-foreground text-lg">No services found matching your search.</p>
             </div>
           )}
 
           {/* Deposit Notice */}
-          <div className="mt-16 text-center p-8 bg-cream rounded-2xl">
+          <div className="mt-16 text-center p-8 bg-cream rounded-2xl max-w-4xl mx-auto">
             <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
               Booking Policy
             </h3>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              A deposit of 20-30% is required to secure your appointment. This will be 
+              A deposit of 20-35% is required to secure your appointment. This will be 
               applied to your service total. Cancellations require 24-hour notice.
             </p>
           </div>
