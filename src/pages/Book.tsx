@@ -4,14 +4,24 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { services } from "@/data/services";
+import { serviceCategories, services } from "@/data/services";
+import { staffMembers, getStaffForService } from "@/data/staff";
+import ServiceAccordion from "@/components/booking/ServiceAccordion";
+import StaffSelection from "@/components/booking/StaffSelection";
 import { cn } from "@/lib/utils";
-import { Check, ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, Repeat } from "lucide-react";
 
 const timeSlots = [
   "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
   "12:00 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM", "3:00 PM",
   "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM"
+];
+
+const recurringOptions = [
+  { id: "none", label: "One-time booking", interval: null },
+  { id: "weekly", label: "Weekly", interval: 7 },
+  { id: "biweekly", label: "Every 2 weeks", interval: 14 },
+  { id: "monthly", label: "Monthly", interval: 30 },
 ];
 
 // Simple available dates (next 30 days, excluding some days)
@@ -32,12 +42,18 @@ const getAvailableDates = () => {
 const Book = () => {
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isVIP, setIsVIP] = useState(false);
+  const [recurringOption, setRecurringOption] = useState("none");
 
   const availableDates = getAvailableDates();
   const service = services.find(s => s.id === selectedService);
+  const staff = staffMembers.find(s => s.id === selectedStaff);
+  const availableStaff = selectedCategoryId ? getStaffForService(selectedCategoryId) : [];
 
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
@@ -52,7 +68,6 @@ const Book = () => {
   ).getDay();
 
   const isDateAvailable = (day: number) => {
-    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
     return availableDates.some(d => 
       d.getDate() === day && 
       d.getMonth() === currentMonth.getMonth() && 
@@ -76,6 +91,12 @@ const Book = () => {
     }
   };
 
+  const handleServiceSelect = (serviceId: string, categoryId: string) => {
+    setSelectedService(serviceId);
+    setSelectedCategoryId(categoryId);
+    setSelectedStaff(null); // Reset staff when service changes
+  };
+
   const prevMonth = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
   };
@@ -86,7 +107,8 @@ const Book = () => {
 
   const canProceed = () => {
     if (step === 1) return !!selectedService;
-    if (step === 2) return !!selectedDate && !!selectedTime;
+    if (step === 2) return !!selectedStaff;
+    if (step === 3) return !!selectedDate && !!selectedTime;
     return false;
   };
 
@@ -96,6 +118,17 @@ const Book = () => {
       month: 'long', 
       day: 'numeric' 
     });
+  };
+
+  const calculateFinalPrice = () => {
+    if (!service || !staff) return 0;
+    return Math.round(service.price * staff.priceMultiplier);
+  };
+
+  const calculateDeposit = () => {
+    if (!service) return 0;
+    const finalPrice = calculateFinalPrice();
+    return Math.round(finalPrice * (service.depositPercentage / 100));
   };
 
   return (
@@ -110,13 +143,68 @@ const Book = () => {
               Book Your Appointment
             </h1>
             <p className="text-muted-foreground">
-              Select your service and choose a convenient time.
+              Select your service, choose your artist, and book your time.
             </p>
           </div>
 
+          {/* VIP Toggle */}
+          <Card className="p-6 mb-8 border-gold/30 bg-gradient-to-r from-gold/5 to-cream/50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center">
+                  <Repeat className="h-6 w-6 text-gold" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-semibold text-foreground">
+                    VIP Recurring Booking
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Set up automatic recurring appointments for regular clients
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsVIP(!isVIP)}
+                className={cn(
+                  "relative w-14 h-7 rounded-full transition-colors duration-200",
+                  isVIP ? "bg-gold" : "bg-muted"
+                )}
+              >
+                <div
+                  className={cn(
+                    "absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200",
+                    isVIP ? "translate-x-8" : "translate-x-1"
+                  )}
+                />
+              </button>
+            </div>
+
+            {isVIP && (
+              <div className="mt-6 pt-6 border-t border-gold/20">
+                <p className="text-sm font-medium text-foreground mb-3">Select recurring frequency:</p>
+                <div className="flex flex-wrap gap-2">
+                  {recurringOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setRecurringOption(option.id)}
+                      className={cn(
+                        "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                        recurringOption === option.id
+                          ? "bg-gold text-primary-foreground"
+                          : "bg-beige text-muted-foreground hover:bg-muted"
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+
           {/* Progress Steps */}
           <div className="flex items-center justify-center gap-4 mb-12">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div key={s} className="flex items-center gap-2">
                 <div
                   className={cn(
@@ -128,10 +216,10 @@ const Book = () => {
                 >
                   {step > s ? <Check className="h-5 w-5" /> : s}
                 </div>
-                {s < 3 && (
+                {s < 4 && (
                   <div
                     className={cn(
-                      "w-16 h-0.5 transition-all duration-300",
+                      "w-12 h-0.5 transition-all duration-300",
                       step > s ? "bg-gold" : "bg-border"
                     )}
                   />
@@ -141,10 +229,11 @@ const Book = () => {
           </div>
 
           {/* Step Labels */}
-          <div className="flex justify-between max-w-md mx-auto mb-12 text-sm">
+          <div className="flex justify-between max-w-lg mx-auto mb-12 text-sm">
             <span className={step >= 1 ? "text-gold" : "text-muted-foreground"}>Service</span>
-            <span className={step >= 2 ? "text-gold" : "text-muted-foreground"}>Date & Time</span>
-            <span className={step >= 3 ? "text-gold" : "text-muted-foreground"}>Confirm</span>
+            <span className={step >= 2 ? "text-gold" : "text-muted-foreground"}>Artist</span>
+            <span className={step >= 3 ? "text-gold" : "text-muted-foreground"}>Date & Time</span>
+            <span className={step >= 4 ? "text-gold" : "text-muted-foreground"}>Confirm</span>
           </div>
 
           {/* Step 1: Select Service */}
@@ -153,63 +242,41 @@ const Book = () => {
               <h2 className="font-serif text-2xl font-semibold text-center mb-8">
                 Select Your Service
               </h2>
-              <div className="grid gap-4">
-                {services.map((s) => (
-                  <Card
-                    key={s.id}
-                    variant={selectedService === s.id ? "luxury" : "default"}
-                    className={cn(
-                      "p-6 cursor-pointer transition-all duration-200 border-2",
-                      selectedService === s.id
-                        ? "border-gold"
-                        : "border-transparent hover:border-border"
-                    )}
-                    onClick={() => setSelectedService(s.id)}
-                  >
-                    <div className="flex items-center gap-6">
-                      <img
-                        src={s.imageUrl}
-                        alt={s.name}
-                        className="w-20 h-20 rounded-xl object-cover"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-serif text-lg font-semibold text-foreground">
-                          {s.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-1">
-                          {s.description}
-                        </p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="h-4 w-4" />
-                            {s.duration} min
-                          </span>
-                          <span className="font-serif text-lg font-semibold text-gold">
-                            ${s.price}
-                          </span>
-                        </div>
-                      </div>
-                      <div
-                        className={cn(
-                          "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200",
-                          selectedService === s.id
-                            ? "border-gold bg-gold"
-                            : "border-border"
-                        )}
-                      >
-                        {selectedService === s.id && (
-                          <Check className="h-4 w-4 text-primary-foreground" />
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+              <ServiceAccordion
+                categories={serviceCategories}
+                selectedService={selectedService}
+                onSelect={handleServiceSelect}
+              />
             </div>
           )}
 
-          {/* Step 2: Select Date & Time */}
-          {step === 2 && (
+          {/* Step 2: Select Staff */}
+          {step === 2 && service && (
+            <div className="animate-fade-in">
+              <h2 className="font-serif text-2xl font-semibold text-center mb-2">
+                Choose Your Artist
+              </h2>
+              <p className="text-center text-muted-foreground mb-8">
+                For: {service.name}
+              </p>
+              
+              {availableStaff.length > 0 ? (
+                <StaffSelection
+                  staffMembers={availableStaff}
+                  selectedStaff={selectedStaff}
+                  onSelect={setSelectedStaff}
+                  basePrice={service.price}
+                />
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  No staff available for this service. Please contact us directly.
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 3: Select Date & Time */}
+          {step === 3 && (
             <div className="animate-fade-in">
               <h2 className="font-serif text-2xl font-semibold text-center mb-8">
                 Choose Your Date & Time
@@ -310,14 +377,15 @@ const Book = () => {
             </div>
           )}
 
-          {/* Step 3: Confirmation */}
-          {step === 3 && service && selectedDate && selectedTime && (
+          {/* Step 4: Confirmation */}
+          {step === 4 && service && staff && selectedDate && selectedTime && (
             <div className="animate-fade-in">
               <h2 className="font-serif text-2xl font-semibold text-center mb-8">
                 Confirm Your Booking
               </h2>
 
               <Card variant="luxury" className="p-8 max-w-lg mx-auto">
+                {/* Service Info */}
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
                   <img
                     src={service.imageUrl}
@@ -330,6 +398,22 @@ const Book = () => {
                   </div>
                 </div>
 
+                {/* Staff Info */}
+                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
+                  <div className={cn(
+                    "w-12 h-12 rounded-full flex items-center justify-center text-lg font-serif font-semibold",
+                    staff.tier === "premium" ? "bg-gold/20 text-gold" :
+                    staff.tier === "senior" ? "bg-cream text-charcoal" :
+                    "bg-beige text-muted-foreground"
+                  )}>
+                    {staff.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground">{staff.name}</h4>
+                    <p className="text-sm text-muted-foreground">{staff.title}</p>
+                  </div>
+                </div>
+
                 <div className="space-y-4 mb-8">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Date</span>
@@ -339,14 +423,22 @@ const Book = () => {
                     <span className="text-muted-foreground">Time</span>
                     <span className="font-medium">{selectedTime}</span>
                   </div>
+                  {isVIP && recurringOption !== "none" && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Recurring</span>
+                      <span className="font-medium text-gold">
+                        {recurringOptions.find(r => r.id === recurringOption)?.label}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Service Total</span>
-                    <span className="font-medium">${service.price}</span>
+                    <span className="font-medium">${calculateFinalPrice()}</span>
                   </div>
                   <div className="border-t border-border pt-4 flex justify-between">
                     <span className="text-muted-foreground">Deposit Required</span>
                     <span className="font-serif text-xl font-semibold text-gold">
-                      ${Math.round(service.price * (service.depositPercentage / 100))}
+                      ${calculateDeposit()}
                     </span>
                   </div>
                 </div>
@@ -378,7 +470,7 @@ const Book = () => {
               </Button>
             )}
 
-            {step < 3 && (
+            {step < 4 && (
               <Button
                 variant="luxury"
                 onClick={() => setStep(step + 1)}
