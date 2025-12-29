@@ -100,8 +100,8 @@ const VIP = () => {
                   <p className="text-cream/60 text-sm">Total Visits</p>
                 </div>
                 <div className="bg-cream/10 backdrop-blur rounded-xl px-6 py-4 text-center">
-                  <p className="text-3xl font-serif font-bold text-gold">{mockVIPData.streak}</p>
-                  <p className="text-cream/60 text-sm">Month Streak 🔥</p>
+                  <p className="text-3xl font-serif font-bold text-gradient-gold">{mockVIPData.streak}</p>
+                  <p className="text-cream/60 text-sm">Month Streak</p>
                 </div>
                 <div className="bg-cream/10 backdrop-blur rounded-xl px-6 py-4 text-center">
                   <p className="text-3xl font-serif font-bold text-cream">${mockVIPData.totalSpent.toLocaleString()}</p>
