@@ -49,14 +49,23 @@ const StaffSelection = ({ staffMembers, selectedStaff, onSelect, basePrice }: St
           onClick={() => onSelect(staff.id)}
         >
           <div className="flex items-start gap-5">
-            {/* Avatar Placeholder */}
-            <div className={cn(
-              "w-16 h-16 rounded-full flex items-center justify-center text-xl font-serif font-semibold shrink-0",
-              staff.tier === "premium" ? "bg-gold/20 text-gold" :
-              staff.tier === "senior" ? "bg-cream text-charcoal" :
-              "bg-beige text-muted-foreground"
-            )}>
-              {staff.name.charAt(0)}
+            {/* Profile Picture */}
+            <div className="relative shrink-0">
+              <img
+                src={staff.imageUrl}
+                alt={staff.name}
+                className={cn(
+                  "w-20 h-20 rounded-full object-cover ring-4 transition-all duration-200",
+                  staff.tier === "premium" ? "ring-gold/40" :
+                  staff.tier === "senior" ? "ring-cream" :
+                  "ring-beige"
+                )}
+              />
+              {staff.tier === "premium" && (
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-gold flex items-center justify-center shadow-lg">
+                  <Award className="h-4 w-4 text-primary-foreground" />
+                </div>
+              )}
             </div>
 
             {/* Staff Info */}

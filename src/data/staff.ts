@@ -1,3 +1,9 @@
+import lashMamaImg from "@/assets/staff/lash-mama.jpg";
+import nikkiImg from "@/assets/staff/nikki.jpg";
+import beauImg from "@/assets/staff/beau.jpg";
+import nataliImg from "@/assets/staff/natali.jpg";
+import purniImg from "@/assets/staff/purni.jpg";
+
 export interface StaffMember {
   id: string;
   name: string;
@@ -7,8 +13,8 @@ export interface StaffMember {
   experience: string;
   bio: string;
   specialties: string[];
-  imageUrl?: string;
-  serviceCategories: string[]; // Which service categories this staff member can perform
+  imageUrl: string;
+  serviceCategories: string[];
 }
 
 export const staffMembers: StaffMember[] = [
@@ -17,10 +23,11 @@ export const staffMembers: StaffMember[] = [
     name: "Lash Mama",
     title: "Founder & Master Lash Artist",
     tier: "premium",
-    priceMultiplier: 1.25, // 25% premium
-    experience: "10+ Years Industry Experience",
-    bio: "Award-winning lash artist and founder of Lash Mama Studio. Internationally certified with expertise in all lash techniques. Known for creating signature looks that enhance natural beauty.",
+    priceMultiplier: 1.25,
+    experience: "10+ Years Industry Experience • Award Winner",
+    bio: "Award-winning lash artist and founder. Internationally certified with expertise in all lash techniques.",
     specialties: ["Award Winner", "Master Certified", "Signature Techniques"],
+    imageUrl: lashMamaImg,
     serviceCategories: ["mega-volume", "volume", "natural-hybrid", "bridal"],
   },
   {
@@ -28,10 +35,11 @@ export const staffMembers: StaffMember[] = [
     name: "Nikki",
     title: "Senior Lash Artist",
     tier: "senior",
-    priceMultiplier: 1.0, // Standard rate
+    priceMultiplier: 1.0,
     experience: "5+ Years Experience",
-    bio: "Skilled senior artist specializing in volume and mega volume techniques. Known for attention to detail and creating stunning, long-lasting sets.",
+    bio: "Skilled senior artist specializing in volume and mega volume techniques with stunning results.",
     specialties: ["Volume Specialist", "Detail-Oriented", "Client Favorite"],
+    imageUrl: nikkiImg,
     serviceCategories: ["mega-volume", "volume", "natural-hybrid", "makeup", "hair-styling"],
   },
   {
@@ -39,10 +47,11 @@ export const staffMembers: StaffMember[] = [
     name: "Beau",
     title: "Senior Lash & Beauty Artist",
     tier: "senior",
-    priceMultiplier: 1.0, // Standard rate
+    priceMultiplier: 1.0,
     experience: "6+ Years Experience",
-    bio: "Versatile beauty artist with expertise in lashes, makeup, and hair styling. Perfect for bridal and special occasion looks.",
+    bio: "Versatile beauty artist with expertise in lashes, makeup, and hair styling for special occasions.",
     specialties: ["Bridal Expert", "Multi-Talented", "Creative Stylist"],
+    imageUrl: beauImg,
     serviceCategories: ["volume", "natural-hybrid", "makeup", "hair-styling", "bridal", "packages"],
   },
   {
@@ -50,21 +59,29 @@ export const staffMembers: StaffMember[] = [
     name: "Natali",
     title: "Junior Lash Artist",
     tier: "junior",
-    priceMultiplier: 0.85, // 15% discount
-    experience: "1+ Year Experience",
-    bio: "Talented junior artist trained by Lash Mama herself. All services performed under supervision to ensure quality. Your support helps nurture new talent in our industry.",
+    priceMultiplier: 0.85,
+    experience: "1+ Year Experience • Trained by Lash Mama",
+    bio: "Talented junior artist trained by Lash Mama. All services supervised to ensure quality.",
     specialties: ["Lash Mama Trained", "Supervised Sessions", "Fresh Talent"],
+    imageUrl: nataliImg,
     serviceCategories: ["natural-hybrid", "makeup", "hair-styling"],
   },
 ];
 
+export const ceoProfile = {
+  id: "purni",
+  name: "Purni",
+  title: "CEO & Founder",
+  bio: "Visionary entrepreneur behind Lash Mama.",
+  imageUrl: purniImg
+};
+
 export const staffNotes: Record<StaffMember["tier"], string> = {
   premium: "Premium rate for exclusive experience with our founder",
   senior: "Standard rate for experienced professionals",
-  junior: "Discounted rate • All sessions supervised by Lash Mama • Your support is appreciated!",
+  junior: "Discounted rate • All sessions supervised by Lash Mama • Your support is appreciated! ✨",
 };
 
-// Get staff members available for a specific service category
 export const getStaffForService = (serviceCategoryId: string): StaffMember[] => {
   return staffMembers.filter(staff => 
     staff.serviceCategories.includes(serviceCategoryId)
