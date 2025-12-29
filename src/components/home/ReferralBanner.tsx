@@ -21,7 +21,8 @@ const ReferralBanner = () => {
 
   return (
     <>
-      <section className="py-12 bg-gradient-to-r from-gold/10 via-cream to-gold/10">
+      <section className="py-12 bg-gradient-to-r from-gold/10 via-cream to-gold/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/5 to-transparent" />
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">

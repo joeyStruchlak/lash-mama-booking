@@ -53,21 +53,21 @@ const ShopButton = () => {
           {/* Product Preview Cards */}
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { name: "Lash Serum", price: "$45", emoji: "✨" },
-              { name: "Silk Sleep Mask", price: "$32", emoji: "😴" },
-              { name: "Cleansing Foam", price: "$28", emoji: "🫧" },
-              { name: "Lash Brush Set", price: "$18", emoji: "💫" },
-            ].map((product) => (
+              { name: "Lash Serum", price: "$45" },
+              { name: "Silk Sleep Mask", price: "$32" },
+              { name: "Cleansing Foam", price: "$28" },
+              { name: "Lash Brush Set", price: "$18" },
+            ].map((product, index) => (
               <div 
                 key={product.name}
-                className="bg-cream/5 backdrop-blur rounded-xl p-4 hover:bg-cream/10 transition-colors cursor-pointer group"
+                className="bg-gradient-to-br from-cream/10 to-gold/5 backdrop-blur rounded-xl p-5 hover:from-cream/15 hover:to-gold/10 transition-all duration-300 cursor-pointer group border border-cream/10 hover:border-gold/30"
                 onClick={handleShopClick}
               >
-                <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
-                  {product.emoji}
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                  <ShoppingBag className="h-5 w-5 text-gold" />
                 </div>
                 <p className="text-cream text-sm font-medium">{product.name}</p>
-                <p className="text-gold text-sm">{product.price}</p>
+                <p className="text-gradient-gold text-sm font-semibold">{product.price}</p>
               </div>
             ))}
           </div>

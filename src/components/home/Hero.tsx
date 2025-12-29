@@ -30,7 +30,7 @@ const Hero = () => {
           <h1 className="animate-fade-up opacity-0 stagger-1 font-serif text-5xl md:text-6xl lg:text-7xl font-semibold leading-tight mb-6 text-charcoal">
             Where Beauty
             <br />
-            <span className="text-gold">Meets Elegance</span>
+            <span className="text-gradient-gold">Meets Elegance</span>
           </h1>
 
           {/* Subheading */}
@@ -57,17 +57,17 @@ const Hero = () => {
           {/* Trust Indicators */}
           <div className="animate-fade-up opacity-0 stagger-4 mt-16 flex items-center gap-8">
             <div className="text-center">
-              <div className="font-serif text-3xl font-semibold text-gold">500+</div>
+              <div className="font-serif text-3xl font-semibold text-gradient-gold">500+</div>
               <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Happy Clients</div>
             </div>
-            <div className="w-px h-12 bg-border" />
+            <div className="w-px h-12 bg-gradient-to-b from-transparent via-gold/30 to-transparent" />
             <div className="text-center">
-              <div className="font-serif text-3xl font-semibold text-gold">5.0</div>
+              <div className="font-serif text-3xl font-semibold text-gradient-gold">5.0</div>
               <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Star Rating</div>
             </div>
-            <div className="w-px h-12 bg-border" />
+            <div className="w-px h-12 bg-gradient-to-b from-transparent via-gold/30 to-transparent" />
             <div className="text-center">
-              <div className="font-serif text-3xl font-semibold text-gold">8+</div>
+              <div className="font-serif text-3xl font-semibold text-gradient-gold">8+</div>
               <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Years Experience</div>
             </div>
           </div>

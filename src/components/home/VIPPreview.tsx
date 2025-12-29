@@ -6,8 +6,9 @@ const VIPPreview = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 relative overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-gold/5 rounded-full blur-2xl" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-gold/10 to-gold/5 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-gold/8 to-gold/3 rounded-full blur-2xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-gold/5 to-transparent rounded-full blur-3xl" />
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
@@ -76,17 +77,17 @@ const VIPPreview = () => {
           </div>
 
           {/* Stats */}
-          <div className="mt-16 pt-12 border-t border-cream/10 grid grid-cols-3 gap-8 text-center">
+          <div className="mt-16 pt-12 border-t border-gradient-to-r from-transparent via-gold/20 to-transparent grid grid-cols-3 gap-8 text-center">
             <div>
-              <p className="text-3xl md:text-4xl font-serif font-bold text-gold">500+</p>
+              <p className="text-3xl md:text-4xl font-serif font-bold text-gradient-gold">500+</p>
               <p className="text-cream/60 text-sm">VIP Members</p>
             </div>
             <div>
-              <p className="text-3xl md:text-4xl font-serif font-bold text-gold">$15K+</p>
+              <p className="text-3xl md:text-4xl font-serif font-bold text-gradient-gold">$15K+</p>
               <p className="text-cream/60 text-sm">Rewards Given</p>
             </div>
             <div>
-              <p className="text-3xl md:text-4xl font-serif font-bold text-gold">20%</p>
+              <p className="text-3xl md:text-4xl font-serif font-bold text-gradient-gold">20%</p>
               <p className="text-cream/60 text-sm">Max Discount</p>
             </div>
           </div>
