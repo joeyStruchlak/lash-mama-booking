@@ -10,6 +10,7 @@ import ServiceAccordion from "@/components/booking/ServiceAccordion";
 import StaffSelection from "@/components/booking/StaffSelection";
 import { cn } from "@/lib/utils";
 import { Check, ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, Repeat } from "lucide-react";
+import AfterpayBadge from "@/components/booking/AfterpayBadge";
 
 const timeSlots = [
   "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
@@ -446,6 +447,10 @@ const Book = () => {
                 <Button variant="luxury" size="lg" className="w-full">
                   Proceed to Payment
                 </Button>
+
+                <div className="flex justify-center mt-4">
+                  <AfterpayBadge amount={calculateDeposit()} />
+                </div>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
                   Deposit applied to your service total. 24-hour cancellation policy applies.

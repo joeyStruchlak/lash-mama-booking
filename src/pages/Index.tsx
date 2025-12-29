@@ -6,6 +6,9 @@ import AboutPreview from "@/components/home/AboutPreview";
 import Testimonials from "@/components/home/Testimonials";
 import BookingCTA from "@/components/home/BookingCTA";
 import WaitingList from "@/components/home/WaitingList";
+import ShopButton from "@/components/home/ShopButton";
+import VIPPreview from "@/components/home/VIPPreview";
+import ReferralBanner from "@/components/home/ReferralBanner";
 
 const Index = () => {
   return (
@@ -15,6 +18,9 @@ const Index = () => {
         <Hero />
         <WaitingList />
         <FeaturedServices />
+        <ShopButton />
+        <VIPPreview />
+        <ReferralBanner />
         <AboutPreview />
         <Testimonials />
         <BookingCTA />
