@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 import { 
   Crown, Star, Trophy, Gift, Heart, Sparkles, Calendar, 
   Clock, TrendingUp, Award, Gem, Zap, ChevronRight,
-  PartyPopper, Users, Target
+  PartyPopper, Users, Target, PenLine
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import VIPProfileExamples from "@/components/vip/VIPProfileExamples";
+import VIPNotes from "@/components/vip/VIPNotes";
 
 // Mock VIP data - would come from database
 const mockVIPData = {
@@ -57,7 +59,7 @@ const bookingHistory = [
 ];
 
 const VIP = () => {
-  const [activeTab, setActiveTab] = useState<"overview" | "history" | "achievements" | "rewards">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "notes" | "history" | "achievements" | "rewards">("overview");
   const currentTierIndex = tiers.findIndex(t => t.name.toLowerCase() === mockVIPData.currentTier);
   const currentTier = tiers[currentTierIndex];
   const nextTier = tiers[currentTierIndex + 1];
@@ -130,10 +132,14 @@ const VIP = () => {
             )}
           </div>
 
+          {/* VIP Profile Examples */}
+          <VIPProfileExamples />
+
           {/* Tab Navigation */}
           <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
             {[
               { id: "overview", label: "Overview", icon: Target },
+              { id: "notes", label: "My Notes", icon: PenLine },
               { id: "history", label: "History", icon: Clock },
               { id: "achievements", label: "Achievements", icon: Trophy },
               { id: "rewards", label: "Rewards", icon: Gift },
@@ -263,6 +269,13 @@ const VIP = () => {
             </div>
           )}
 
+          {/* Notes Tab */}
+          {activeTab === "notes" && (
+            <div className="animate-fade-in">
+              <VIPNotes />
+            </div>
+          )}
+
           {/* History Tab */}
           {activeTab === "history" && (
             <div className="animate-fade-in">
@@ -360,15 +373,17 @@ const VIP = () => {
               <h3 className="font-serif text-xl font-semibold mb-4">Available Rewards</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { name: "Free Lash Lift", points: 500, image: "🎀" },
-                  { name: "$25 Off Any Service", points: 750, image: "💎" },
-                  { name: "Luxury Lash Serum", points: 1000, image: "✨" },
-                  { name: "Free Classic Set", points: 1500, image: "👑" },
-                  { name: "VIP Spa Day", points: 3000, image: "🌸" },
-                  { name: "Exclusive Masterclass", points: 5000, image: "🎓" },
+                  { name: "Free Lash Lift", points: 500, icon: Heart },
+                  { name: "$25 Off Any Service", points: 750, icon: Gem },
+                  { name: "Luxury Lash Serum", points: 1000, icon: Sparkles },
+                  { name: "Free Classic Set", points: 1500, icon: Crown },
+                  { name: "VIP Spa Day", points: 3000, icon: Star },
+                  { name: "Exclusive Masterclass", points: 5000, icon: Award },
                 ].map((reward) => (
                   <Card key={reward.name} className="p-6 hover:shadow-medium transition-shadow">
-                    <div className="text-4xl mb-4">{reward.image}</div>
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center mb-4">
+                      <reward.icon className="h-7 w-7 text-gold" />
+                    </div>
                     <h4 className="font-serif font-semibold text-foreground mb-2">{reward.name}</h4>
                     <p className="text-gold font-medium">{reward.points.toLocaleString()} points</p>
                     <Button 
