@@ -1,14 +1,11 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/home/Hero";
-import FeaturedServices from "@/components/home/FeaturedServices";
-import AboutPreview from "@/components/home/AboutPreview";
+import NavigationButtons from "@/components/home/NavigationButtons";
+import WaitingList from "@/components/home/WaitingList";
+import ShopPreview from "@/components/home/ShopPreview";
 import Testimonials from "@/components/home/Testimonials";
 import BookingCTA from "@/components/home/BookingCTA";
-import WaitingList from "@/components/home/WaitingList";
-import ShopButton from "@/components/home/ShopButton";
-import VIPPreview from "@/components/home/VIPPreview";
-import ReferralBanner from "@/components/home/ReferralBanner";
 
 const Index = () => {
   return (
@@ -16,12 +13,9 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        <NavigationButtons />
         <WaitingList />
-        <FeaturedServices />
-        <ShopButton />
-        <VIPPreview />
-        <ReferralBanner />
-        <AboutPreview />
+        <ShopPreview />
         <Testimonials />
         <BookingCTA />
       </main>
