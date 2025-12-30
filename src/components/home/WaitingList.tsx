@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Sparkles, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import PurniAvailability from "./PurniAvailability";
 
 interface WaitingListProps {
   className?: string;
@@ -21,7 +22,6 @@ const WaitingList = ({ className }: WaitingListProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate submission
     setIsSubmitted(true);
     setTimeout(() => {
       setIsModalOpen(false);
@@ -34,10 +34,11 @@ const WaitingList = ({ className }: WaitingListProps) => {
     <>
       <section className={cn("py-20 bg-gradient-to-b from-cream/50 to-background", className)}>
         <div className="container mx-auto px-6">
-            <Card className="max-w-4xl mx-auto p-8 md:p-12 bg-gradient-to-br from-gold/10 via-cream to-background border-gold/30 shadow-gold relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-gold/20 to-transparent rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-gold/10 to-transparent rounded-full blur-xl" />
-            <div className="flex flex-col md:flex-row items-center gap-8">
+          <Card className="max-w-4xl mx-auto p-8 md:p-12 bg-gradient-to-br from-gold/10 via-cream to-background border-gold/30 shadow-gold relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-gold/20 to-transparent rounded-full blur-2xl" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-gold/10 to-transparent rounded-full blur-xl" />
+            
+            <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
               {/* Icon */}
               <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
                 <Clock className="h-10 w-10 text-gold" />
@@ -73,6 +74,9 @@ const WaitingList = ({ className }: WaitingListProps) => {
                 Join Waiting List
               </Button>
             </div>
+
+            {/* Purni Availability Slots */}
+            <PurniAvailability />
           </Card>
         </div>
       </section>

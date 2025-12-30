@@ -35,24 +35,9 @@ const Hero = () => {
 
           {/* Subheading */}
           <p className="animate-fade-up opacity-0 stagger-2 text-lg md:text-xl text-charcoal-light max-w-lg mb-10 leading-relaxed">
-            Experience the art of lash extensions in our serene boutique setting. 
-            Designed for the modern woman who appreciates luxury.
+            Lash extensions, bridal styling, makeup artistry & professional beauty courses. 
+            Where luxury meets artistry in every detail.
           </p>
-
-          {/* CTA Buttons */}
-          <div className="animate-fade-up opacity-0 stagger-3 flex flex-col sm:flex-row gap-4">
-            <Button variant="luxury" size="xl" asChild>
-              <Link to="/book" className="flex items-center gap-2">
-                Book Your Appointment
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-            </Button>
-            <Button variant="outline" size="xl" asChild>
-              <Link to="/services">
-                View Services
-              </Link>
-            </Button>
-          </div>
 
           {/* Trust Indicators */}
           <div className="animate-fade-up opacity-0 stagger-4 mt-16 flex items-center gap-8">
