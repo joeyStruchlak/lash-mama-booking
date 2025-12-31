@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { 
   Crown, Star, Trophy, Gift, Heart, Sparkles, Calendar, 
-  Clock, TrendingUp, Award, Gem, Zap, ChevronRight,
-  PartyPopper, Users, Target, PenLine
+  Clock, ChevronRight, Users, Target, PenLine, Gem,
+  Percent, PartyPopper
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import VIPProfileExamples from "@/components/vip/VIPProfileExamples";
@@ -16,53 +16,72 @@ import VIPNotes from "@/components/vip/VIPNotes";
 // Mock VIP data - would come from database
 const mockVIPData = {
   memberSince: "March 2022",
-  totalVisits: 47,
-  totalSpent: 4850,
-  loyaltyPoints: 2420,
-  currentTier: "diamond" as const,
-  nextTierProgress: 85,
-  streak: 12, // months
+  consecutiveBookings: 12,
+  currentTier: "vip" as const,
+  streak: 12, // consecutive bookings
   referrals: 8,
+  birthday: "February 14",
   upcomingAppointment: {
     date: "January 15, 2024",
     time: "2:00 PM",
     service: "Mega Volume Full Set",
-    artist: "Lash Mama"
+    artist: "Lash Mama",
+    lastAppointment: "December 20, 2023"
   }
 };
 
-const tiers = [
-  { name: "Bronze", icon: Star, threshold: 0, color: "text-amber-600", bgColor: "bg-amber-100", perks: ["5% off all services", "Birthday reward"] },
-  { name: "Silver", icon: Sparkles, threshold: 500, color: "text-gray-400", bgColor: "bg-gray-100", perks: ["10% off all services", "Priority booking", "Free lash brush kit"] },
-  { name: "Gold", icon: Trophy, threshold: 1500, color: "text-gold", bgColor: "bg-gold/10", perks: ["15% off all services", "Exclusive products", "VIP events access"] },
-  { name: "Diamond", icon: Gem, threshold: 3000, color: "text-cyan-400", bgColor: "bg-cyan-50", perks: ["20% off all services", "Personal artist line", "Champagne service", "First access to new treatments"] },
-];
-
-const achievements = [
-  { id: "first-booking", name: "First Steps", description: "Completed your first booking", icon: Calendar, unlocked: true },
-  { id: "loyalty-3", name: "Loyal Beauty", description: "3 consecutive monthly visits", icon: Heart, unlocked: true },
-  { id: "referral-1", name: "Beauty Ambassador", description: "Referred your first friend", icon: Users, unlocked: true },
-  { id: "loyalty-6", name: "Dedicated Client", description: "6 consecutive monthly visits", icon: TrendingUp, unlocked: true },
-  { id: "mega-volume", name: "Volume Queen", description: "5 mega volume appointments", icon: Crown, unlocked: true },
-  { id: "loyalty-12", name: "Anniversary Star", description: "12 consecutive monthly visits", icon: Award, unlocked: true },
-  { id: "referral-5", name: "Inner Circle", description: "Referred 5 friends", icon: Sparkles, unlocked: true },
-  { id: "big-spender", name: "VIP Elite", description: "Spent over $5,000", icon: Gem, unlocked: false },
-  { id: "referral-10", name: "Brand Champion", description: "Referred 10 friends", icon: Trophy, unlocked: false },
+// VIP Discounts - no points/rewards system
+const vipDiscounts = [
+  { 
+    name: "$10 Off Every Refill", 
+    description: "Save on all your refill appointments",
+    icon: Percent,
+    value: "$10"
+  },
+  { 
+    name: "$20 Off Birthday Refills", 
+    description: "Extra savings on your special day",
+    icon: PartyPopper,
+    value: "$20"
+  },
+  { 
+    name: "$30 Off Mega Volume Full Set", 
+    description: "Premium lash experience discount",
+    icon: Crown,
+    value: "$30"
+  },
+  { 
+    name: "$30 Off Volume Full Set", 
+    description: "Beautiful volume lash discount",
+    icon: Sparkles,
+    value: "$30"
+  },
+  { 
+    name: "$20 Off Natural/Hybrid Full Set", 
+    description: "Natural beauty enhancement discount",
+    icon: Heart,
+    value: "$20"
+  },
+  { 
+    name: "$100 Gift Pack at Year End", 
+    description: "Exclusive annual VIP appreciation gift",
+    icon: Gift,
+    value: "$100"
+  },
 ];
 
 const bookingHistory = [
-  { id: 1, date: "Dec 28, 2023", service: "Volume Refills", artist: "Nikki", amount: 95 },
-  { id: 2, date: "Nov 30, 2023", service: "Mega Volume Full Set", artist: "Lash Mama", amount: 280 },
-  { id: 3, date: "Oct 25, 2023", service: "Volume Refills", artist: "Nikki", amount: 95 },
-  { id: 4, date: "Sep 28, 2023", service: "Bridal Makeup Trial", artist: "Beau", amount: 150 },
-  { id: 5, date: "Aug 30, 2023", service: "Volume Full Set", artist: "Lash Mama", amount: 220 },
+  { id: 1, date: "Dec 28, 2023", service: "Volume Refills", artist: "Nikki", lastAppointmentDays: 14 },
+  { id: 2, date: "Nov 30, 2023", service: "Mega Volume Full Set", artist: "Lash Mama", lastAppointmentDays: 28 },
+  { id: 3, date: "Oct 25, 2023", service: "Volume Refills", artist: "Nikki", lastAppointmentDays: 21 },
+  { id: 4, date: "Sep 28, 2023", service: "Bridal Makeup Trial", artist: "Beau", lastAppointmentDays: 27 },
+  { id: 5, date: "Aug 30, 2023", service: "Volume Full Set", artist: "Lash Mama", lastAppointmentDays: 30 },
 ];
 
 const VIP = () => {
-  const [activeTab, setActiveTab] = useState<"overview" | "notes" | "history" | "achievements" | "rewards">("overview");
-  const currentTierIndex = tiers.findIndex(t => t.name.toLowerCase() === mockVIPData.currentTier);
-  const currentTier = tiers[currentTierIndex];
-  const nextTier = tiers[currentTierIndex + 1];
+  const [activeTab, setActiveTab] = useState<"overview" | "notes" | "history" | "discounts">("overview");
+  const bookingsToVIP = 10 - mockVIPData.consecutiveBookings;
+  const isVIP = mockVIPData.consecutiveBookings >= 10;
 
   return (
     <div className="min-h-screen bg-background">
@@ -79,54 +98,61 @@ const VIP = () => {
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center", currentTier.bgColor)}>
-                    <currentTier.icon className={cn("h-8 w-8", currentTier.color)} />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center">
+                    <Gem className="h-8 w-8 text-gold" />
                   </div>
                   <div>
                     <p className="text-cream/70 text-sm">Your Status</p>
-                    <h2 className="font-serif text-3xl font-semibold text-cream">
-                      {currentTier.name} Member
+                    <h2 className="font-serif text-3xl font-semibold text-cream flex items-center gap-2">
+                      {isVIP ? "VIP Member" : "Valued Client"}
+                      {isVIP && <Gem className="h-5 w-5 text-gold" />}
                     </h2>
                   </div>
                 </div>
                 <p className="text-cream/60 mb-2">Member since {mockVIPData.memberSince}</p>
-                <div className="flex items-center gap-2 text-gold">
-                  <Zap className="h-4 w-4" />
-                  <span className="font-medium">{mockVIPData.loyaltyPoints.toLocaleString()} Lash Points</span>
-                </div>
+                {isVIP && (
+                  <div className="flex items-center gap-2 text-gold">
+                    <Crown className="h-4 w-4" />
+                    <span className="font-medium">Exclusive VIP Benefits Active</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-4">
                 <div className="bg-cream/10 backdrop-blur rounded-xl px-6 py-4 text-center">
-                  <p className="text-3xl font-serif font-bold text-cream">{mockVIPData.totalVisits}</p>
-                  <p className="text-cream/60 text-sm">Total Visits</p>
+                  <p className="text-3xl font-serif font-bold text-cream">{mockVIPData.consecutiveBookings}</p>
+                  <p className="text-cream/60 text-sm">Consecutive Bookings</p>
                 </div>
                 <div className="bg-cream/10 backdrop-blur rounded-xl px-6 py-4 text-center">
                   <p className="text-3xl font-serif font-bold text-gradient-gold">{mockVIPData.streak}</p>
                   <p className="text-cream/60 text-sm">Month Streak</p>
                 </div>
                 <div className="bg-cream/10 backdrop-blur rounded-xl px-6 py-4 text-center">
-                  <p className="text-3xl font-serif font-bold text-cream">${mockVIPData.totalSpent.toLocaleString()}</p>
-                  <p className="text-cream/60 text-sm">Total Invested</p>
+                  <p className="text-3xl font-serif font-bold text-cream">{mockVIPData.referrals}</p>
+                  <p className="text-cream/60 text-sm">Referrals</p>
                 </div>
               </div>
             </div>
 
-            {/* Progress to next tier */}
-            {nextTier && (
+            {/* VIP Progress - only show if not VIP */}
+            {!isVIP && (
               <div className="relative z-10 mt-8 pt-8 border-t border-cream/10">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-cream/70 text-sm">Progress to {nextTier.name}</span>
-                  <span className="text-gold text-sm font-medium">{mockVIPData.nextTierProgress}%</span>
+                  <span className="text-cream/70 text-sm flex items-center gap-2">
+                    <Gem className="h-4 w-4 text-gold" />
+                    Progress to VIP Status
+                  </span>
+                  <span className="text-gold text-sm font-medium">{mockVIPData.consecutiveBookings}/10 bookings</span>
                 </div>
                 <div className="h-2 bg-cream/10 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-gold to-gold/80 rounded-full transition-all duration-500"
-                    style={{ width: `${mockVIPData.nextTierProgress}%` }}
+                    style={{ width: `${(mockVIPData.consecutiveBookings / 10) * 100}%` }}
                   />
                 </div>
                 <p className="text-cream/50 text-xs mt-2">
-                  Spend ${nextTier.threshold - mockVIPData.totalSpent} more to unlock {nextTier.name} perks
+                  {bookingsToVIP} more consecutive bookings to unlock VIP benefits
+                  <span className="block text-cream/40 mt-1">(Max 3 month break between appointments to maintain streak)</span>
                 </p>
               </div>
             )}
@@ -141,8 +167,7 @@ const VIP = () => {
               { id: "overview", label: "Overview", icon: Target },
               { id: "notes", label: "My Notes", icon: PenLine },
               { id: "history", label: "History", icon: Clock },
-              { id: "achievements", label: "Achievements", icon: Trophy },
-              { id: "rewards", label: "Rewards", icon: Gift },
+              { id: "discounts", label: "VIP Discounts", icon: Percent },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -182,9 +207,14 @@ const VIP = () => {
                       <p className="text-gold font-medium mt-1">
                         With {mockVIPData.upcomingAppointment.artist}
                       </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Last visit: {mockVIPData.upcomingAppointment.lastAppointment}
+                      </p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="soft" size="sm">Reschedule</Button>
+                    <div className="flex flex-col gap-2">
+                      <Button variant="soft" size="sm" className="text-xs">
+                        Reschedule (48hr+ notice required)
+                      </Button>
                       <Button variant="luxury" size="sm">View Details</Button>
                     </div>
                   </div>
@@ -213,58 +243,67 @@ const VIP = () => {
                     <Gift className="h-4 w-4" />
                   </Button>
                   <Button variant="soft" className="w-full justify-between">
-                    Redeem Points
-                    <Sparkles className="h-4 w-4" />
+                    View Discounts
+                    <Percent className="h-4 w-4" />
                   </Button>
                 </div>
               </Card>
 
-              {/* Tier Benefits */}
-              <Card variant="elevated" className="p-6 lg:col-span-3">
-                <div className="flex items-center gap-2 mb-6">
-                  <Crown className="h-5 w-5 text-gold" />
-                  <h3 className="font-serif text-xl font-semibold">Your {currentTier.name} Benefits</h3>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {currentTier.perks.map((perk, index) => (
-                    <div key={index} className="flex items-center gap-3 p-4 rounded-xl bg-beige">
-                      <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
-                        <Sparkles className="h-4 w-4 text-gold" />
+              {/* VIP Benefits Preview */}
+              {isVIP && (
+                <Card variant="elevated" className="p-6 lg:col-span-3 bg-gradient-to-br from-gold/5 via-cream/50 to-beige">
+                  <div className="flex items-center gap-2 mb-6">
+                    <Crown className="h-5 w-5 text-gold" />
+                    <h3 className="font-serif text-xl font-semibold">Your VIP Benefits</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {vipDiscounts.slice(0, 3).map((discount, index) => (
+                      <div key={index} className="flex items-center gap-3 p-4 rounded-xl bg-cream/80 border border-gold/20">
+                        <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
+                          <discount.icon className="h-5 w-5 text-gold" />
+                        </div>
+                        <div>
+                          <span className="text-lg font-serif font-semibold text-gold">{discount.value}</span>
+                          <p className="text-xs text-muted-foreground">{discount.name.replace(discount.value + " ", "")}</p>
+                        </div>
                       </div>
-                      <span className="text-sm font-medium text-foreground">{perk}</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    className="mt-4 text-gold"
+                    onClick={() => setActiveTab("discounts")}
+                  >
+                    View All Discounts <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </Card>
+              )}
+
+              {/* Birthday Reward */}
+              <Card className="p-6 bg-gradient-to-br from-pink-50 to-cream/50 lg:col-span-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <PartyPopper className="h-5 w-5 text-pink-500" />
+                  <h3 className="font-serif text-lg font-semibold">Birthday Discount</h3>
                 </div>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Get $20 off your refill during your birthday month! Your birthday: <span className="text-gold font-medium">{mockVIPData.birthday}</span>
+                </p>
+                <Button variant="soft" size="sm">Update Birthday</Button>
               </Card>
 
               {/* Referral Stats */}
-              <Card className="p-6 lg:col-span-2 bg-gradient-to-br from-gold/10 to-cream/30">
+              <Card className="p-6 bg-gradient-to-br from-gold/10 to-cream/30">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-gold" />
-                    <h3 className="font-serif text-xl font-semibold">Your Referrals</h3>
+                    <h3 className="font-serif text-lg font-semibold">Referrals</h3>
                   </div>
                   <span className="text-3xl font-serif font-bold text-gold">{mockVIPData.referrals}</span>
                 </div>
-                <p className="text-muted-foreground mb-4">
-                  You've earned ${mockVIPData.referrals * 25} in referral rewards! Each friend who books earns you $25.
-                </p>
-                <Button variant="luxury">
+                <Button variant="luxury" size="sm" className="w-full">
                   <Gift className="h-4 w-4 mr-2" />
                   Share Referral Link
                 </Button>
-              </Card>
-
-              {/* Birthday Reward */}
-              <Card className="p-6 bg-gradient-to-br from-pink-50 to-cream/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <PartyPopper className="h-5 w-5 text-pink-500" />
-                  <h3 className="font-serif text-lg font-semibold">Birthday Reward</h3>
-                </div>
-                <p className="text-muted-foreground text-sm mb-4">
-                  A special gift awaits you on your birthday month! Make sure your birthday is set in your profile.
-                </p>
-                <Button variant="soft" size="sm">Update Birthday</Button>
               </Card>
             </div>
           )}
@@ -280,7 +319,10 @@ const VIP = () => {
           {activeTab === "history" && (
             <div className="animate-fade-in">
               <Card variant="luxury" className="p-6">
-                <h3 className="font-serif text-xl font-semibold mb-6">Booking History</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-serif text-xl font-semibold">Booking History</h3>
+                  <p className="text-sm text-muted-foreground">Last appointment info included</p>
+                </div>
                 <div className="space-y-4">
                   {bookingHistory.map((booking) => (
                     <div key={booking.id} className="flex items-center justify-between p-4 rounded-xl bg-beige hover:bg-muted transition-colors">
@@ -291,13 +333,13 @@ const VIP = () => {
                         <div>
                           <p className="font-medium text-foreground">{booking.service}</p>
                           <p className="text-sm text-muted-foreground">
-                            {booking.date} • With {booking.artist}
+                            {booking.date} with {booking.artist}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-serif font-semibold text-foreground">${booking.amount}</p>
-                        <p className="text-xs text-gold">+{booking.amount} pts</p>
+                        <p className="text-xs text-muted-foreground">Days since last visit</p>
+                        <p className="font-serif font-semibold text-foreground">{booking.lastAppointmentDays} days</p>
                       </div>
                     </div>
                   ))}
@@ -309,94 +351,71 @@ const VIP = () => {
             </div>
           )}
 
-          {/* Achievements Tab */}
-          {activeTab === "achievements" && (
+          {/* Discounts Tab */}
+          {activeTab === "discounts" && (
             <div className="animate-fade-in">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {achievements.map((achievement) => (
-                  <Card 
-                    key={achievement.id} 
-                    className={cn(
-                      "p-6 transition-all duration-200",
-                      achievement.unlocked 
-                        ? "bg-gradient-to-br from-gold/10 to-cream/30 border-gold/30" 
-                        : "opacity-60 grayscale"
-                    )}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className={cn(
-                        "w-14 h-14 rounded-2xl flex items-center justify-center",
-                        achievement.unlocked ? "bg-gold/20" : "bg-muted"
-                      )}>
-                        <achievement.icon className={cn(
-                          "h-7 w-7",
-                          achievement.unlocked ? "text-gold" : "text-muted-foreground"
-                        )} />
-                      </div>
-                      <div>
-                        <h4 className="font-serif font-semibold text-foreground">
-                          {achievement.name}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          {achievement.description}
-                        </p>
-                        {achievement.unlocked && (
-                          <span className="inline-flex items-center gap-1 text-xs text-gold mt-2">
-                            <Sparkles className="h-3 w-3" />
-                            Unlocked
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Rewards Tab */}
-          {activeTab === "rewards" && (
-            <div className="animate-fade-in">
-              <Card variant="luxury" className="p-8 text-center mb-8">
+              <Card variant="luxury" className="p-8 text-center mb-8 bg-gradient-to-br from-gold/10 via-cream to-beige">
                 <div className="w-20 h-20 mx-auto rounded-full bg-gold/20 flex items-center justify-center mb-4">
-                  <Sparkles className="h-10 w-10 text-gold" />
+                  <Gem className="h-10 w-10 text-gold" />
                 </div>
                 <h3 className="font-serif text-3xl font-semibold text-foreground mb-2">
-                  {mockVIPData.loyaltyPoints.toLocaleString()} Points
+                  VIP Exclusive Discounts
                 </h3>
-                <p className="text-muted-foreground mb-6">Available to redeem</p>
-                <Button variant="luxury" size="lg">
-                  Browse Rewards
-                </Button>
+                <p className="text-muted-foreground mb-2">Your loyalty is rewarded with these exclusive savings</p>
+                {!isVIP && (
+                  <p className="text-sm text-gold">Complete {bookingsToVIP} more bookings to unlock all discounts</p>
+                )}
               </Card>
 
-              <h3 className="font-serif text-xl font-semibold mb-4">Available Rewards</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { name: "Free Lash Lift", points: 500, icon: Heart },
-                  { name: "$25 Off Any Service", points: 750, icon: Gem },
-                  { name: "Luxury Lash Serum", points: 1000, icon: Sparkles },
-                  { name: "Free Classic Set", points: 1500, icon: Crown },
-                  { name: "VIP Spa Day", points: 3000, icon: Star },
-                  { name: "Exclusive Masterclass", points: 5000, icon: Award },
-                ].map((reward) => (
-                  <Card key={reward.name} className="p-6 hover:shadow-medium transition-shadow">
+                {vipDiscounts.map((discount) => (
+                  <Card 
+                    key={discount.name} 
+                    className={cn(
+                      "p-6 transition-all duration-300 border-2",
+                      isVIP 
+                        ? "bg-gradient-to-br from-gold/10 to-cream/50 border-gold/30 hover:shadow-gold" 
+                        : "opacity-60 border-transparent"
+                    )}
+                  >
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center mb-4">
-                      <reward.icon className="h-7 w-7 text-gold" />
+                      <discount.icon className="h-7 w-7 text-gold" />
                     </div>
-                    <h4 className="font-serif font-semibold text-foreground mb-2">{reward.name}</h4>
-                    <p className="text-gold font-medium">{reward.points.toLocaleString()} points</p>
-                    <Button 
-                      variant="soft" 
-                      size="sm" 
-                      className="w-full mt-4"
-                      disabled={mockVIPData.loyaltyPoints < reward.points}
-                    >
-                      {mockVIPData.loyaltyPoints >= reward.points ? "Redeem" : "Need more points"}
-                    </Button>
+                    <div className="flex items-baseline gap-2 mb-2">
+                      <span className="text-2xl font-serif font-bold text-gold">{discount.value}</span>
+                      <span className="text-sm text-muted-foreground">savings</span>
+                    </div>
+                    <h4 className="font-serif font-semibold text-foreground mb-1">{discount.name}</h4>
+                    <p className="text-sm text-muted-foreground">{discount.description}</p>
+                    {isVIP && (
+                      <div className="mt-4 flex items-center gap-1 text-xs text-gold">
+                        <Sparkles className="h-3 w-3" />
+                        <span>Active</span>
+                      </div>
+                    )}
+                    {!isVIP && (
+                      <div className="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
+                        <Star className="h-3 w-3" />
+                        <span>VIP Only</span>
+                      </div>
+                    )}
                   </Card>
                 ))}
               </div>
+
+              {/* Gift Voucher Section */}
+              <Card className="mt-8 p-6 bg-gradient-to-r from-charcoal to-charcoal/90 text-cream">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-serif text-xl font-semibold mb-2">Lash Extensions Course Gift Voucher</h4>
+                    <p className="text-cream/70">Purchase a $500 gift voucher for our lash extensions course</p>
+                  </div>
+                  <Button variant="luxury" className="flex-shrink-0">
+                    <Gift className="h-4 w-4 mr-2" />
+                    Purchase Voucher
+                  </Button>
+                </div>
+              </Card>
             </div>
           )}
         </div>

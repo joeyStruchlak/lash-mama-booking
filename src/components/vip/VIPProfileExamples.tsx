@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
 import VIPBadge from "@/components/ui/VIPBadge";
+import lashMamaImg from "@/assets/staff/lash-mama.jpg";
 
 const vipMembers = [
   {
     id: 1,
     name: "Sarah M.",
-    tier: "diamond",
+    isVIP: true,
     visits: 52,
     initials: "SM",
     color: "from-pink-200 to-rose-300",
@@ -13,15 +14,24 @@ const vipMembers = [
   {
     id: 2,
     name: "Jessica L.",
-    tier: "gold",
+    isVIP: true,
     visits: 34,
     initials: "JL",
     color: "from-amber-200 to-orange-300",
   },
   {
+    id: "lash-mama",
+    name: "Lash Mama",
+    isOwner: true,
+    isVIP: false,
+    visits: 0,
+    image: lashMamaImg,
+    color: "from-gold to-gold",
+  },
+  {
     id: 3,
     name: "Emma K.",
-    tier: "diamond",
+    isVIP: true,
     visits: 67,
     initials: "EK",
     color: "from-violet-200 to-purple-300",
@@ -29,18 +39,10 @@ const vipMembers = [
   {
     id: 4,
     name: "Olivia R.",
-    tier: "gold",
+    isVIP: true,
     visits: 28,
     initials: "OR",
     color: "from-teal-200 to-cyan-300",
-  },
-  {
-    id: 5,
-    name: "Ava T.",
-    tier: "diamond",
-    visits: 45,
-    initials: "AT",
-    color: "from-rose-200 to-pink-300",
   },
 ];
 
@@ -54,6 +56,7 @@ const VIPProfileExamples = () => {
       <div className="flex justify-center items-end gap-3 sm:gap-6">
         {vipMembers.map((member, index) => {
           const isCenter = index === 2;
+          const isOwner = 'isOwner' in member && member.isOwner;
           const size = isCenter ? "lg" : index === 1 || index === 3 ? "md" : "sm";
           
           const sizeClasses = {
@@ -77,25 +80,59 @@ const VIPProfileExamples = () => {
               )}
             >
               <div className="relative">
-                {/* Glow effect for diamond tier */}
-                {member.tier === "diamond" && (
+                {/* Rainbow gold gradient ring for Lash Mama */}
+                {isOwner && (
+                  <>
+                    <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-gold via-amber-300 via-yellow-400 via-amber-500 to-gold animate-spin-slow" 
+                         style={{ animationDuration: '4s' }} />
+                    <div className="absolute -inset-1 bg-gradient-to-r from-gold/60 via-amber-400/60 to-gold/60 rounded-full blur-md animate-pulse" />
+                  </>
+                )}
+                
+                {/* Glow effect for VIP members */}
+                {member.isVIP && !isOwner && (
                   <div className="absolute -inset-1 bg-gradient-to-r from-gold/40 via-gold/60 to-gold/40 rounded-full blur-md animate-pulse" />
                 )}
                 
                 {/* Profile picture container */}
                 <div
                   className={cn(
-                    "relative rounded-full bg-gradient-to-br flex items-center justify-center font-serif font-semibold text-charcoal shadow-lg",
+                    "relative rounded-full flex items-center justify-center font-serif font-semibold text-charcoal shadow-lg overflow-hidden",
                     "ring-2 ring-gold/40",
-                    member.tier === "diamond" && "ring-4 ring-gold",
+                    member.isVIP && "ring-4 ring-gold",
+                    isOwner && "ring-4 ring-gold",
                     sizeClasses[size],
-                    member.color
+                    !('image' in member) && `bg-gradient-to-br ${member.color}`
                   )}
                 >
-                  <span className={textSizes[size]}>{member.initials}</span>
+                  {'image' in member && member.image ? (
+                    <img 
+                      src={member.image} 
+                      alt={member.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className={textSizes[size]}>{member.initials}</span>
+                  )}
                   
-                  {/* VIP Diamond Badge */}
-                  <VIPBadge size={size} />
+                  {/* VIP Diamond Badge - only for VIP members, not owner */}
+                  {member.isVIP && !isOwner && (
+                    <VIPBadge size={size} />
+                  )}
+                  
+                  {/* Crown for Lash Mama */}
+                  {isOwner && (
+                    <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-gradient-to-br from-cream via-cream to-beige shadow-md flex items-center justify-center">
+                      <svg 
+                        viewBox="0 0 24 24" 
+                        className="w-4 h-4 text-gold"
+                        fill="currentColor"
+                      >
+                        <path d="M12 3L4 10L5 19H19L20 10L12 3Z" />
+                        <circle cx="12" cy="7" r="1" fill="white" opacity="0.7" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
               </div>
               
@@ -107,7 +144,7 @@ const VIPProfileExamples = () => {
                   {member.name}
                 </p>
                 <p className="text-[10px] sm:text-xs text-gold capitalize">
-                  {member.tier} Member
+                  {isOwner ? "Founder" : "VIP Member"}
                 </p>
               </div>
             </div>
@@ -116,7 +153,7 @@ const VIPProfileExamples = () => {
       </div>
       
       <p className="text-center text-sm text-muted-foreground mt-6">
-        Join our exclusive VIP program and earn your diamond status
+        10 consecutive bookings to join our exclusive VIP inner circle
       </p>
     </div>
   );
