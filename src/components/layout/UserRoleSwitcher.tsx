@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronDown, User, Crown, Gem, Shield } from "lucide-react";
+import { ChevronDown, User, Crown, Gem, Shield, Briefcase } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,11 +7,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 import lashMamaProfileImg from "@/assets/staff/lash-mama-profile.png";
 import sarahImg from "@/assets/vip/sarah.jpg";
 import oliviaImg from "@/assets/vip/olivia.jpg";
 
-export type UserRole = "guest" | "regular" | "vip" | "admin";
+export type UserRole = "guest" | "regular" | "vip" | "staff" | "manager" | "admin";
 
 interface UserRoleSwitcherProps {
   currentRole: UserRole;
@@ -26,6 +26,7 @@ const userProfiles = {
     icon: User,
     description: "Browse only",
     color: "text-muted-foreground",
+    route: "/",
   },
   regular: {
     name: "Emma",
@@ -33,6 +34,7 @@ const userProfiles = {
     icon: User,
     description: "Regular User",
     color: "text-foreground",
+    route: "/vip",
   },
   vip: {
     name: "Sarah",
@@ -40,6 +42,23 @@ const userProfiles = {
     icon: Gem,
     description: "VIP Member",
     color: "text-gold",
+    route: "/vip",
+  },
+  staff: {
+    name: "Nikki",
+    image: null,
+    icon: Briefcase,
+    description: "Staff Member",
+    color: "text-violet-500",
+    route: "/staff",
+  },
+  manager: {
+    name: "Beau",
+    image: null,
+    icon: Shield,
+    description: "Manager",
+    color: "text-sky-500",
+    route: "/manager",
   },
   admin: {
     name: "Lash Mama",
@@ -47,6 +66,7 @@ const userProfiles = {
     icon: Crown,
     description: "Admin",
     color: "text-gold",
+    route: "/admin",
   },
 };
 
