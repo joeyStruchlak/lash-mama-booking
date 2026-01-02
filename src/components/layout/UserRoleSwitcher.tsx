@@ -11,8 +11,7 @@ import { useNavigate } from "react-router-dom";
 import lashMamaProfileImg from "@/assets/staff/lash-mama-profile.png";
 import sarahImg from "@/assets/vip/sarah.jpg";
 import oliviaImg from "@/assets/vip/olivia.jpg";
-
-export type UserRole = "guest" | "regular" | "vip" | "staff" | "manager" | "admin";
+import { UserRole } from "@/contexts/UserRoleContext";
 
 interface UserRoleSwitcherProps {
   currentRole: UserRole;
@@ -71,7 +70,14 @@ const userProfiles = {
 };
 
 const UserRoleSwitcher = ({ currentRole, onRoleChange }: UserRoleSwitcherProps) => {
+  const navigate = useNavigate();
   const currentProfile = userProfiles[currentRole];
+
+  const handleRoleChange = (role: UserRole) => {
+    onRoleChange(role);
+    const targetRoute = userProfiles[role].route;
+    navigate(targetRoute);
+  };
 
   return (
     <DropdownMenu>
@@ -150,7 +156,7 @@ const UserRoleSwitcher = ({ currentRole, onRoleChange }: UserRoleSwitcherProps) 
           return (
             <DropdownMenuItem
               key={role}
-              onClick={() => onRoleChange(role)}
+              onClick={() => handleRoleChange(role)}
               className={cn(
                 "flex items-center gap-3 py-2.5 cursor-pointer",
                 isActive && "bg-gold/10"

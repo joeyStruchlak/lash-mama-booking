@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-import { UserRole } from "@/components/layout/UserRoleSwitcher";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+
+export type UserRole = "guest" | "regular" | "vip" | "staff" | "manager" | "admin";
 
 interface UserRoleContextType {
   currentRole: UserRole;
@@ -9,7 +10,15 @@ interface UserRoleContextType {
 const UserRoleContext = createContext<UserRoleContextType | undefined>(undefined);
 
 export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
-  const [currentRole, setCurrentRole] = useState<UserRole>("regular");
+  const [currentRole, setCurrentRole] = useState<UserRole>(() => {
+    // Initialize from localStorage if available
+    const saved = localStorage.getItem("userRole");
+    return (saved as UserRole) || "regular";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("userRole", currentRole);
+  }, [currentRole]);
 
   return (
     <UserRoleContext.Provider value={{ currentRole, setCurrentRole }}>
