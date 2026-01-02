@@ -77,10 +77,9 @@ const AdminDashboard = () => {
   const { currentRole } = useUserRole();
   const [activeSection, setActiveSection] = useState<string>("overview");
 
-  // Redirect if not admin
-  if (currentRole !== "admin") {
-    return <Navigate to="/vip" replace />;
-  }
+  // Allow access via URL directly or when admin role is set
+  // For demo purposes, allow access if URL is /admin regardless of role
+  const isAdminPage = window.location.pathname === "/admin";
 
   const stats = [
     { 
