@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
   MessageCircle,
@@ -9,11 +10,12 @@ import {
   Search,
   MoreVertical,
   Phone,
-  Video,
   Sparkles,
   Heart,
   Gem,
   Crown,
+  ChevronLeft,
+  User,
 } from "lucide-react";
 
 interface Message {
@@ -35,7 +37,7 @@ interface Conversation {
   messages: Message[];
 }
 
-// Beauty-themed read indicator - a sparkly lash icon
+// Beauty-themed read indicator - elegant lash sparkles
 const ReadIndicator = ({ read }: { read: boolean }) => (
   <div className={cn(
     "flex items-center gap-0.5 transition-all duration-300",
@@ -53,7 +55,7 @@ const ReadIndicator = ({ read }: { read: boolean }) => (
 );
 
 const AdminChat = () => {
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(1);
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -64,16 +66,16 @@ const AdminChat = () => {
       name: "Sarah Mitchell",
       avatar: "SM",
       isVIP: true,
-      lastMessage: "Thank you so much! Can't wait for my appointment 💕",
+      lastMessage: "Thank you so much! Can't wait for my appointment",
       lastTime: "2 min ago",
       unread: 2,
       messages: [
         { id: 1, sender: "user", text: "Hi! I wanted to ask about the Mega Volume lash set", time: "10:30 AM", read: true },
-        { id: 2, sender: "admin", text: "Hi Sarah! Of course, I'd be happy to help. The Mega Volume set is our most dramatic look - it's perfect for a full, glamorous style 💫", time: "10:32 AM", read: true },
+        { id: 2, sender: "admin", text: "Hi Sarah! Of course, I'd be happy to help. The Mega Volume set is our most dramatic look - it's perfect for a full, glamorous style", time: "10:32 AM", read: true },
         { id: 3, sender: "user", text: "That sounds perfect! How long does the appointment usually take?", time: "10:35 AM", read: true },
-        { id: 4, sender: "admin", text: "The full set takes about 2.5-3 hours for the best results. We want to make sure every lash is perfect for you! ✨", time: "10:36 AM", read: true },
+        { id: 4, sender: "admin", text: "The full set takes about 2.5-3 hours for the best results. We want to make sure every lash is perfect for you!", time: "10:36 AM", read: true },
         { id: 5, sender: "user", text: "Amazing! I'll book one for next week", time: "10:40 AM", read: true },
-        { id: 6, sender: "user", text: "Thank you so much! Can't wait for my appointment 💕", time: "10:41 AM", read: true },
+        { id: 6, sender: "user", text: "Thank you so much! Can't wait for my appointment", time: "10:41 AM", read: true },
       ]
     },
     {
@@ -99,7 +101,7 @@ const AdminChat = () => {
       unread: 0,
       messages: [
         { id: 1, sender: "user", text: "Hello! I'm getting married in March", time: "9:00 AM", read: true },
-        { id: 2, sender: "admin", text: "Congratulations! 🎊 That's so exciting! How can I help with your bridal beauty look?", time: "9:05 AM", read: true },
+        { id: 2, sender: "admin", text: "Congratulations! That's so exciting! How can I help with your bridal beauty look?", time: "9:05 AM", read: true },
         { id: 3, sender: "user", text: "What's included in the bridal package?", time: "9:10 AM", read: true },
       ]
     },
@@ -108,12 +110,12 @@ const AdminChat = () => {
       name: "Olivia Rose",
       avatar: "OR",
       isVIP: true,
-      lastMessage: "See you tomorrow! 💖",
+      lastMessage: "See you tomorrow!",
       lastTime: "3 hours ago",
       unread: 0,
       messages: [
-        { id: 1, sender: "admin", text: "Hi Olivia! Just a reminder about your appointment tomorrow at 2pm 💕", time: "8:00 AM", read: true },
-        { id: 2, sender: "user", text: "See you tomorrow! 💖", time: "8:30 AM", read: true },
+        { id: 1, sender: "admin", text: "Hi Olivia! Just a reminder about your appointment tomorrow at 2pm", time: "8:00 AM", read: true },
+        { id: 2, sender: "user", text: "See you tomorrow!", time: "8:30 AM", read: true },
       ]
     },
     {
@@ -176,19 +178,22 @@ const AdminChat = () => {
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 md:mb-6">
         <div>
-          <h2 className="font-serif text-2xl font-semibold text-foreground">Messages</h2>
-          <p className="text-muted-foreground">{totalUnread} unread conversations</p>
+          <h2 className="font-serif text-xl md:text-2xl font-semibold text-foreground">Messages</h2>
+          <p className="text-sm text-muted-foreground">{totalUnread} unread conversations</p>
         </div>
       </div>
 
       <Card className="border-0 bg-gradient-to-br from-card to-card/80 overflow-hidden">
-        <div className="flex h-[600px]">
+        <div className="flex h-[500px] md:h-[600px]">
           {/* Conversations List */}
-          <div className="w-80 border-r border-border flex flex-col">
+          <div className={cn(
+            "border-r border-border flex flex-col transition-all duration-300",
+            selectedConversation ? "hidden md:flex w-80" : "w-full md:w-80"
+          )}>
             {/* Search */}
-            <div className="p-4 border-b border-border">
+            <div className="p-3 md:p-4 border-b border-border">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -207,19 +212,19 @@ const AdminChat = () => {
                   key={conv.id}
                   onClick={() => setSelectedConversation(conv.id)}
                   className={cn(
-                    "w-full p-4 flex items-start gap-3 text-left transition-colors border-b border-border/50",
+                    "w-full p-3 md:p-4 flex items-start gap-3 text-left transition-colors border-b border-border/50",
                     selectedConversation === conv.id
                       ? "bg-gold/10"
                       : "hover:bg-muted/50"
                   )}
                 >
                   {/* Avatar */}
-                  <div className="relative">
+                  <div className="relative shrink-0">
                     <div className={cn(
-                      "w-12 h-12 rounded-full bg-gradient-to-br from-gold/20 to-gold/10 flex items-center justify-center",
+                      "w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-gold/20 to-gold/10 flex items-center justify-center",
                       conv.isVIP && "ring-2 ring-gold"
                     )}>
-                      <span className="font-serif font-semibold text-gold">{conv.avatar}</span>
+                      <span className="font-serif font-semibold text-gold text-xs md:text-sm">{conv.avatar}</span>
                     </div>
                     {conv.isVIP && (
                       <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-gold to-amber-400 flex items-center justify-center">
@@ -232,15 +237,15 @@ const AdminChat = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <span className={cn(
-                        "font-medium truncate",
+                        "font-medium truncate text-sm",
                         conv.unread > 0 && "text-foreground font-semibold"
                       )}>
                         {conv.name}
                       </span>
-                      <span className="text-xs text-muted-foreground">{conv.lastTime}</span>
+                      <span className="text-[10px] md:text-xs text-muted-foreground ml-2 shrink-0">{conv.lastTime}</span>
                     </div>
                     <p className={cn(
-                      "text-sm truncate",
+                      "text-xs md:text-sm truncate",
                       conv.unread > 0 ? "text-foreground" : "text-muted-foreground"
                     )}>
                       {conv.lastMessage}
@@ -249,7 +254,7 @@ const AdminChat = () => {
 
                   {/* Unread Badge */}
                   {conv.unread > 0 && (
-                    <span className="w-5 h-5 rounded-full bg-gold text-primary-foreground text-xs flex items-center justify-center font-medium">
+                    <span className="w-5 h-5 rounded-full bg-gold text-primary-foreground text-xs flex items-center justify-center font-medium shrink-0">
                       {conv.unread}
                     </span>
                   )}
@@ -262,46 +267,53 @@ const AdminChat = () => {
           {selectedChat ? (
             <div className="flex-1 flex flex-col">
               {/* Chat Header */}
-              <div className="p-4 border-b border-border flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="p-3 md:p-4 border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-2 md:gap-3">
+                  {/* Back button on mobile */}
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 md:hidden"
+                    onClick={() => setSelectedConversation(null)}
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  
                   <div className="relative">
                     <div className={cn(
-                      "w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-gold/10 flex items-center justify-center",
+                      "w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-gold/20 to-gold/10 flex items-center justify-center",
                       selectedChat.isVIP && "ring-2 ring-gold"
                     )}>
-                      <span className="font-serif font-semibold text-gold text-sm">{selectedChat.avatar}</span>
+                      <span className="font-serif font-semibold text-gold text-xs">{selectedChat.avatar}</span>
                     </div>
                     {selectedChat.isVIP && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-gold to-amber-400 flex items-center justify-center">
-                        <Gem className="h-2.5 w-2.5 text-white" />
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-gradient-to-br from-gold to-amber-400 flex items-center justify-center">
+                        <Gem className="h-2 w-2 text-white" />
                       </div>
                     )}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-medium text-foreground">{selectedChat.name}</h3>
+                      <h3 className="font-medium text-foreground text-sm">{selectedChat.name}</h3>
                       {selectedChat.isVIP && (
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gold/20 text-gold">VIP</span>
+                        <span className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-gold/20 text-gold">VIP</span>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">Online</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground">Online</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
                     <Phone className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
-                    <Video className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4">
                 {selectedChat.messages.map((message) => (
                   <div
                     key={message.id}
@@ -311,7 +323,7 @@ const AdminChat = () => {
                     )}
                   >
                     <div className={cn(
-                      "max-w-[70%] rounded-2xl px-4 py-2.5",
+                      "max-w-[85%] md:max-w-[70%] rounded-2xl px-3 md:px-4 py-2 md:py-2.5",
                       message.sender === "admin"
                         ? "bg-gradient-to-br from-gold to-gold/90 text-primary-foreground rounded-br-sm"
                         : "bg-muted rounded-bl-sm"
@@ -322,7 +334,7 @@ const AdminChat = () => {
                         message.sender === "admin" ? "justify-end" : "justify-start"
                       )}>
                         <span className={cn(
-                          "text-xs",
+                          "text-[10px] md:text-xs",
                           message.sender === "admin" ? "text-primary-foreground/70" : "text-muted-foreground"
                         )}>
                           {message.time}
@@ -338,8 +350,8 @@ const AdminChat = () => {
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t border-border">
-                <div className="flex items-center gap-3">
+              <div className="p-3 md:p-4 border-t border-border">
+                <div className="flex items-center gap-2 md:gap-3">
                   <Input
                     placeholder="Type a message..."
                     value={newMessage}
@@ -352,22 +364,23 @@ const AdminChat = () => {
                     size="icon"
                     onClick={handleSend}
                     disabled={!newMessage.trim()}
+                    className="shrink-0"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                <p className="text-[10px] md:text-xs text-muted-foreground mt-2 flex items-center gap-1">
                   <Heart className="h-3 w-3 text-rose-400" />
                   Lash Mama will see all messages
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center">
+            <div className="hidden md:flex flex-1 items-center justify-center">
               <div className="text-center">
-                <MessageCircle className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
+                <MessageCircle className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground/30 mx-auto mb-4" />
                 <h3 className="font-serif text-lg font-semibold text-foreground mb-2">No conversation selected</h3>
-                <p className="text-muted-foreground">Choose a conversation to start messaging</p>
+                <p className="text-muted-foreground text-sm">Choose a conversation to start messaging</p>
               </div>
             </div>
           )}

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useUserRole } from "@/contexts/UserRoleContext";
 import { toast } from "sonner";
 import {
   Bell,
   Calendar,
-  User,
   Clock,
   Check,
   X,
@@ -17,11 +17,20 @@ import {
   Gift,
   Star,
   RefreshCw,
+  XCircle,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 interface Notification {
   id: number;
-  type: "booking" | "message" | "vip" | "reminder" | "review" | "reschedule";
+  type: "booking" | "message" | "vip" | "reminder" | "review" | "reschedule" | "cancellation";
   title: string;
   description: string;
   time: string;
@@ -32,7 +41,10 @@ interface Notification {
 
 const AdminNotifications = () => {
   const { currentRole } = useUserRole();
-  const [filter, setFilter] = useState<"all" | "unread" | "bookings" | "reschedule">("all");
+  const [filter, setFilter] = useState<"all" | "unread" | "reschedule">("all");
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [declineReason, setDeclineReason] = useState("");
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   
   const [notifications, setNotifications] = useState<Notification[]>([
     {
@@ -57,47 +69,48 @@ const AdminNotifications = () => {
     },
     {
       id: 3,
-      type: "booking",
-      title: "New Booking Confirmed",
-      description: "Jessica Kim booked Bridal Lashes on Jan 20 at 10:00 AM",
-      time: "1 hour ago",
+      type: "cancellation",
+      title: "Cancellation Notice",
+      description: "Jessica Kim cancelled her appointment scheduled for tomorrow. Less than 48hrs notice - deposit forfeited.",
+      time: "30 minutes ago",
       read: false,
       actionRequired: false,
-      data: { client: "Jessica Kim", service: "Bridal Lashes", date: "Jan 20", time: "10:00 AM" }
+      data: { client: "Jessica Kim", depositForfeited: true }
     },
     {
       id: 4,
+      type: "booking",
+      title: "New Booking Confirmed",
+      description: "Olivia Rose booked Bridal Lashes on Jan 20 at 10:00 AM. Deposit paid: $50",
+      time: "1 hour ago",
+      read: false,
+      actionRequired: false,
+      data: { client: "Olivia Rose", service: "Bridal Lashes", date: "Jan 20", time: "10:00 AM", deposit: "$50" }
+    },
+    {
+      id: 5,
       type: "vip",
-      title: "New VIP Member!",
-      description: "Olivia Rose has reached 10 consecutive bookings and is now a VIP member",
+      title: "New VIP Member",
+      description: "Mia Chen has reached 10 consecutive bookings and is now a VIP member",
       time: "2 hours ago",
       read: true,
       actionRequired: false,
     },
     {
-      id: 5,
+      id: 6,
       type: "review",
       title: "New 5-Star Review",
-      description: "Mia Chen left a 5-star review for Nikki's Volume Full Set service",
+      description: "Lily Zhang left a 5-star review for Nikki's Volume Full Set service",
       time: "3 hours ago",
       read: true,
       actionRequired: false,
     },
     {
-      id: 6,
+      id: 7,
       type: "reminder",
       title: "Tomorrow's Schedule",
       description: "You have 6 appointments scheduled for tomorrow",
       time: "5 hours ago",
-      read: true,
-      actionRequired: false,
-    },
-    {
-      id: 7,
-      type: "message",
-      title: "New Message",
-      description: "Natali sent you a message about shift availability",
-      time: "Yesterday",
       read: true,
       actionRequired: false,
     },
@@ -107,6 +120,7 @@ const AdminNotifications = () => {
     switch (type) {
       case "booking": return Calendar;
       case "reschedule": return RefreshCw;
+      case "cancellation": return XCircle;
       case "message": return MessageCircle;
       case "vip": return Gift;
       case "reminder": return Clock;
@@ -117,11 +131,12 @@ const AdminNotifications = () => {
 
   const getIconColor = (type: Notification["type"]) => {
     switch (type) {
-      case "booking": return "text-sky-500 bg-sky-100";
+      case "booking": return "text-emerald-500 bg-emerald-100";
       case "reschedule": return "text-amber-600 bg-amber-100";
+      case "cancellation": return "text-rose-500 bg-rose-100";
       case "message": return "text-violet-500 bg-violet-100";
       case "vip": return "text-gold bg-gold/20";
-      case "reminder": return "text-amber-500 bg-amber-100";
+      case "reminder": return "text-sky-500 bg-sky-100";
       case "review": return "text-emerald-500 bg-emerald-100";
       default: return "text-muted-foreground bg-muted";
     }
@@ -129,13 +144,11 @@ const AdminNotifications = () => {
 
   const filteredNotifications = notifications.filter(n => {
     if (filter === "unread") return !n.read;
-    if (filter === "bookings") return n.type === "booking";
     if (filter === "reschedule") return n.type === "reschedule";
     return true;
   });
 
   const handleApprove = (id: number, type: string) => {
-    // Only Lash Mama can approve reschedule requests
     if (type === "reschedule" && currentRole !== "admin") {
       toast.error("Only Lash Mama can approve reschedule requests");
       return;
@@ -144,18 +157,32 @@ const AdminNotifications = () => {
     setNotifications(prev => prev.map(n => 
       n.id === id ? { ...n, read: true, actionRequired: false } : n
     ));
-    toast.success(type === "reschedule" ? "Reschedule approved!" : "Booking approved!");
+    toast.success("Reschedule approved");
   };
 
-  const handleReject = (id: number, type: string) => {
-    // Only Lash Mama can reject reschedule requests
-    if (type === "reschedule" && currentRole !== "admin") {
-      toast.error("Only Lash Mama can reject reschedule requests");
+  const handleDeclineClick = (notification: Notification) => {
+    if (notification.type === "reschedule" && currentRole !== "admin") {
+      toast.error("Only Lash Mama can decline reschedule requests");
       return;
     }
+    setSelectedNotification(notification);
+    setShowDeclineModal(true);
+  };
+
+  const handleDeclineConfirm = () => {
+    if (!declineReason.trim()) {
+      toast.error("Please provide a reason for declining");
+      return;
+    }
+
+    if (selectedNotification) {
+      setNotifications(prev => prev.filter(n => n.id !== selectedNotification.id));
+      toast.success(`Reschedule declined. Reason sent to ${selectedNotification.data?.client}`);
+    }
     
-    setNotifications(prev => prev.filter(n => n.id !== id));
-    toast.error(type === "reschedule" ? "Reschedule request declined" : "Booking declined");
+    setShowDeclineModal(false);
+    setDeclineReason("");
+    setSelectedNotification(null);
   };
 
   const markAllRead = () => {
@@ -191,6 +218,19 @@ const AdminNotifications = () => {
           </div>
         </Card>
       )}
+
+      {/* Deposit Policy Notice */}
+      <Card className="p-4 border-0 bg-gradient-to-br from-rose-50 to-rose-100/50">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-rose-600 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-medium text-foreground text-sm">Cancellation Policy</h4>
+            <p className="text-xs text-muted-foreground mt-1">
+              Clients who cancel within 48 hours of their appointment will forfeit their deposit.
+            </p>
+          </div>
+        </div>
+      </Card>
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
@@ -282,7 +322,7 @@ const AdminNotifications = () => {
                         size="sm" 
                         variant="ghost"
                         className="gap-1.5 text-xs md:text-sm text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-                        onClick={() => handleReject(notification.id, notification.type)}
+                        onClick={() => handleDeclineClick(notification)}
                         disabled={!canApprove}
                       >
                         <X className="h-3 w-3 md:h-3.5 md:w-3.5" />
@@ -317,6 +357,43 @@ const AdminNotifications = () => {
           <p className="text-sm text-muted-foreground">You're all caught up!</p>
         </Card>
       )}
+
+      {/* Decline Reason Modal */}
+      <Dialog open={showDeclineModal} onOpenChange={setShowDeclineModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif">Decline Reschedule Request</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for declining this reschedule request. 
+              This will be sent to {selectedNotification?.data?.client}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Textarea
+              placeholder="Enter reason for declining (required)"
+              value={declineReason}
+              onChange={(e) => setDeclineReason(e.target.value)}
+              rows={4}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowDeclineModal(false);
+              setDeclineReason("");
+              setSelectedNotification(null);
+            }}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleDeclineConfirm}
+              disabled={!declineReason.trim()}
+            >
+              Decline & Send Reason
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

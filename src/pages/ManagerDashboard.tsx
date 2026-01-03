@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,9 @@ import {
   Heart,
   DollarSign,
   Menu,
+  Download,
+  Share2,
+  Printer,
 } from "lucide-react";
 import { useUserRole } from "@/contexts/UserRoleContext";
 import AdminCalendar from "@/components/admin/AdminCalendar";
@@ -49,6 +52,8 @@ const ManagerDashboard = () => {
   const [showAftercareModal, setShowAftercareModal] = useState(false);
   const [showAllergyModal, setShowAllergyModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const aftercareRef = useRef<HTMLDivElement>(null);
+  const allergyRef = useRef<HTMLDivElement>(null);
 
   const [aftercareNotes, setAftercareNotes] = useState("");
   const [allergyForm, setAllergyForm] = useState({
@@ -79,11 +84,11 @@ const ManagerDashboard = () => {
     { id: "overview", label: "Dashboard", icon: CalendarDays, color: "gold" },
     { id: "calendar", label: "Calendar", icon: Calendar, color: "sky" },
     { id: "staff", label: "Staff", icon: UserCog, color: "violet" },
-    { id: "notifications", label: "Notifications", icon: Bell, badge: "3", color: "rose" },
+    { id: "notifications", label: "Alerts", icon: Bell, badge: "3", color: "rose" },
     { id: "clients", label: "Clients", icon: Users, color: "emerald" },
     { id: "aftercare", label: "Aftercare", icon: Heart, color: "rose" },
     { id: "allergies", label: "Allergy Forms", icon: AlertTriangle, color: "amber" },
-    { id: "vip", label: "VIP Program", icon: Gem, color: "amber" },
+    { id: "vip", label: "VIP", icon: Gem, color: "amber" },
     { id: "chat", label: "Messages", icon: MessageCircle, badge: "2", color: "sky" },
     { id: "settings", label: "Settings", icon: Settings, color: "violet" },
   ];
@@ -115,6 +120,26 @@ const ManagerDashboard = () => {
       eyeConditionDetails: "",
       acknowledge: false,
     });
+  };
+
+  const handleExportAftercareAsPDF = () => {
+    toast.success("Aftercare notes exported as PDF");
+    setShowAftercareModal(false);
+  };
+
+  const handleShareAftercareAsImage = () => {
+    toast.success("Aftercare notes shared as image");
+    setShowAftercareModal(false);
+  };
+
+  const handleExportAllergyAsPDF = () => {
+    toast.success("Allergy form exported as PDF");
+    setShowAllergyModal(false);
+  };
+
+  const handleShareAllergyAsImage = () => {
+    toast.success("Allergy form shared as image");
+    setShowAllergyModal(false);
   };
 
   const renderContent = () => {
@@ -187,7 +212,7 @@ const ManagerDashboard = () => {
         </Button>
       </div>
 
-      <Card className="p-4 md:p-6 border-0 bg-gradient-to-br from-amber-50 to-amber-100/50">
+      <Card className="p-4 border-0 bg-gradient-to-br from-amber-50 to-amber-100/50">
         <div className="flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
           <div>
@@ -218,9 +243,9 @@ const ManagerDashboard = () => {
 
   const renderOverview = () => (
     <div className="space-y-4 md:space-y-6 animate-fade-in">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 gap-3 md:gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className="p-4 md:p-5 hover:shadow-gold transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/80">
+          <Card key={stat.label} className="p-3 md:p-5 hover:shadow-gold transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/80">
             <div className="flex items-start">
               <div className={cn(
                 "w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center",
@@ -239,14 +264,14 @@ const ManagerDashboard = () => {
               </div>
             </div>
             <div className="mt-3 md:mt-4">
-              <p className="text-2xl md:text-3xl font-serif font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1">{stat.label}</p>
+              <p className="text-xl md:text-3xl font-serif font-bold text-foreground">{stat.value}</p>
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 truncate">{stat.label}</p>
             </div>
           </Card>
         ))}
       </div>
 
-      <Card className="p-4 md:p-6 border-0 bg-gradient-to-br from-amber-50 to-amber-100/50">
+      <Card className="p-4 border-0 bg-gradient-to-br from-amber-50 to-amber-100/50">
         <div className="flex items-center gap-3 md:gap-4">
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
             <Shield className="h-5 w-5 md:h-6 md:w-6 text-amber-600" />
@@ -266,35 +291,35 @@ const ManagerDashboard = () => {
             <h3 className="font-serif text-base md:text-lg font-semibold">Today's Appointments</h3>
             <p className="text-xs md:text-sm text-muted-foreground">Amount due at time of service</p>
           </div>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => setActiveSection("calendar")}>
             <Calendar className="h-4 w-4" />
             View All
           </Button>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2 md:space-y-3">
           {recentBookings.map((booking) => (
             <div 
               key={booking.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 md:p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 md:p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
             >
               <div className="flex items-center gap-3 md:gap-4">
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
                   <Clock className="h-4 w-4 md:h-5 md:w-5 text-gold" />
                 </div>
-                <div>
-                  <p className="font-medium text-foreground text-sm md:text-base">{booking.client}</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">{booking.service}</p>
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground text-sm md:text-base truncate">{booking.client}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground truncate">{booking.service}</p>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between sm:justify-end gap-4 md:gap-6">
+              <div className="flex items-center justify-between sm:justify-end gap-3 md:gap-6 pl-13 sm:pl-0">
                 <div className="text-left sm:text-right">
                   <p className="font-medium text-foreground text-sm md:text-base">{booking.time}</p>
                   <p className="text-xs md:text-sm text-muted-foreground">with {booking.artist}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gold/20 text-gold flex items-center gap-1">
+                  <span className="px-2 md:px-3 py-1 rounded-full text-xs font-semibold bg-gold/20 text-gold flex items-center gap-1">
                     <DollarSign className="h-3 w-3" />
                     {booking.amountDue}
                   </span>
@@ -312,12 +337,12 @@ const ManagerDashboard = () => {
       <Header />
       
       <main className="pt-20 md:pt-28 pb-20 md:pb-24">
-        <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div className="container mx-auto px-3 md:px-6 max-w-7xl">
           {/* Hero */}
           <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 p-4 md:p-8 lg:p-12 mb-4 md:mb-8">
             <div className="absolute top-0 right-0 w-32 md:w-64 h-32 md:h-64 bg-gold/10 rounded-full blur-3xl" />
             
-            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+            <div className="relative z-10 flex flex-col gap-4">
               <div className="flex items-center gap-3 md:gap-4">
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center">
                   <Shield className="h-6 w-6 md:h-8 md:w-8 text-gold" />
@@ -328,10 +353,10 @@ const ManagerDashboard = () => {
                 </div>
               </div>
               
-              <div className="flex gap-3 md:gap-4">
+              <div className="flex flex-wrap gap-2 md:gap-4">
                 {stats.slice(0, 2).map((stat) => (
-                  <div key={stat.label} className="bg-cream/10 backdrop-blur rounded-lg md:rounded-xl px-4 md:px-6 py-2 md:py-4 text-center">
-                    <p className="text-xl md:text-3xl font-serif font-bold text-cream">{stat.value}</p>
+                  <div key={stat.label} className="bg-cream/10 backdrop-blur rounded-lg md:rounded-xl px-3 md:px-6 py-2 md:py-4 text-center flex-1 min-w-[100px]">
+                    <p className="text-lg md:text-3xl font-serif font-bold text-cream">{stat.value}</p>
                     <p className="text-cream/60 text-[10px] md:text-sm">{stat.label}</p>
                   </div>
                 ))}
@@ -371,11 +396,11 @@ const ManagerDashboard = () => {
                           : "text-muted-foreground hover:bg-muted"
                       )}
                     >
-                      <item.icon className="h-4 w-4" />
+                      <item.icon className="h-4 w-4 shrink-0" />
                       <span className="truncate">{item.label}</span>
                       {item.badge && (
                         <span className={cn(
-                          "px-1.5 py-0.5 rounded-full text-[10px] font-medium ml-auto",
+                          "px-1.5 py-0.5 rounded-full text-[10px] font-medium ml-auto shrink-0",
                           activeSection === item.id 
                             ? "bg-primary-foreground/20" 
                             : "bg-gold/20 text-gold"
@@ -434,99 +459,163 @@ const ManagerDashboard = () => {
       
       <Footer />
 
-      {/* Aftercare Modal */}
+      {/* Aftercare Modal - Enhanced with Export Options */}
       <Dialog open={showAftercareModal} onOpenChange={setShowAftercareModal}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-serif">Aftercare Notes {selectedClient && `- ${selectedClient}`}</DialogTitle>
             <DialogDescription>Document post-treatment care instructions</DialogDescription>
           </DialogHeader>
-          <div className="py-4">
-            <Textarea 
-              placeholder="Enter aftercare instructions..."
-              value={aftercareNotes}
-              onChange={(e) => setAftercareNotes(e.target.value)}
-              rows={6}
-              className="resize-none"
-            />
+          
+          <div ref={aftercareRef} className="space-y-4 py-4">
+            {/* Preview Card */}
+            <Card className="p-4 bg-gradient-to-br from-rose-50 to-rose-100/50 border-0">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-rose-500" />
+                </div>
+                <div>
+                  <h4 className="font-serif font-semibold text-foreground">Lash Mama Beauty</h4>
+                  <p className="text-xs text-muted-foreground">Aftercare Instructions</p>
+                </div>
+              </div>
+              
+              <Textarea 
+                placeholder="Enter aftercare instructions...
+
+Example:
+• Avoid water for 24-48 hours
+• No oil-based products near eyes
+• Brush lashes daily with spoolie
+• Sleep on your back
+• Avoid rubbing eyes"
+                value={aftercareNotes}
+                onChange={(e) => setAftercareNotes(e.target.value)}
+                rows={6}
+                className="resize-none bg-white/50"
+              />
+            </Card>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAftercareModal(false)}>Cancel</Button>
-            <Button variant="luxury" onClick={handleSaveAftercare}>Save Notes</Button>
+          
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button variant="outline" size="sm" className="gap-2 flex-1" onClick={handleExportAftercareAsPDF}>
+                <Download className="h-4 w-4" />
+                PDF
+              </Button>
+              <Button variant="outline" size="sm" className="gap-2 flex-1" onClick={handleShareAftercareAsImage}>
+                <Share2 className="h-4 w-4" />
+                Image
+              </Button>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button variant="outline" onClick={() => setShowAftercareModal(false)}>Cancel</Button>
+              <Button variant="luxury" onClick={handleSaveAftercare}>Save Notes</Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Allergy Form Modal */}
+      {/* Allergy Form Modal - Enhanced with Export Options */}
       <Dialog open={showAllergyModal} onOpenChange={setShowAllergyModal}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-serif">Allergy & Health Form</DialogTitle>
             <DialogDescription>Required before first appointment</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="flex items-center gap-3">
-              <Checkbox 
-                id="hasAllergies" 
-                checked={allergyForm.hasAllergies}
-                onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, hasAllergies: !!checked }))}
-              />
-              <label htmlFor="hasAllergies" className="text-sm font-medium">I have known allergies</label>
-            </div>
-            
-            {allergyForm.hasAllergies && (
-              <Textarea 
-                placeholder="Please list all known allergies..."
-                value={allergyForm.allergyDetails}
-                onChange={(e) => setAllergyForm(prev => ({ ...prev, allergyDetails: e.target.value }))}
-                rows={2}
-              />
-            )}
+          
+          <div ref={allergyRef} className="space-y-4 py-4">
+            {/* Preview Card */}
+            <Card className="p-4 bg-gradient-to-br from-amber-50 to-amber-100/50 border-0">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <h4 className="font-serif font-semibold text-foreground">Lash Mama Beauty</h4>
+                  <p className="text-xs text-muted-foreground">Client Health Assessment</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Checkbox 
+                    id="hasAllergies" 
+                    checked={allergyForm.hasAllergies}
+                    onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, hasAllergies: !!checked }))}
+                  />
+                  <label htmlFor="hasAllergies" className="text-sm font-medium">I have known allergies</label>
+                </div>
+                
+                {allergyForm.hasAllergies && (
+                  <Textarea 
+                    placeholder="Please list all known allergies..."
+                    value={allergyForm.allergyDetails}
+                    onChange={(e) => setAllergyForm(prev => ({ ...prev, allergyDetails: e.target.value }))}
+                    rows={2}
+                    className="bg-white/50"
+                  />
+                )}
 
-            <div className="space-y-3 pt-2">
-              <p className="text-sm font-medium">Specific Sensitivities:</p>
-              <div className="flex items-center gap-3">
-                <Checkbox 
-                  id="latex" 
-                  checked={allergyForm.latexAllergy}
-                  onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, latexAllergy: !!checked }))}
-                />
-                <label htmlFor="latex" className="text-sm">Latex allergy</label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox 
-                  id="adhesive" 
-                  checked={allergyForm.adhesiveReaction}
-                  onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, adhesiveReaction: !!checked }))}
-                />
-                <label htmlFor="adhesive" className="text-sm">Previous adhesive reactions</label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox 
-                  id="eye" 
-                  checked={allergyForm.eyeConditions}
-                  onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, eyeConditions: !!checked }))}
-                />
-                <label htmlFor="eye" className="text-sm">Eye conditions (dry eye, blepharitis, etc.)</label>
-              </div>
-            </div>
+                <div className="space-y-2 pt-2">
+                  <p className="text-sm font-medium">Specific Sensitivities:</p>
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      id="latex" 
+                      checked={allergyForm.latexAllergy}
+                      onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, latexAllergy: !!checked }))}
+                    />
+                    <label htmlFor="latex" className="text-sm">Latex allergy</label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      id="adhesive" 
+                      checked={allergyForm.adhesiveReaction}
+                      onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, adhesiveReaction: !!checked }))}
+                    />
+                    <label htmlFor="adhesive" className="text-sm">Previous adhesive reactions</label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Checkbox 
+                      id="eye" 
+                      checked={allergyForm.eyeConditions}
+                      onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, eyeConditions: !!checked }))}
+                    />
+                    <label htmlFor="eye" className="text-sm">Eye conditions (dry eye, blepharitis)</label>
+                  </div>
+                </div>
 
-            <div className="pt-4 border-t">
-              <div className="flex items-start gap-3">
-                <Checkbox 
-                  id="acknowledge" 
-                  checked={allergyForm.acknowledge}
-                  onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, acknowledge: !!checked }))}
-                />
-                <label htmlFor="acknowledge" className="text-xs text-muted-foreground">
-                  I confirm the above information is accurate. I understand that withholding allergy information may result in adverse reactions.
-                </label>
+                <div className="pt-3 border-t border-amber-200/50">
+                  <div className="flex items-start gap-3">
+                    <Checkbox 
+                      id="acknowledge" 
+                      checked={allergyForm.acknowledge}
+                      onCheckedChange={(checked) => setAllergyForm(prev => ({ ...prev, acknowledge: !!checked }))}
+                    />
+                    <label htmlFor="acknowledge" className="text-xs text-muted-foreground">
+                      I confirm this information is accurate. I understand that withholding allergy information may result in adverse reactions.
+                    </label>
+                  </div>
+                </div>
               </div>
-            </div>
+            </Card>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAllergyModal(false)}>Cancel</Button>
-            <Button variant="luxury" onClick={handleSaveAllergy}>Save Form</Button>
+          
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button variant="outline" size="sm" className="gap-2 flex-1" onClick={handleExportAllergyAsPDF}>
+                <Download className="h-4 w-4" />
+                PDF
+              </Button>
+              <Button variant="outline" size="sm" className="gap-2 flex-1" onClick={handleShareAllergyAsImage}>
+                <Share2 className="h-4 w-4" />
+                Image
+              </Button>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button variant="outline" onClick={() => setShowAllergyModal(false)}>Cancel</Button>
+              <Button variant="luxury" onClick={handleSaveAllergy}>Save Form</Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
