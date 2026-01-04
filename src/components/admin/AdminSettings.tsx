@@ -99,7 +99,7 @@ const AdminSettings = () => {
             {hours.map((day, index) => (
               <div 
                 key={day.day}
-                className="flex items-center justify-between p-4 rounded-xl bg-muted/50"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-muted/50"
               >
                 <div className="flex items-center gap-4">
                   <Switch
@@ -119,25 +119,25 @@ const AdminSettings = () => {
                 </div>
                 
                 {day.isOpen ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pl-14 sm:pl-0">
                     <Input 
-                      className="w-28 text-center" 
+                      className="w-24 sm:w-28 text-center text-sm" 
                       defaultValue={day.open}
                       disabled={!day.isOpen}
                     />
-                    <span className="text-muted-foreground">to</span>
+                    <span className="text-muted-foreground text-sm">to</span>
                     <Input 
-                      className="w-28 text-center" 
+                      className="w-24 sm:w-28 text-center text-sm" 
                       defaultValue={day.close}
                       disabled={!day.isOpen}
                     />
                   </div>
                 ) : (
-                  <span className="text-sm text-muted-foreground">Closed</span>
+                  <span className="text-sm text-muted-foreground pl-14 sm:pl-0">Closed</span>
                 )}
               </div>
             ))}
-            <Button variant="luxury" className="gap-2 mt-4">
+            <Button variant="luxury" className="gap-2 mt-4 w-full sm:w-auto">
               <Save className="h-4 w-4" />
               Save Hours
             </Button>
@@ -295,15 +295,36 @@ const AdminSettings = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-4 md:space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h2 className="font-serif text-2xl font-semibold text-foreground">Settings</h2>
-        <p className="text-muted-foreground">Manage your app configuration</p>
+        <h2 className="font-serif text-xl md:text-2xl font-semibold text-foreground">Settings</h2>
+        <p className="text-sm text-muted-foreground">Manage your app configuration</p>
       </div>
 
-      <div className="flex gap-6">
-        {/* Tabs */}
+      {/* Mobile Tabs - Always visible horizontal scroll */}
+      <div className="md:hidden">
+        <div className="flex gap-2 overflow-x-auto pb-3 -mx-3 px-3 scrollbar-hide">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all shrink-0",
+                activeTab === tab.id
+                  ? "bg-gold text-primary-foreground shadow-gold"
+                  : "bg-muted text-muted-foreground"
+              )}
+            >
+              <tab.icon className="h-4 w-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+        {/* Desktop Sidebar Tabs */}
         <Card className="hidden md:block w-64 shrink-0 p-4 border-0 bg-gradient-to-br from-card to-card/80 h-fit sticky top-28">
           <nav className="space-y-1">
             {tabs.map((tab) => (
@@ -324,29 +345,8 @@ const AdminSettings = () => {
           </nav>
         </Card>
 
-        {/* Mobile Tabs */}
-        <div className="md:hidden w-full mb-4">
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                  activeTab === tab.id
-                    ? "bg-gold text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
-                )}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Content */}
-        <Card className="flex-1 p-6 border-0 bg-gradient-to-br from-card to-card/80">
+        <Card className="flex-1 p-4 md:p-6 border-0 bg-gradient-to-br from-card to-card/80">
           {renderTabContent()}
         </Card>
       </div>

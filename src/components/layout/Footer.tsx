@@ -1,7 +1,24 @@
 import { Link } from "react-router-dom";
-import { Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Instagram, Mail, Phone, MapPin, Navigation } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Footer = () => {
+  const address = "123 Beauty Lane, Los Angeles, CA 90210";
+  
+  const openMaps = () => {
+    // Detect if user is on iOS or Android
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const encodedAddress = encodeURIComponent(address);
+    
+    if (isIOS) {
+      // Apple Maps
+      window.open(`maps://maps.apple.com/?q=${encodedAddress}`, '_blank');
+    } else {
+      // Google Maps (works on Android and desktop)
+      window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
+    }
+  };
+
   return (
     <footer className="bg-charcoal text-cream/90 py-16">
       <div className="container mx-auto px-6">
@@ -50,7 +67,18 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-3 text-sm text-cream/60">
                 <MapPin className="h-4 w-4 text-gold mt-0.5" />
-                <span>123 Beauty Lane<br />Los Angeles, CA 90210</span>
+                <div className="flex flex-col gap-1">
+                  <span>123 Beauty Lane<br />Los Angeles, CA 90210</span>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start p-0 h-auto text-gold hover:text-gold-light hover:bg-transparent gap-1.5"
+                    onClick={openMaps}
+                  >
+                    <Navigation className="h-3.5 w-3.5" />
+                    Get Directions
+                  </Button>
+                </div>
               </li>
             </ul>
           </div>
