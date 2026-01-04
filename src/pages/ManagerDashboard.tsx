@@ -25,7 +25,7 @@ import {
   Menu,
   Download,
   Share2,
-  Printer,
+  User,
 } from "lucide-react";
 import { useUserRole } from "@/contexts/UserRoleContext";
 import AdminCalendar from "@/components/admin/AdminCalendar";
@@ -35,6 +35,7 @@ import AdminClientDatabase from "@/components/admin/AdminClientDatabase";
 import AdminVIPManagement from "@/components/admin/AdminVIPManagement";
 import AdminSettings from "@/components/admin/AdminSettings";
 import AdminChat from "@/components/admin/AdminChat";
+import AdminProfile from "@/components/admin/AdminProfile";
 import {
   Dialog,
   DialogContent,
@@ -87,9 +88,10 @@ const ManagerDashboard = () => {
     { id: "notifications", label: "Alerts", icon: Bell, badge: "3", color: "rose" },
     { id: "clients", label: "Clients", icon: Users, color: "emerald" },
     { id: "aftercare", label: "Aftercare", icon: Heart, color: "rose" },
-    { id: "allergies", label: "Allergy Forms", icon: AlertTriangle, color: "amber" },
+    { id: "allergies", label: "Allergies", icon: AlertTriangle, color: "amber" },
     { id: "vip", label: "VIP", icon: Gem, color: "amber" },
     { id: "chat", label: "Messages", icon: MessageCircle, badge: "2", color: "sky" },
+    { id: "profile", label: "Profile", icon: User, color: "violet" },
     { id: "settings", label: "Settings", icon: Settings, color: "violet" },
   ];
 
@@ -160,6 +162,8 @@ const ManagerDashboard = () => {
         return <AdminVIPManagement />;
       case "chat":
         return <AdminChat />;
+      case "profile":
+        return <AdminProfile isLashMama={false} />;
       case "settings":
         return <AdminSettings />;
       default:
@@ -364,55 +368,37 @@ const ManagerDashboard = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation Toggle */}
+          {/* Mobile Navigation - Always Expanded */}
           <div className="lg:hidden mb-4">
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 justify-between"
-              onClick={() => setMobileNavOpen(!mobileNavOpen)}
-            >
-              <span className="flex items-center gap-2">
-                <Menu className="h-4 w-4" />
-                {navigationItems.find(i => i.id === activeSection)?.label || "Dashboard"}
-              </span>
-              {navigationItems.find(i => i.id === activeSection)?.badge && (
-                <span className="bg-gold/20 text-gold px-2 py-0.5 rounded-full text-xs">
-                  {navigationItems.find(i => i.id === activeSection)?.badge}
-                </span>
-              )}
-            </Button>
-            
-            {mobileNavOpen && (
-              <Card className="mt-2 p-2 border-0 bg-card animate-fade-in">
-                <nav className="grid grid-cols-2 gap-1">
-                  {navigationItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                        activeSection === item.id
-                          ? "bg-gold text-primary-foreground"
-                          : "text-muted-foreground hover:bg-muted"
-                      )}
-                    >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                      {item.badge && (
-                        <span className={cn(
-                          "px-1.5 py-0.5 rounded-full text-[10px] font-medium ml-auto shrink-0",
-                          activeSection === item.id 
-                            ? "bg-primary-foreground/20" 
-                            : "bg-gold/20 text-gold"
-                        )}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </nav>
-              </Card>
-            )}
+            <Card className="p-3 border-0 bg-card">
+              <nav className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {navigationItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={cn(
+                      "flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl text-xs font-medium transition-all relative",
+                      activeSection === item.id
+                        ? "bg-gold text-primary-foreground shadow-gold"
+                        : "text-muted-foreground hover:bg-muted"
+                    )}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span className="truncate text-center">{item.label}</span>
+                    {item.badge && (
+                      <span className={cn(
+                        "absolute top-1.5 right-1.5 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center",
+                        activeSection === item.id 
+                          ? "bg-primary-foreground/30 text-primary-foreground" 
+                          : "bg-gold text-primary-foreground"
+                      )}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </Card>
           </div>
 
           <div className="flex gap-6">
