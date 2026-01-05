@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import CourseEnrollmentCard from "@/components/courses/CourseEnrollmentCard";
 import {
   Crown,
   Award,
@@ -18,7 +19,8 @@ import {
   Calendar,
 } from "lucide-react";
 
-const courses = [
+// Lash courses (one-on-one or small group professional courses)
+const lashCourses = [
   {
     id: "vip-vogue",
     tier: "vip",
@@ -82,6 +84,10 @@ const courses = [
     ],
     color: "silver",
   },
+];
+
+// Makeup & Hair courses with group enrollment sessions
+const makeupHairCourses = [
   {
     id: "diy-makeup",
     tier: "special",
@@ -89,10 +95,30 @@ const courses = [
     subtitle: "One Day Transformation",
     description:
       "Learn to do your own flawless makeup in just one day. Perfect for everyday glam or special occasions.",
-    duration: "1 Day",
-    students: "Max 8 Students",
-    price: "$450",
     icon: Sparkles,
+    color: "rose",
+    sessions: [
+      {
+        id: "diy-session-1",
+        title: "DIY Makeup - Morning Session",
+        date: "2025-02-15",
+        time: "10:00 AM - 4:00 PM",
+        totalSpots: 7,
+        confirmedSpots: 3,
+        price: 450,
+        depositAmount: 225,
+      },
+      {
+        id: "diy-session-2",
+        title: "DIY Makeup - Afternoon Session",
+        date: "2025-03-08",
+        time: "10:00 AM - 4:00 PM",
+        totalSpots: 7,
+        confirmedSpots: 1,
+        price: 450,
+        depositAmount: 225,
+      },
+    ],
     features: [
       "Personalized color analysis",
       "Foundation & concealer techniques",
@@ -101,7 +127,6 @@ const courses = [
       "Take-home product guide",
       "Completion Certificate",
     ],
-    color: "rose",
   },
   {
     id: "makeup-masterclass",
@@ -110,10 +135,20 @@ const courses = [
     subtitle: "Bridal & Special Occasion Artistry",
     description:
       "Professional makeup artistry for bridal, editorial, and special occasions. Elevate your skills to artist level.",
-    duration: "3 Days",
-    students: "Max 4 Students",
-    price: "$2,800",
     icon: Star,
+    color: "rose",
+    sessions: [
+      {
+        id: "master-session-1",
+        title: "Makeup Masterclass - February",
+        date: "2025-02-22",
+        time: "9:00 AM - 5:00 PM",
+        totalSpots: 4,
+        confirmedSpots: 2,
+        price: 2800,
+        depositAmount: 1400,
+      },
+    ],
     features: [
       "Bridal makeup techniques",
       "Special occasion looks",
@@ -122,7 +157,6 @@ const courses = [
       "Pro brush kit included",
       "Master Certificate",
     ],
-    color: "rose",
   },
   {
     id: "hairstyling",
@@ -131,10 +165,20 @@ const courses = [
     subtitle: "Bridal Up-dos & Special Occasion",
     description:
       "Master the art of elegant hairstyling for weddings and special events. Create stunning up-dos and glamorous styles.",
-    duration: "2 Days",
-    students: "Max 4 Students",
-    price: "$1,600",
     icon: GraduationCap,
+    color: "rose",
+    sessions: [
+      {
+        id: "hair-session-1",
+        title: "Hairstyling Masterclass",
+        date: "2025-03-15",
+        time: "10:00 AM - 4:00 PM",
+        totalSpots: 4,
+        confirmedSpots: 0,
+        price: 1600,
+        depositAmount: 800,
+      },
+    ],
     features: [
       "Bridal up-do techniques",
       "Romantic curls & waves",
@@ -143,7 +187,6 @@ const courses = [
       "Styling tool basics",
       "Styling Certificate",
     ],
-    color: "rose",
   },
 ];
 
@@ -179,8 +222,6 @@ const tierColors = {
 };
 
 const Courses = () => {
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -252,7 +293,7 @@ const Courses = () => {
               </h2>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {courses.slice(0, 3).map((course, index) => {
+                {lashCourses.map((course, index) => {
                   const colors =
                     tierColors[course.color as keyof typeof tierColors];
                   return (
@@ -336,9 +377,12 @@ const Courses = () => {
                                 ? "text-cream border-cream/30 hover:bg-cream/10"
                                 : ""
                             }
+                            asChild
                           >
-                            Enroll Now
-                            <ArrowRight className="h-4 w-4 ml-2" />
+                            <Link to="/book">
+                              Enquire Now
+                              <ArrowRight className="h-4 w-4 ml-2" />
+                            </Link>
                           </Button>
                         </div>
                       </div>
@@ -348,84 +392,30 @@ const Courses = () => {
               </div>
             </div>
 
-            {/* Makeup & Hair Courses */}
+            {/* Makeup & Hair Courses with Enrollment */}
             <div>
-              <h2 className="font-serif text-2xl md:text-3xl font-semibold text-foreground mb-8 text-center">
+              <h2 className="font-serif text-2xl md:text-3xl font-semibold text-foreground mb-4 text-center">
                 Makeup & Hair Courses
               </h2>
+              <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Group sessions with limited spots. Secure your seat with a deposit and join our hands-on workshops.
+              </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {courses.slice(3).map((course, index) => {
+                {makeupHairCourses.map((course) => {
                   const colors =
                     tierColors[course.color as keyof typeof tierColors];
                   return (
-                    <Card
+                    <CourseEnrollmentCard
                       key={course.id}
-                      className={`relative overflow-hidden ${colors.bg} ${colors.border} border transition-all duration-500 hover:-translate-y-2 hover:shadow-xl animate-fade-up opacity-0 stagger-${index + 1}`}
-                    >
-                      <div
-                        className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors.glow} rounded-full blur-xl`}
-                      />
-
-                      <div className="relative z-10 p-6">
-                        <div
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${colors.badge} text-xs font-semibold mb-3`}
-                        >
-                          <course.icon className="h-3 w-3" />
-                          {course.tier === "master" ? "Master" : "Special"}
-                        </div>
-
-                        <h3 className="font-serif text-xl font-semibold text-cream mb-1">
-                          {course.title}
-                        </h3>
-                        <p className={`text-xs ${colors.icon} mb-3`}>
-                          {course.subtitle}
-                        </p>
-
-                        <p className="text-cream/70 text-sm leading-relaxed mb-4">
-                          {course.description}
-                        </p>
-
-                        <div className="flex items-center gap-3 mb-4 text-cream/60 text-xs">
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5" />
-                            {course.duration}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Users className="h-3.5 w-3.5" />
-                            {course.students}
-                          </div>
-                        </div>
-
-                        <div className="space-y-1.5 mb-4">
-                          {course.features.slice(0, 3).map((feature, i) => (
-                            <div
-                              key={i}
-                              className="flex items-center gap-1.5 text-cream/80 text-xs"
-                            >
-                              <CheckCircle2
-                                className={`h-3.5 w-3.5 ${colors.icon}`}
-                              />
-                              {feature}
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center justify-between pt-4 border-t border-cream/10">
-                          <div className="font-serif text-xl font-semibold text-cream">
-                            {course.price}
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-cream border-cream/30 hover:bg-cream/10"
-                          >
-                            Enroll
-                            <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
+                      courseId={course.id}
+                      courseTitle={course.title}
+                      courseSubtitle={course.subtitle}
+                      courseDescription={course.description}
+                      icon={course.icon}
+                      sessions={course.sessions}
+                      colorScheme={colors}
+                    />
                   );
                 })}
               </div>
