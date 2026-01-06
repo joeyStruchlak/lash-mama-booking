@@ -98,6 +98,13 @@ const ManagerDashboard = () => {
   const handleNavClick = (id: string) => {
     setActiveSection(id);
     setMobileNavOpen(false);
+    // Auto-scroll to content section
+    setTimeout(() => {
+      const contentSection = document.getElementById('dashboard-content');
+      if (contentSection) {
+        contentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const handleSaveAftercare = () => {
@@ -436,7 +443,7 @@ const ManagerDashboard = () => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 min-w-0">
+            <div id="dashboard-content" className="flex-1 min-w-0">
               {renderContent()}
             </div>
           </div>

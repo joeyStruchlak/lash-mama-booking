@@ -54,25 +54,25 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-// Premium icon component for unified styling
+// Premium icon component for unified styling - gold/beige palette only
 const PremiumIcon = ({ icon: Icon, color = "gold" }: { icon: any; color?: string }) => (
   <div className={cn(
     "w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center",
     color === "gold" && "bg-gradient-to-br from-gold/20 to-gold/10",
-    color === "rose" && "bg-gradient-to-br from-rose-100 to-rose-50",
-    color === "violet" && "bg-gradient-to-br from-violet-100 to-violet-50",
-    color === "emerald" && "bg-gradient-to-br from-emerald-100 to-emerald-50",
-    color === "sky" && "bg-gradient-to-br from-sky-100 to-sky-50",
-    color === "amber" && "bg-gradient-to-br from-amber-100 to-amber-50",
+    color === "rose" && "bg-gradient-to-br from-gold/15 to-gold/5",
+    color === "violet" && "bg-gradient-to-br from-gold/15 to-gold/5",
+    color === "emerald" && "bg-gradient-to-br from-gold/20 to-gold/10",
+    color === "sky" && "bg-gradient-to-br from-gold/15 to-gold/5",
+    color === "amber" && "bg-gradient-to-br from-gold/20 to-gold/10",
   )}>
     <Icon className={cn(
       "h-5 w-5 md:h-6 md:w-6",
       color === "gold" && "text-gold",
-      color === "rose" && "text-rose-500",
-      color === "violet" && "text-violet-500",
-      color === "emerald" && "text-emerald-500",
-      color === "sky" && "text-sky-500",
-      color === "amber" && "text-amber-500",
+      color === "rose" && "text-gold-dark",
+      color === "violet" && "text-gold",
+      color === "emerald" && "text-gold-dark",
+      color === "sky" && "text-gold-light",
+      color === "amber" && "text-gold",
     )} />
   </div>
 );
@@ -163,6 +163,13 @@ const AdminDashboard = () => {
   const handleNavClick = (id: string) => {
     setActiveSection(id);
     setMobileNavOpen(false);
+    // Auto-scroll to content section
+    setTimeout(() => {
+      const contentSection = document.getElementById('dashboard-content');
+      if (contentSection) {
+        contentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const handleManualBooking = () => {
@@ -228,7 +235,7 @@ const AdminDashboard = () => {
               <PremiumIcon icon={stat.icon} color={stat.color} />
               <div className={cn(
                 "flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded-full",
-                stat.trend === "up" ? "text-emerald-600 bg-emerald-50" : "text-rose-600 bg-rose-50"
+                stat.trend === "up" ? "text-gold-dark bg-gold/20" : "text-destructive bg-destructive/10"
               )}>
                 {stat.trend === "up" ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                 <span className="hidden sm:inline">{stat.change}</span>
@@ -345,8 +352,8 @@ const AdminDashboard = () => {
                 <span className={cn(
                   "px-2 py-0.5 rounded-full text-xs font-medium shrink-0",
                   booking.status === "confirmed" 
-                    ? "bg-emerald-50 text-emerald-600" 
-                    : "bg-amber-50 text-amber-600"
+                    ? "bg-gold/20 text-gold-dark" 
+                    : "bg-gold/10 text-gold"
                 )}>
                   {booking.status}
                 </span>
@@ -512,7 +519,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 min-w-0">
+            <div id="dashboard-content" className="flex-1 min-w-0">
               {renderContent()}
             </div>
           </div>

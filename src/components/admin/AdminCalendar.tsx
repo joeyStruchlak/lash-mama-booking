@@ -244,8 +244,8 @@ const AdminCalendar = () => {
                             className={cn(
                               "p-2 rounded-lg text-xs border-l-2",
                               apt.status === "confirmed" 
-                                ? "bg-emerald-50 border-l-emerald-500" 
-                                : "bg-amber-50 border-l-amber-500"
+                                ? "bg-gold/10 border-l-gold" 
+                                : "bg-gold/5 border-l-gold-light"
                             )}
                           >
                             <p className="font-medium text-gold text-[10px]">{apt.time}</p>
@@ -269,7 +269,7 @@ const AdminCalendar = () => {
                   key={apt.id}
                   className={cn(
                     "p-3 md:p-4 rounded-xl border-l-4 bg-muted/50 hover:bg-muted transition-colors",
-                    apt.status === "confirmed" ? "border-l-emerald-500" : "border-l-amber-500"
+                    apt.status === "confirmed" ? "border-l-gold" : "border-l-gold-light"
                   )}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -280,8 +280,8 @@ const AdminCalendar = () => {
                         <span className={cn(
                           "px-2 py-0.5 rounded-full text-xs font-medium",
                           apt.status === "confirmed" 
-                            ? "bg-emerald-50 text-emerald-600" 
-                            : "bg-amber-50 text-amber-600"
+                            ? "bg-gold/20 text-gold-dark" 
+                            : "bg-gold/10 text-gold"
                         )}>
                           {apt.status}
                         </span>
@@ -302,10 +302,10 @@ const AdminCalendar = () => {
                       </Button>
                       {apt.status === "pending" && (
                         <>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 md:h-8 md:w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 md:h-8 md:w-8 text-gold hover:text-gold-dark hover:bg-gold/10">
                             <Check className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 md:h-8 md:w-8 text-rose-600 hover:text-rose-700 hover:bg-rose-50">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 md:h-8 md:w-8 text-destructive hover:text-destructive hover:bg-destructive/10">
                             <X className="h-3.5 w-3.5" />
                           </Button>
                         </>

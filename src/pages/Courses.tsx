@@ -213,11 +213,11 @@ const tierColors = {
     glow: "from-slate-200/20 to-slate-300/10",
   },
   rose: {
-    bg: "bg-gradient-to-br from-rose-900/40 via-charcoal to-charcoal",
-    border: "border-rose-300/30",
-    badge: "bg-gradient-to-r from-rose-200 to-rose-100 text-rose-900",
-    icon: "text-rose-300",
-    glow: "from-rose-300/15 to-rose-200/5",
+    bg: "bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal",
+    border: "border-gold/30",
+    badge: "bg-gradient-to-r from-cream to-beige text-charcoal",
+    icon: "text-gold-light",
+    glow: "from-gold/15 to-gold-light/5",
   },
 };
 
