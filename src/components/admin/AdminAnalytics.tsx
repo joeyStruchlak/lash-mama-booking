@@ -39,9 +39,9 @@ const AdminAnalytics = () => {
 
   const staffPerformance = [
     { name: "Lash Mama", revenue: 8560, bookings: 42, rating: 5.0, color: "bg-gold" },
-    { name: "Nikki", revenue: 6420, bookings: 38, rating: 4.9, color: "bg-violet-500" },
-    { name: "Beau", revenue: 4280, bookings: 28, rating: 4.8, color: "bg-sky-500" },
-    { name: "Natali", revenue: 2180, bookings: 18, rating: 4.7, color: "bg-rose-500" },
+    { name: "Nikki", revenue: 6420, bookings: 38, rating: 4.9, color: "bg-gold/80" },
+    { name: "Beau", revenue: 4280, bookings: 28, rating: 4.8, color: "bg-gold/60" },
+    { name: "Natali", revenue: 2180, bookings: 18, rating: 4.7, color: "bg-gold/40" },
   ];
 
   const stats = [
@@ -110,22 +110,22 @@ const AdminAnalytics = () => {
             <div className="flex items-start justify-between mb-4">
               <div className={cn(
                 "w-12 h-12 rounded-xl flex items-center justify-center",
-                stat.color === "emerald" && "bg-emerald-100",
+                stat.color === "emerald" && "bg-gold/20",
                 stat.color === "gold" && "bg-gold/20",
-                stat.color === "violet" && "bg-violet-100",
-                stat.color === "amber" && "bg-amber-100",
+                stat.color === "violet" && "bg-gold/15",
+                stat.color === "amber" && "bg-gold/10",
               )}>
                 <stat.icon className={cn(
                   "h-6 w-6",
-                  stat.color === "emerald" && "text-emerald-600",
+                  stat.color === "emerald" && "text-gold",
                   stat.color === "gold" && "text-gold",
-                  stat.color === "violet" && "text-violet-600",
-                  stat.color === "amber" && "text-amber-600",
+                  stat.color === "violet" && "text-gold-dark",
+                  stat.color === "amber" && "text-gold-light",
                 )} />
               </div>
               <div className={cn(
                 "flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-full",
-                stat.trend === "up" ? "text-emerald-600 bg-emerald-50" : "text-rose-600 bg-rose-50"
+                stat.trend === "up" ? "text-gold-dark bg-gold/20" : "text-destructive bg-destructive/10"
               )}>
                 {stat.trend === "up" ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
                 {stat.change}

@@ -15,6 +15,7 @@ export interface StaffMember {
   specialties: string[];
   imageUrl: string;
   serviceCategories: string[];
+  lastMinAvailabilityHours: number;
 }
 
 export const staffMembers: StaffMember[] = [
@@ -29,6 +30,7 @@ export const staffMembers: StaffMember[] = [
     specialties: ["Award Winner", "Master Certified", "Signature Techniques"],
     imageUrl: lashMamaImg,
     serviceCategories: ["mega-volume", "volume", "natural-hybrid", "bridal"],
+    lastMinAvailabilityHours: 24,
   },
   {
     id: "nikki",
@@ -41,6 +43,7 @@ export const staffMembers: StaffMember[] = [
     specialties: ["Volume Specialist", "Detail-Oriented", "Client Favorite"],
     imageUrl: nikkiImg,
     serviceCategories: ["mega-volume", "volume", "natural-hybrid", "makeup", "hair-styling"],
+    lastMinAvailabilityHours: 24,
   },
   {
     id: "beau",
@@ -53,6 +56,7 @@ export const staffMembers: StaffMember[] = [
     specialties: ["Bridal Expert", "Multi-Talented", "Creative Stylist"],
     imageUrl: beauImg,
     serviceCategories: ["volume", "natural-hybrid", "makeup", "hair-styling", "bridal", "packages"],
+    lastMinAvailabilityHours: 2,
   },
   {
     id: "natali",
@@ -65,6 +69,7 @@ export const staffMembers: StaffMember[] = [
     specialties: ["Lash Mama Trained", "Supervised Sessions", "Fresh Talent"],
     imageUrl: nataliImg,
     serviceCategories: ["natural-hybrid", "makeup", "hair-styling"],
+    lastMinAvailabilityHours: 24,
   },
 ];
 
