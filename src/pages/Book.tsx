@@ -167,14 +167,14 @@ const Book = () => {
               <button
                 onClick={() => setIsVIP(!isVIP)}
                 className={cn(
-                  "relative w-14 h-7 rounded-full transition-colors duration-200",
-                  isVIP ? "bg-gold" : "bg-muted"
+                  "relative w-14 h-8 rounded-full transition-colors duration-300 shadow-inner",
+                  isVIP ? "bg-gold" : "bg-muted border border-border"
                 )}
               >
                 <div
                   className={cn(
-                    "absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200",
-                    isVIP ? "translate-x-8" : "translate-x-1"
+                    "absolute top-1 left-1 w-6 h-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out",
+                    isVIP && "translate-x-6"
                   )}
                 />
               </button>
