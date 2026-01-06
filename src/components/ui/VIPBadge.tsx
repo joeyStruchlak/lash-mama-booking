@@ -13,9 +13,9 @@ const VIPBadge = ({ size = "md", className }: VIPBadgeProps) => {
   };
 
   const containerClasses = {
-    sm: "p-0.5 -bottom-1 -right-1",
-    md: "p-0.5 -bottom-1 -right-1",
-    lg: "p-1 -bottom-1 -right-1",
+    sm: "p-0.5 bottom-0 right-0",
+    md: "p-0.5 bottom-0 right-0",
+    lg: "p-1 bottom-0 right-0",
   };
 
   return (

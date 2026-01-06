@@ -109,6 +109,17 @@ const StaffSelection = ({ staffMembers, selectedStaff, onSelect, basePrice }: St
                 ))}
               </div>
 
+              {/* Last-Minute Availability Notice */}
+              <div className="mt-3 p-3 rounded-lg bg-gold/10 border border-gold/20">
+                <p className="text-xs text-muted-foreground">
+                  <span className="font-medium text-gold">Last-minute notice:</span>{" "}
+                  {staff.lastMinAvailabilityHours === 2 
+                    ? "2 hours minimum notice required"
+                    : "24 hours minimum notice required"
+                  }
+                </p>
+              </div>
+
               {/* Junior Note */}
               {staff.tier === "junior" && (
                 <div className="mt-3 p-3 rounded-lg bg-cream/50 border border-gold/20">

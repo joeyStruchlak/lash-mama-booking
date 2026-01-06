@@ -1,4 +1,4 @@
-import lashMamaImg from "@/assets/staff/lash-mama.jpg";
+import lashMamaImg from "@/assets/staff/lash-mama-profile.png";
 import nikkiImg from "@/assets/staff/nikki.jpg";
 import beauImg from "@/assets/staff/beau.jpg";
 import nataliImg from "@/assets/staff/natali.jpg";

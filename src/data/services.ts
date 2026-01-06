@@ -1,6 +1,11 @@
 import lashCloseup from "@/assets/lash-closeup.jpg";
 import volumeLash from "@/assets/volume-lash.jpg";
 import classicLash from "@/assets/classic-lash.jpg";
+import makeupService from "@/assets/services/makeup-service.jpg";
+import hairStyling from "@/assets/services/hair-styling.jpg";
+import bridalService from "@/assets/services/bridal.jpg";
+import packagesService from "@/assets/services/packages.jpg";
+import coursesService from "@/assets/services/courses.jpg";
 import { Service } from "@/types/services";
 
 export interface ServiceCategory {
@@ -138,7 +143,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 60,
         price: 95,
         depositPercentage: 25,
-        imageUrl: lashCloseup,
+        imageUrl: makeupService,
         category: "Makeup",
         isActive: true,
       },
@@ -155,7 +160,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 60,
         price: 85,
         depositPercentage: 25,
-        imageUrl: lashCloseup,
+        imageUrl: hairStyling,
         category: "Hair Styling",
         isActive: true,
       },
@@ -166,7 +171,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 45,
         price: 65,
         depositPercentage: 25,
-        imageUrl: lashCloseup,
+        imageUrl: hairStyling,
         category: "Hair Styling",
         isActive: true,
       },
@@ -183,7 +188,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 90,
         price: 250,
         depositPercentage: 30,
-        imageUrl: lashCloseup,
+        imageUrl: bridalService,
         category: "Bridal",
         isActive: true,
       },
@@ -194,7 +199,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 90,
         price: 220,
         depositPercentage: 30,
-        imageUrl: lashCloseup,
+        imageUrl: bridalService,
         category: "Bridal",
         isActive: true,
       },
@@ -205,7 +210,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 75,
         price: 150,
         depositPercentage: 25,
-        imageUrl: lashCloseup,
+        imageUrl: bridalService,
         category: "Bridal",
         isActive: true,
       },
@@ -216,7 +221,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 75,
         price: 130,
         depositPercentage: 25,
-        imageUrl: lashCloseup,
+        imageUrl: bridalService,
         category: "Bridal",
         isActive: true,
       },
@@ -233,7 +238,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 120,
         price: 150,
         depositPercentage: 30,
-        imageUrl: lashCloseup,
+        imageUrl: packagesService,
         category: "Packages",
         isActive: true,
       },
@@ -244,7 +249,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 180,
         price: 420,
         depositPercentage: 35,
-        imageUrl: lashCloseup,
+        imageUrl: packagesService,
         category: "Packages",
         isActive: true,
       },
@@ -261,7 +266,7 @@ export const serviceCategories: ServiceCategory[] = [
         duration: 180,
         price: 350,
         depositPercentage: 50,
-        imageUrl: lashCloseup,
+        imageUrl: coursesService,
         category: "Courses",
         isActive: true,
       },

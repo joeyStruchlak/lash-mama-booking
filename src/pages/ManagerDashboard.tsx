@@ -26,6 +26,7 @@ import {
   Download,
   Share2,
   User,
+  BarChart3,
 } from "lucide-react";
 import { useUserRole } from "@/contexts/UserRoleContext";
 import AdminCalendar from "@/components/admin/AdminCalendar";
@@ -36,6 +37,7 @@ import AdminVIPManagement from "@/components/admin/AdminVIPManagement";
 import AdminSettings from "@/components/admin/AdminSettings";
 import AdminChat from "@/components/admin/AdminChat";
 import AdminProfile from "@/components/admin/AdminProfile";
+import PersonalAnalytics from "@/components/admin/PersonalAnalytics";
 import {
   Dialog,
   DialogContent,
@@ -83,16 +85,17 @@ const ManagerDashboard = () => {
 
   const navigationItems = [
     { id: "overview", label: "Dashboard", icon: CalendarDays, color: "gold" },
-    { id: "calendar", label: "Calendar", icon: Calendar, color: "sky" },
-    { id: "staff", label: "Staff", icon: UserCog, color: "violet" },
-    { id: "notifications", label: "Alerts", icon: Bell, badge: "3", color: "rose" },
-    { id: "clients", label: "Clients", icon: Users, color: "emerald" },
-    { id: "aftercare", label: "Aftercare", icon: Heart, color: "rose" },
-    { id: "allergies", label: "Allergies", icon: AlertTriangle, color: "amber" },
-    { id: "vip", label: "VIP", icon: Gem, color: "amber" },
-    { id: "chat", label: "Messages", icon: MessageCircle, badge: "2", color: "sky" },
-    { id: "profile", label: "Profile", icon: User, color: "violet" },
-    { id: "settings", label: "Settings", icon: Settings, color: "violet" },
+    { id: "calendar", label: "Calendar", icon: Calendar, color: "gold" },
+    { id: "analytics", label: "My Hours", icon: BarChart3, color: "gold" },
+    { id: "staff", label: "Staff", icon: UserCog, color: "gold" },
+    { id: "notifications", label: "Alerts", icon: Bell, badge: "3", color: "gold" },
+    { id: "clients", label: "Clients", icon: Users, color: "gold" },
+    { id: "aftercare", label: "Aftercare", icon: Heart, color: "gold" },
+    { id: "allergies", label: "Allergies", icon: AlertTriangle, color: "gold" },
+    { id: "vip", label: "VIP", icon: Gem, color: "gold" },
+    { id: "chat", label: "Messages", icon: MessageCircle, badge: "2", color: "gold" },
+    { id: "profile", label: "Profile", icon: User, color: "gold" },
+    { id: "settings", label: "Settings", icon: Settings, color: "gold" },
   ];
 
   const handleNavClick = (id: string) => {
@@ -155,6 +158,8 @@ const ManagerDashboard = () => {
     switch (activeSection) {
       case "calendar":
         return <AdminCalendar />;
+      case "analytics":
+        return <PersonalAnalytics staffName="Beau" />;
       case "staff":
         return <AdminStaffManagement />;
       case "notifications":
