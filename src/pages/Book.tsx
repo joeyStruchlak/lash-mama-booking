@@ -8,6 +8,7 @@ import { serviceCategories, services } from "@/data/services";
 import { staffMembers, getStaffForService } from "@/data/staff";
 import ServiceAccordion from "@/components/booking/ServiceAccordion";
 import StaffSelection from "@/components/booking/StaffSelection";
+import FirstTimeClientNotice from "@/components/booking/FirstTimeClientNotice";
 import { cn } from "@/lib/utils";
 import { Check, ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, Repeat } from "lucide-react";
 import AfterpayBadge from "@/components/booking/AfterpayBadge";
@@ -50,11 +51,37 @@ const Book = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isVIP, setIsVIP] = useState(false);
   const [recurringOption, setRecurringOption] = useState("none");
+  const [isFirstTimeClient, setIsFirstTimeClient] = useState(false);
 
   const availableDates = getAvailableDates();
   const service = services.find(s => s.id === selectedService);
   const staff = staffMembers.find(s => s.id === selectedStaff);
   const availableStaff = selectedCategoryId ? getStaffForService(selectedCategoryId) : [];
+
+  // Filter services for first-time clients - they can only book Full Sets and Removals for lash services
+  const getFilteredCategories = () => {
+    if (!isFirstTimeClient) return serviceCategories;
+    
+    return serviceCategories.map(category => {
+      // Check if it's a lash category
+      const isLashCategory = ["mega-volume", "volume", "natural-hybrid"].includes(category.id);
+      
+      if (!isLashCategory) return category;
+      
+      // Filter to only show Full Sets (not refills) for lash categories
+      const filteredServices = category.services.filter(service => 
+        service.name.toLowerCase().includes("full set") || 
+        service.name.toLowerCase().includes("removal")
+      );
+      
+      return {
+        ...category,
+        services: filteredServices,
+      };
+    }).filter(category => category.services.length > 0); // Remove empty categories
+  };
+
+  const filteredCategories = getFilteredCategories();
 
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
@@ -147,6 +174,12 @@ const Book = () => {
               Select your service, choose your artist, and book your time.
             </p>
           </div>
+
+          {/* First Time Client Notice */}
+          <FirstTimeClientNotice 
+            isFirstTime={isFirstTimeClient} 
+            onToggle={setIsFirstTimeClient} 
+          />
 
           {/* VIP Toggle */}
           <Card className="p-6 mb-8 border-gold/30 bg-gradient-to-r from-gold/5 to-cream/50">
@@ -244,7 +277,7 @@ const Book = () => {
                 Select Your Service
               </h2>
               <ServiceAccordion
-                categories={serviceCategories}
+                categories={filteredCategories}
                 selectedService={selectedService}
                 onSelect={handleServiceSelect}
               />
