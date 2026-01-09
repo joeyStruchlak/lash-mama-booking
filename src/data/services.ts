@@ -55,6 +55,34 @@ export const serviceCategories: ServiceCategory[] = [
     ],
   },
   {
+    id: "lash-removal",
+    name: "Lash Removal",
+    services: [
+      {
+        id: "lash-removal-full",
+        name: "Full Lash Removal",
+        description: "Safe and gentle removal of all lash extensions. Perfect before a new full set or if you need a fresh start.",
+        duration: 30,
+        price: 35,
+        depositPercentage: 0,
+        imageUrl: classicLash,
+        category: "Lash Removal",
+        isActive: true,
+      },
+      {
+        id: "lash-removal-partial",
+        name: "Partial Lash Removal",
+        description: "Selective removal of lash extensions for reshaping or removing grown-out lashes.",
+        duration: 20,
+        price: 25,
+        depositPercentage: 0,
+        imageUrl: classicLash,
+        category: "Lash Removal",
+        isActive: true,
+      },
+    ],
+  },
+  {
     id: "volume",
     name: "Volume Lashes",
     services: [

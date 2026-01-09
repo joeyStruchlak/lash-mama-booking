@@ -38,6 +38,7 @@ import AdminSettings from "@/components/admin/AdminSettings";
 import AdminChat from "@/components/admin/AdminChat";
 import AdminProfile from "@/components/admin/AdminProfile";
 import PersonalAnalytics from "@/components/admin/PersonalAnalytics";
+import StaffReferralLink from "@/components/admin/StaffReferralLink";
 import {
   Dialog,
   DialogContent,
@@ -87,10 +88,11 @@ const ManagerDashboard = () => {
     { id: "overview", label: "Dashboard", icon: CalendarDays, color: "gold" },
     { id: "calendar", label: "Calendar", icon: Calendar, color: "gold" },
     { id: "analytics", label: "My Hours", icon: BarChart3, color: "gold" },
+    { id: "referral", label: "My Link", icon: Heart, color: "gold" },
     { id: "staff", label: "Staff", icon: UserCog, color: "gold" },
     { id: "notifications", label: "Alerts", icon: Bell, badge: "3", color: "gold" },
     { id: "clients", label: "Clients", icon: Users, color: "gold" },
-    { id: "aftercare", label: "Aftercare", icon: Heart, color: "gold" },
+    { id: "aftercare", label: "Aftercare", icon: FileText, color: "gold" },
     { id: "allergies", label: "Allergies", icon: AlertTriangle, color: "gold" },
     { id: "vip", label: "VIP", icon: Gem, color: "gold" },
     { id: "chat", label: "Messages", icon: MessageCircle, badge: "2", color: "gold" },
@@ -160,6 +162,8 @@ const ManagerDashboard = () => {
         return <AdminCalendar />;
       case "analytics":
         return <PersonalAnalytics staffName="Beau" />;
+      case "referral":
+        return <StaffReferralLink staffName="Beau" staffId="beau" />;
       case "staff":
         return <AdminStaffManagement />;
       case "notifications":

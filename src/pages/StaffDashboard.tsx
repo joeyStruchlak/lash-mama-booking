@@ -36,6 +36,7 @@ import {
 import AdminCalendar from "@/components/admin/AdminCalendar";
 import AdminChat from "@/components/admin/AdminChat";
 import PersonalAnalytics from "@/components/admin/PersonalAnalytics";
+import StaffReferralLink from "@/components/admin/StaffReferralLink";
 
 interface Message {
   id: number;
@@ -106,6 +107,7 @@ const StaffDashboard = () => {
     { id: "overview", label: "Dashboard", icon: Briefcase, color: "gold" },
     { id: "calendar", label: "Calendar", icon: Calendar, color: "gold" },
     { id: "analytics", label: "My Hours", icon: BarChart3, color: "gold" },
+    { id: "referral", label: "My Link", icon: Heart, color: "gold" },
     { id: "chat", label: "Messages", icon: MessageCircle, badge: "2", color: "gold" },
     { id: "notes", label: "Notes", icon: StickyNote, color: "gold" },
   ];
@@ -275,6 +277,8 @@ const StaffDashboard = () => {
         return <AdminCalendar />;
       case "analytics":
         return <PersonalAnalytics staffName="Nikki" />;
+      case "referral":
+        return <StaffReferralLink staffName="Nikki" staffId="nikki" />;
       case "chat":
         return <AdminChat />;
       case "notes":
