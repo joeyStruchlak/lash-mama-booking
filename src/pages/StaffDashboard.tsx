@@ -37,6 +37,7 @@ import AdminCalendar from "@/components/admin/AdminCalendar";
 import AdminChat from "@/components/admin/AdminChat";
 import PersonalAnalytics from "@/components/admin/PersonalAnalytics";
 import StaffReferralLink from "@/components/admin/StaffReferralLink";
+import nikkiImg from "@/assets/staff/nikki.jpg";
 
 interface Message {
   id: number;
@@ -276,7 +277,7 @@ const StaffDashboard = () => {
       case "calendar":
         return <AdminCalendar />;
       case "analytics":
-        return <PersonalAnalytics staffName="Nikki" />;
+        return <PersonalAnalytics staffName="Nikki" staffImage={nikkiImg} staffTitle="Senior Lash Artist" />;
       case "referral":
         return <StaffReferralLink staffName="Nikki" staffId="nikki" />;
       case "chat":

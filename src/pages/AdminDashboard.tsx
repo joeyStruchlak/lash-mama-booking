@@ -30,6 +30,7 @@ import {
   GraduationCap,
   Sparkles,
   User,
+  Heart,
 } from "lucide-react";
 import { useUserRole } from "@/contexts/UserRoleContext";
 import AdminCalendar from "@/components/admin/AdminCalendar";
@@ -44,6 +45,9 @@ import AdminRecurringBooking from "@/components/admin/AdminRecurringBooking";
 import CourseBookingManager from "@/components/admin/CourseBookingManager";
 import RefillReminders from "@/components/admin/RefillReminders";
 import AdminProfile from "@/components/admin/AdminProfile";
+import PersonalAnalytics from "@/components/admin/PersonalAnalytics";
+import StaffReferralLink from "@/components/admin/StaffReferralLink";
+import lashMamaImg from "@/assets/staff/lash-mama-profile.png";
 import {
   Dialog,
   DialogContent,
@@ -147,6 +151,8 @@ const AdminDashboard = () => {
   const navigationItems = [
     { id: "overview", label: "Dashboard", icon: BarChart3, color: "gold" },
     { id: "calendar", label: "Calendar", icon: CalendarDays, color: "sky" },
+    { id: "myhours", label: "My Hours", icon: Clock, color: "gold" },
+    { id: "mylink", label: "My Link", icon: Heart, color: "rose" },
     { id: "recurring", label: "Recurring", icon: Repeat, color: "violet" },
     { id: "staff", label: "Staff", icon: UserCog, color: "violet" },
     { id: "notifications", label: "Alerts", icon: Bell, badge: "3", color: "rose" },
@@ -186,6 +192,10 @@ const AdminDashboard = () => {
     switch (activeSection) {
       case "calendar":
         return <AdminCalendar />;
+      case "myhours":
+        return <PersonalAnalytics staffName="Lash Mama" staffImage={lashMamaImg} staffTitle="Founder & Master Lash Artist" isLashMama={true} />;
+      case "mylink":
+        return <StaffReferralLink staffName="Lash Mama" staffId="lash-mama" />;
       case "recurring":
         return <AdminRecurringBooking />;
       case "staff":

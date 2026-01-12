@@ -39,6 +39,7 @@ import AdminChat from "@/components/admin/AdminChat";
 import AdminProfile from "@/components/admin/AdminProfile";
 import PersonalAnalytics from "@/components/admin/PersonalAnalytics";
 import StaffReferralLink from "@/components/admin/StaffReferralLink";
+import beauImg from "@/assets/staff/beau.jpg";
 import {
   Dialog,
   DialogContent,
@@ -161,7 +162,7 @@ const ManagerDashboard = () => {
       case "calendar":
         return <AdminCalendar />;
       case "analytics":
-        return <PersonalAnalytics staffName="Beau" />;
+        return <PersonalAnalytics staffName="Beau" staffImage={beauImg} staffTitle="Senior Lash & Beauty Artist" />;
       case "referral":
         return <StaffReferralLink staffName="Beau" staffId="beau" />;
       case "staff":
