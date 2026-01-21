@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import AppLayout from "@/components/layout/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -132,67 +131,62 @@ const VIP = () => {
 
   // Guest view - redirect to sign up
   if (isGuest) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="pt-28 pb-24">
-          <div className="container mx-auto px-6 max-w-4xl">
-            <div className="text-center py-16">
-              <div className="w-24 h-24 mx-auto rounded-full bg-gold/20 flex items-center justify-center mb-6">
-                <Gem className="h-12 w-12 text-gold" />
-              </div>
-              <h1 className="font-serif text-4xl font-semibold text-foreground mb-4">
-                Join Our VIP Program
-              </h1>
-              <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-                Sign up or log in to track your bookings, earn VIP status, and unlock exclusive discounts.
-              </p>
-              
-              {/* VIP Benefits Preview */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                {vipDiscounts.slice(0, 6).map((discount) => (
-                  <Card key={discount.name} className="p-4 text-left">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-                        <discount.icon className="h-5 w-5 text-gold" />
-                      </div>
-                      <div>
-                        <span className="text-lg font-serif font-semibold text-gold">{discount.value}</span>
-                        <p className="text-xs text-muted-foreground">{discount.name.replace(discount.value + " ", "")}</p>
-                      </div>
+    const guestContent = (
+      <div className="pt-6 lg:pt-28 pb-8 lg:pb-24">
+        <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+          <div className="text-center py-8 lg:py-16">
+            <div className="w-16 h-16 lg:w-24 lg:h-24 mx-auto rounded-full bg-gold/20 flex items-center justify-center mb-4 lg:mb-6">
+              <Gem className="h-8 w-8 lg:h-12 lg:w-12 text-gold" />
+            </div>
+            <h1 className="font-serif text-2xl lg:text-4xl font-semibold text-foreground mb-3 lg:mb-4">
+              Join Our VIP Program
+            </h1>
+            <p className="text-sm lg:text-base text-muted-foreground max-w-xl mx-auto mb-6 lg:mb-8">
+              Sign up or log in to track your bookings, earn VIP status, and unlock exclusive discounts.
+            </p>
+            
+            {/* VIP Benefits Preview */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 mb-6 lg:mb-8">
+              {vipDiscounts.slice(0, 6).map((discount) => (
+                <Card key={discount.name} className="p-3 lg:p-4 text-left">
+                  <div className="flex items-center gap-2 lg:gap-3">
+                    <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                      <discount.icon className="h-4 w-4 lg:h-5 lg:w-5 text-gold" />
                     </div>
-                  </Card>
-                ))}
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="luxury" size="lg">
-                  Sign Up Now
-                </Button>
-                <Button variant="outline" size="lg">
-                  Log In
-                </Button>
-              </div>
+                    <div className="min-w-0">
+                      <span className="text-base lg:text-lg font-serif font-semibold text-gold">{discount.value}</span>
+                      <p className="text-[10px] lg:text-xs text-muted-foreground truncate">{discount.name.replace(discount.value + " ", "")}</p>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
             
-            {/* VIP Profile Examples */}
-            <VIPProfileExamples />
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center">
+              <Button variant="luxury" size="default" className="w-full sm:w-auto">
+                Sign Up Now
+              </Button>
+              <Button variant="outline" size="default" className="w-full sm:w-auto">
+                Log In
+              </Button>
+            </div>
           </div>
-        </main>
-        <Footer />
+          
+          {/* VIP Profile Examples */}
+          <VIPProfileExamples />
+        </div>
       </div>
     );
+
+    return <AppLayout>{guestContent}</AppLayout>;
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-28 pb-24">
-        <div className="container mx-auto px-6 max-w-6xl">
-          {/* Hero Section */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 p-8 md:p-12 mb-8">
-            {/* Decorative elements */}
+  const mainContent = (
+    <div className="pt-6 lg:pt-28 pb-8 lg:pb-24">
+      <div className="container mx-auto px-4 lg:px-6 max-w-6xl">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 p-5 md:p-8 lg:p-12 mb-6 lg:mb-8">
+          {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold/5 rounded-full blur-2xl" />
             
@@ -656,11 +650,11 @@ const VIP = () => {
             </div>
           )}
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
+
+  return <AppLayout>{mainContent}</AppLayout>;
 };
 
 export default VIP;

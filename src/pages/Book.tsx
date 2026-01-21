@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { serviceCategories, services } from "@/data/services";
@@ -159,21 +158,18 @@ const Book = () => {
     return Math.round(finalPrice * (service.depositPercentage / 100));
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
-      <main className="pt-28 pb-24">
-        <div className="container mx-auto px-6 max-w-4xl">
-          {/* Page Header */}
-          <div className="text-center mb-12">
-            <h1 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-4">
-              Book Your Appointment
-            </h1>
-            <p className="text-muted-foreground">
-              Select your service, choose your artist, and book your time.
-            </p>
-          </div>
+  const content = (
+    <div className="pt-6 lg:pt-28 pb-8 lg:pb-24">
+      <div className="container mx-auto px-4 lg:px-6 max-w-4xl">
+        {/* Page Header */}
+        <div className="text-center mb-8 lg:mb-12">
+          <h1 className="font-serif text-2xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-2 lg:mb-4">
+            Book Your Appointment
+          </h1>
+          <p className="text-sm lg:text-base text-muted-foreground">
+            Select your service, choose your artist, and book your time.
+          </p>
+        </div>
 
           {/* First Time Client Notice */}
           <FirstTimeClientNotice 
@@ -492,39 +488,39 @@ const Book = () => {
             </div>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-12">
-            {step > 1 ? (
-              <Button variant="soft" onClick={() => setStep(step - 1)}>
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8 lg:mt-12">
+          {step > 1 ? (
+            <Button variant="soft" size="sm" onClick={() => setStep(step - 1)}>
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back
+            </Button>
+          ) : (
+            <Button variant="soft" size="sm" asChild>
+              <Link to="/services">
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Back
-              </Button>
-            ) : (
-              <Button variant="soft" asChild>
-                <Link to="/services">
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  View Services
-                </Link>
-              </Button>
-            )}
+                View Services
+              </Link>
+            </Button>
+          )}
 
-            {step < 4 && (
-              <Button
-                variant="luxury"
-                onClick={() => setStep(step + 1)}
-                disabled={!canProceed()}
-              >
-                Continue
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            )}
-          </div>
+          {step < 4 && (
+            <Button
+              variant="luxury"
+              size="sm"
+              onClick={() => setStep(step + 1)}
+              disabled={!canProceed()}
+            >
+              Continue
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          )}
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
+
+  return <AppLayout>{content}</AppLayout>;
 };
 
 export default Book;
