@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import MobileAppShell from "@/components/layout/MobileAppShell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -428,116 +429,215 @@ const AdminDashboard = () => {
     </div>
   );
 
-  return (
+  // Mobile navigation items - first 4 go in bottom bar
+  const mobileNavItems = [
+    { id: "overview", label: "Home", icon: BarChart3 },
+    { id: "calendar", label: "Calendar", icon: CalendarDays },
+    { id: "chat", label: "Messages", icon: MessageCircle, badge: "5" },
+    { id: "clients", label: "Clients", icon: Users },
+    // Rest go in "More" menu
+    { id: "myhours", label: "My Hours", icon: Clock },
+    { id: "mylink", label: "My Link", icon: Heart },
+    { id: "recurring", label: "Recurring", icon: Repeat },
+    { id: "staff", label: "Staff", icon: UserCog },
+    { id: "notifications", label: "Alerts", icon: Bell, badge: "3" },
+    { id: "vip", label: "VIP", icon: Gem },
+    { id: "courses", label: "Courses", icon: GraduationCap },
+    { id: "refills", label: "Refills", icon: Sparkles },
+    { id: "analytics", label: "Analytics", icon: LineChart },
+    { id: "profile", label: "Profile", icon: User },
+    { id: "settings", label: "Settings", icon: Settings },
+  ];
+
+  // Mobile content wrapper
+  const MobileContent = () => (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="pt-20 md:pt-28 pb-20 md:pb-24">
-        <div className="container mx-auto px-3 md:px-6 max-w-7xl">
-          {/* Hero */}
-          <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 p-4 md:p-8 lg:p-12 mb-4 md:mb-8">
-            <div className="absolute top-0 right-0 w-32 md:w-64 h-32 md:h-64 bg-gold/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-24 md:w-48 h-24 md:h-48 bg-gold/5 rounded-full blur-2xl" />
-            
-            <div className="relative z-10 flex flex-col gap-4">
-              <div className="flex items-center gap-3 md:gap-4">
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center">
-                  <Crown className="h-6 w-6 md:h-8 md:w-8 text-gold" />
-                </div>
-                <div>
-                  <p className="text-cream/70 text-xs md:text-sm">Welcome back</p>
-                  <h1 className="font-serif text-xl md:text-3xl font-semibold text-cream">Lash Mama Dashboard</h1>
-                </div>
-              </div>
-              
-              <div className="flex flex-wrap gap-2 md:gap-4">
-                {stats.slice(0, 2).map((stat) => (
-                  <div key={stat.label} className="bg-cream/10 backdrop-blur rounded-lg md:rounded-xl px-3 md:px-6 py-2 md:py-4 text-center flex-1 min-w-[100px]">
-                    <p className="text-lg md:text-3xl font-serif font-bold text-cream">{stat.value}</p>
-                    <p className="text-cream/60 text-[10px] md:text-sm">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+      {/* Mobile Hero - Compact */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 p-4 pt-6">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
+        
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center">
+            <Crown className="h-6 w-6 text-gold" />
           </div>
-
-          {/* Mobile Navigation - Always Expanded */}
-          <div className="lg:hidden mb-4">
-            <Card className="p-3 border-0 bg-card">
-              <nav className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {navigationItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.id)}
-                    className={cn(
-                      "flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl text-xs font-medium transition-all relative",
-                      activeSection === item.id
-                        ? "bg-gold text-primary-foreground shadow-gold"
-                        : "text-muted-foreground hover:bg-muted"
-                    )}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span className="truncate text-center">{item.label}</span>
-                    {item.badge && (
-                      <span className={cn(
-                        "absolute top-1.5 right-1.5 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center",
-                        activeSection === item.id 
-                          ? "bg-primary-foreground/30 text-primary-foreground" 
-                          : "bg-gold text-primary-foreground"
-                      )}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </nav>
-            </Card>
+          <div className="flex-1">
+            <p className="text-cream/70 text-xs">Welcome back</p>
+            <h1 className="font-serif text-lg font-semibold text-cream">Lash Mama</h1>
           </div>
-
-          <div className="flex gap-6">
-            {/* Sidebar Navigation - Desktop */}
-            <div className="hidden lg:block w-64 shrink-0">
-              <Card className="p-4 sticky top-28 border-0 bg-gradient-to-br from-card to-card/80">
-                <nav className="space-y-1">
-                  {navigationItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
-                        activeSection === item.id
-                          ? "bg-gold text-primary-foreground shadow-gold"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span className="flex-1 text-left">{item.label}</span>
-                      {item.badge && (
-                        <span className={cn(
-                          "px-2 py-0.5 rounded-full text-xs font-medium",
-                          activeSection === item.id 
-                            ? "bg-primary-foreground/20 text-primary-foreground"
-                            : "bg-gold/20 text-gold"
-                        )}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </nav>
-              </Card>
-            </div>
-
-            {/* Main Content */}
-            <div id="dashboard-content" className="flex-1 min-w-0">
-              {renderContent()}
-            </div>
+          <div className="flex gap-2">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="text-cream/70 h-10 w-10 p-0 rounded-full bg-cream/10"
+              onClick={() => setShowManualBooking(true)}
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
           </div>
         </div>
-      </main>
+        
+        {/* Quick stats row */}
+        <div className="flex gap-2 mt-4">
+          {stats.slice(0, 2).map((stat) => (
+            <div key={stat.label} className="bg-cream/10 backdrop-blur rounded-xl px-4 py-2.5 flex-1">
+              <p className="text-xl font-serif font-bold text-cream">{stat.value}</p>
+              <p className="text-cream/60 text-[10px]">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
       
-      <Footer />
+      {/* Content area with padding for bottom nav */}
+      <div className="px-4 py-4">
+        {renderContent()}
+      </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Mobile App View */}
+      <div className="lg:hidden">
+        <MobileAppShell
+          items={mobileNavItems}
+          activeSection={activeSection}
+          onNavClick={handleNavClick}
+        >
+          <MobileContent />
+        </MobileAppShell>
+      </div>
+
+      {/* Desktop View */}
+      <div className="hidden lg:block min-h-screen bg-background">
+        <Header />
+        
+        <main className="pt-28 pb-24">
+          <div className="container mx-auto px-6 max-w-7xl">
+            {/* Hero */}
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal/90 p-8 lg:p-12 mb-8">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold/5 rounded-full blur-2xl" />
+              
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center">
+                    <Crown className="h-8 w-8 text-gold" />
+                  </div>
+                  <div>
+                    <p className="text-cream/70 text-sm">Welcome back</p>
+                    <h1 className="font-serif text-3xl font-semibold text-cream">Lash Mama Dashboard</h1>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  {stats.slice(0, 2).map((stat) => (
+                    <div key={stat.label} className="bg-cream/10 backdrop-blur rounded-xl px-6 py-4 text-center flex-1 min-w-[100px]">
+                      <p className="text-3xl font-serif font-bold text-cream">{stat.value}</p>
+                      <p className="text-cream/60 text-sm">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-6">
+              {/* Sidebar Navigation - Desktop */}
+              <div className="w-64 shrink-0">
+                <Card className="p-4 sticky top-28 border-0 bg-gradient-to-br from-card to-card/80">
+                  <nav className="space-y-1">
+                    {navigationItems.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleNavClick(item.id)}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
+                          activeSection === item.id
+                            ? "bg-gold text-primary-foreground shadow-gold"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        )}
+                      >
+                        <item.icon className="h-5 w-5" />
+                        <span className="flex-1 text-left">{item.label}</span>
+                        {item.badge && (
+                          <span className={cn(
+                            "px-2 py-0.5 rounded-full text-xs font-medium",
+                            activeSection === item.id 
+                              ? "bg-primary-foreground/20 text-primary-foreground"
+                              : "bg-gold/20 text-gold"
+                          )}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </nav>
+                </Card>
+              </div>
+
+              {/* Main Content */}
+              <div id="dashboard-content" className="flex-1 min-w-0">
+                {renderContent()}
+              </div>
+            </div>
+          </div>
+        </main>
+        
+        <Footer />
+      </div>
+
+      {/* Manual Booking Dialog */}
+      <Dialog open={showManualBooking} onOpenChange={setShowManualBooking}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-serif">Book Without Deposit</DialogTitle>
+            <DialogDescription>Only Lash Mama can create bookings without requiring a deposit.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-1.5 block">Client Name</label>
+              <Input
+                placeholder="Enter client name"
+                value={manualBooking.client}
+                onChange={(e) => setManualBooking(prev => ({ ...prev, client: e.target.value }))}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1.5 block">Service</label>
+              <Input
+                placeholder="Select service"
+                value={manualBooking.service}
+                onChange={(e) => setManualBooking(prev => ({ ...prev, service: e.target.value }))}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Date</label>
+                <Input
+                  type="date"
+                  value={manualBooking.date}
+                  onChange={(e) => setManualBooking(prev => ({ ...prev, date: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Time</label>
+                <Input
+                  type="time"
+                  value={manualBooking.time}
+                  onChange={(e) => setManualBooking(prev => ({ ...prev, time: e.target.value }))}
+                />
+              </div>
+            </div>
+            <Card className="p-3 bg-gold/10 border-0">
+              <p className="text-sm text-gold font-medium">No deposit required for this booking</p>
+            </Card>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowManualBooking(false)}>Cancel</Button>
+            <Button variant="luxury" onClick={handleManualBooking}>Create Booking</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
