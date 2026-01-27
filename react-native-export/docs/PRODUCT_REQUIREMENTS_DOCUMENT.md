@@ -1,1111 +1,2628 @@
 # Lash Mama Mobile Application
 ## Product Requirements Document (PRD)
 
-**Version:** 1.0  
-**Last Updated:** January 2026  
+**Version:** 2.0  
+**Last Updated:** January 2025  
 **Status:** Ready for Development  
-**Platform:** iOS & Android (React Native / Expo)
+**Platform:** React Native / Expo (iOS & Android)
 
 ---
 
 ## Table of Contents
 
-1. [Executive Summary](#executive-summary)
-2. [Discovery & Problem Definition](#discovery--problem-definition)
-3. [User Roles & Personas](#user-roles--personas)
-4. [User Stories](#user-stories)
-5. [Feature Specifications](#feature-specifications)
-6. [User Flows](#user-flows)
-7. [Information Architecture](#information-architecture)
-8. [Database Schema](#database-schema)
-9. [Component Library](#component-library)
-10. [Design System](#design-system)
-11. [Technical Architecture](#technical-architecture)
-12. [API Specifications](#api-specifications)
-13. [Success Metrics](#success-metrics)
-14. [Release Phases](#release-phases)
-15. [Appendix](#appendix)
+1. [Executive Summary](#1-executive-summary)
+2. [User Roles & Personas](#2-user-roles--personas)
+3. [Core Problem Statement](#3-core-problem-statement)
+4. [Feature Hierarchy](#4-feature-hierarchy)
+5. [Shared Component Architecture (DRY)](#5-shared-component-architecture-dry)
+6. [User Stories by Feature](#6-user-stories-by-feature)
+7. [User Flows by Role](#7-user-flows-by-role)
+8. [Database Schema](#8-database-schema)
+9. [Technical Architecture](#9-technical-architecture)
+10. [Design System](#10-design-system)
+11. [API Specifications](#11-api-specifications)
+12. [Success Metrics](#12-success-metrics)
+13. [Release Plan](#13-release-plan)
+14. [Appendix](#14-appendix)
 
 ---
 
-## Executive Summary
+## 1. Executive Summary
 
-### Product Vision
-Lash Mama is a premium beauty booking mobile application designed to streamline appointment scheduling for a luxury lash extension salon. The app serves three distinct user types: Clients seeking beauty services, Staff managing their schedules and clients, and the Admin (business owner) overseeing all operations.
+### Vision
+Lash Mama Mobile is a luxury beauty appointment management application that streamlines booking, client relationships, and business operations for a premium lash salon.
 
-### Business Goals
-- Reduce no-shows by 40% through deposit requirements and automated reminders
-- Increase repeat bookings by 30% through VIP loyalty program
-- Decrease administrative overhead by 50% through automated scheduling
-- Generate additional revenue through course enrollment and product sales
+### Target Users
+| Role | Description | Primary Goals |
+|------|-------------|---------------|
+| **Client** | Beauty service customers | Book appointments, earn VIP rewards, manage profile |
+| **Manager** | Salon operations manager | Handle daily bookings, client notes, calendar management |
+| **Admin** | Business owner (Lash Mama) | Full system control, analytics, staff management |
 
-### Target Market
-- **Primary:** Women aged 25-45 seeking premium lash services
-- **Secondary:** Beauty professionals seeking training courses
-- **Geographic:** Sydney, Australia (expandable)
-
----
-
-## Discovery & Problem Definition
-
-### Who are the Users?
-
-| Role | Description | Primary Goal |
-|------|-------------|--------------|
-| **Client** | Customers booking beauty appointments | Easy, elegant booking experience |
-| **Staff** | Beauty technicians/artists | Efficient schedule & client management |
-| **Admin** | Business owner (Lash Mama/Purni) | Complete business oversight & control |
-
-### What's the Core Problem?
-
-**For Clients:**
-- Difficulty finding available appointment slots
-- No visibility into service options and pricing
-- Lack of loyalty recognition for repeat customers
-- Inconvenient rescheduling process
-
-**For Staff:**
-- Manual calendar management is time-consuming
-- No centralized client history/notes system
-- Difficulty tracking performance metrics
-- Fragmented communication with clients
-
-**For Admin:**
-- No real-time visibility into business performance
-- Manual staff scheduling and management
-- Difficulty tracking VIP client relationships
-- Revenue leakage from no-shows
-
-### Must-Have Features (MVP)
-
-| Feature | Priority | User Role |
-|---------|----------|-----------|
-| User Authentication | P0 | All |
-| Service Catalog | P0 | Client |
-| Appointment Booking | P0 | Client |
-| Payment/Deposit Processing | P0 | Client |
-| Calendar Management | P0 | Staff |
-| Client Notes | P0 | Staff |
-| Dashboard Analytics | P0 | Admin |
-| Staff Management | P0 | Admin |
-| Push Notifications | P0 | All |
-
-### Nice-to-Have Features (V2+)
-
-| Feature | Priority | User Role |
-|---------|----------|-----------|
-| VIP Streak Program | P1 | Client |
-| In-App Messaging | P1 | All |
-| Course Enrollment | P1 | Client |
-| Product Shop Integration | P2 | Client |
-| Advanced Analytics | P2 | Admin |
-| Afterpay Integration | P2 | Client |
-| Referral System | P2 | Client, Staff |
-| Recurring Bookings | P2 | Admin |
-
-### Success Metrics
-
-| Metric | Current | Target | Measurement |
-|--------|---------|--------|-------------|
-| Bookings per Day | 8 | 15 | Daily count |
-| No-Show Rate | 15% | <5% | Monthly % |
-| Client Retention | 60% | 85% | 90-day return |
-| VIP Conversion | N/A | 20% | % reaching 10 streak |
-| App Store Rating | N/A | 4.8+ | Average rating |
-| Revenue Growth | Baseline | +25% YoY | Monthly revenue |
+### Core Value Proposition
+- **For Clients:** Effortless booking with VIP rewards and personalized service
+- **For Managers:** Streamlined daily operations with intelligent scheduling
+- **For Admin:** Complete business visibility with actionable analytics
 
 ---
 
-## User Roles & Personas
+## 2. User Roles & Personas
 
-### 1. Client Persona
+### 2.1 Client
+**Persona:** Sarah, 28, Marketing Professional
 
-**Name:** Sarah Chen  
-**Age:** 32  
-**Occupation:** Marketing Manager  
-**Tech Savviness:** High
+| Attribute | Detail |
+|-----------|--------|
+| **Goals** | Book lash appointments quickly, maintain VIP status, track appointment history |
+| **Pain Points** | Difficulty remembering refill schedules, losing track of loyalty progress |
+| **Tech Comfort** | High - uses apps daily for scheduling and shopping |
+| **Key Needs** | Easy booking, appointment reminders, reward visibility |
 
-**Goals:**
-- Book appointments quickly during lunch breaks
-- Find a regular artist she trusts
-- Get rewarded for loyalty
-- Easy payment options
-
-**Pain Points:**
-- Hates phone calls for bookings
-- Forgets appointment times
-- Wants to see artist portfolios
-- Needs flexible cancellation
-
-**Quote:** *"I want to book my lash refill in under 60 seconds while waiting for my coffee."*
-
----
-
-### 2. Staff Persona
-
-**Name:** Nikki Tran  
-**Age:** 28  
-**Occupation:** Senior Lash Artist  
-**Tech Savviness:** Medium
-
-**Goals:**
-- See her daily schedule at a glance
-- Keep notes on client preferences
-- Track her earnings/performance
-- Communicate with clients easily
-
-**Pain Points:**
-- Paper notes get lost
-- Double bookings happen
-- Clients message on personal phone
-- No visibility into her performance
-
-**Quote:** *"I need to know exactly what each client likes before they walk in."*
+**Permissions:**
+- ✅ Book/reschedule appointments
+- ✅ View own profile and history
+- ✅ Access VIP dashboard
+- ✅ Make payments
+- ✅ Send messages to salon
+- ❌ Access other client data
+- ❌ Manage calendar
+- ❌ View analytics
 
 ---
 
-### 3. Admin Persona
+### 2.2 Manager
+**Persona:** Nikki, 32, Senior Lash Artist & Operations Manager
 
-**Name:** Purni (Lash Mama)  
-**Age:** 42  
-**Occupation:** Business Owner  
-**Tech Savviness:** Medium
+| Attribute | Detail |
+|-----------|--------|
+| **Goals** | Manage daily schedule, track client preferences, handle operations |
+| **Pain Points** | Juggling client notes, scheduling conflicts, communication gaps |
+| **Tech Comfort** | Medium-High - comfortable with business apps |
+| **Key Needs** | Calendar overview, client history access, messaging |
 
-**Goals:**
-- Complete visibility into business
-- Manage staff efficiently
-- Grow VIP client base
-- Maximize revenue per day
-
-**Pain Points:**
-- No real-time business metrics
-- Manual staff scheduling nightmare
-- Tracking VIP clients manually
-- Revenue lost to no-shows
-
-**Quote:** *"I need to know exactly how my business is performing at any moment."*
-
----
-
-## User Stories
-
-### Client User Stories
-
-#### Authentication & Onboarding
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| C-001 | As a client, I want to sign up with my email/phone so that I can create an account | - Email/phone verification<br>- Password requirements met<br>- Profile created | P0 |
-| C-002 | As a client, I want to login with biometrics so that I can access the app quickly | - FaceID/TouchID supported<br>- Fallback to password<br>- Session persists | P0 |
-| C-003 | As a client, I want to complete my profile so that staff know my preferences | - Name, photo, contact info<br>- Allergy/health notes<br>- Communication preferences | P0 |
-
-#### Booking Flow
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| C-004 | As a client, I want to browse all services so that I can choose what I need | - Categories displayed<br>- Prices visible<br>- Duration shown<br>- Photos included | P0 |
-| C-005 | As a client, I want to select my preferred artist so that I get consistent service | - Artist photos & bios<br>- Availability shown<br>- Specialties listed | P0 |
-| C-006 | As a client, I want to see available time slots so that I can pick a convenient time | - Calendar view<br>- Real-time availability<br>- Next 30 days visible | P0 |
-| C-007 | As a client, I want to pay a deposit so that I can confirm my booking | - Secure payment<br>- Multiple payment methods<br>- Receipt sent | P0 |
-| C-008 | As a client, I want to receive booking confirmation so that I have proof of appointment | - Push notification<br>- Email confirmation<br>- Calendar invite option | P0 |
-| C-009 | As a first-time client, I can only book full sets so that proper assessment occurs | - Refills hidden for new clients<br>- Clear messaging<br>- Full set highlighted | P0 |
-| C-010 | As a client, I want to reschedule my appointment so that I can adjust to my schedule | - 48hr policy enforced<br>- Request sent to admin<br>- Status shown | P1 |
-| C-011 | As a client, I want to cancel my appointment so that I free up the slot | - 48hr policy enforced<br>- Deposit forfeiture shown<br>- Confirmation required | P1 |
-
-#### VIP Program
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| C-012 | As a client, I want to see my VIP progress so that I know how close I am to perks | - Streak counter visible<br>- 10-visit goal shown<br>- Progress bar | P1 |
-| C-013 | As a VIP client, I want to see my exclusive discounts so that I can save money | - Discount amounts shown<br>- Auto-applied at checkout<br>- Benefits listed | P1 |
-| C-014 | As a VIP client, I want to maintain my streak so that I keep my status | - 3-month gap warning<br>- Reminder notifications<br>- Streak reset policy | P1 |
-| C-015 | As a VIP client, I want my profile to show VIP status so that staff recognize me | - Diamond badge visible<br>- Golden profile ring<br>- VIP label | P1 |
-
-#### Appointments & History
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| C-016 | As a client, I want to view my upcoming appointments so that I don't forget | - Date, time, service shown<br>- Artist assigned<br>- Location/directions | P0 |
-| C-017 | As a client, I want to view my appointment history so that I can track services | - Past appointments listed<br>- Services received<br>- Artist who served | P0 |
-| C-018 | As a client, I want to rebook a previous service so that booking is faster | - One-tap rebook<br>- Same artist option<br>- Pre-filled details | P1 |
-
-#### Notifications
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| C-019 | As a client, I want appointment reminders so that I don't miss my booking | - 24hr reminder<br>- 2hr reminder<br>- Push + SMS option | P0 |
-| C-020 | As a client, I want refill reminders so that I maintain my lashes | - 1.5 week after refill<br>- 2.5 weeks after full set<br>- One-tap booking | P1 |
-| C-021 | As a client, I want to set custom reminders so that I'm notified when I prefer | - Custom timing (15min-1day)<br>- Notification type choice<br>- Repeat options | P2 |
+**Permissions:**
+- ✅ View/manage calendar
+- ✅ Access client notes
+- ✅ Send/receive messages
+- ✅ Approve/decline reschedules
+- ✅ View personal analytics
+- ✅ Manage own schedule
+- ❌ Full business analytics
+- ❌ System-wide staff management
+- ❌ System settings
 
 ---
 
-### Staff User Stories
+### 2.3 Admin (Lash Mama)
+**Persona:** Purni, 35, Founder & Business Owner
 
-#### Dashboard & Schedule
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| S-001 | As staff, I want to see my daily schedule so that I know my appointments | - Day view default<br>- Client names shown<br>- Service types listed | P0 |
-| S-002 | As staff, I want to see weekly/monthly views so that I can plan ahead | - Week view available<br>- Month overview<br>- Scroll navigation | P0 |
-| S-003 | As staff, I want appointment details so that I'm prepared for each client | - Client history<br>- Previous notes<br>- Preferences shown | P0 |
-| S-004 | As staff, I want to see my earnings so that I track my income | - Daily/weekly/monthly<br>- Service breakdown<br>- Commission calculated | P1 |
-| S-005 | As staff, I want to see my stats so that I know my performance | - Clients served count<br>- Utilization rate<br>- Average rating | P1 |
+| Attribute | Detail |
+|-----------|--------|
+| **Goals** | Grow business, maximize revenue, maintain quality, manage team |
+| **Pain Points** | Lack of visibility into business metrics, manual staff coordination |
+| **Tech Comfort** | Medium - needs intuitive interfaces |
+| **Key Needs** | Complete oversight, actionable analytics, staff management |
 
-#### Client Management
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| S-006 | As staff, I want to add notes to clients so that I remember their preferences | - Rich text notes<br>- Allergy flags<br>- Preference tags | P0 |
-| S-007 | As staff, I want to see client history so that I provide consistent service | - Past appointments<br>- Services received<br>- Previous notes | P0 |
-| S-008 | As staff, I want to see client allergies so that I avoid reactions | - Highlighted warnings<br>- Allergy icons<br>- Confirmation required | P0 |
-| S-009 | As staff, I want to view client photos so that I see previous work | - Before/after gallery<br>- Lash style history<br>- Photo upload | P1 |
-
-#### Time Management
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| S-010 | As staff, I want to block time off so that I'm not booked when unavailable | - Date range selection<br>- Reason optional<br>- Admin approval required | P0 |
-| S-011 | As staff, I want to request time off so that I can plan leave | - Submit request<br>- Status tracking<br>- Admin notification | P0 |
-| S-012 | As staff, I want to see my working hours so that I know my schedule | - Weekly hours view<br>- Overtime tracking<br>- Shift times | P1 |
-
-#### Communication
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| S-013 | As staff, I want to message clients so that I can communicate professionally | - In-app messaging<br>- Template messages<br>- Read receipts | P1 |
-| S-014 | As staff, I want notification for new bookings so that I'm informed | - Push notification<br>- Booking details shown<br>- Accept/view option | P0 |
-| S-015 | As staff, I want pre-appointment alerts so that I'm ready | - 30min before notification<br>- Client name shown<br>- Quick view link | P0 |
-
-#### Referral System
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| S-016 | As staff, I want a unique referral link so that I can earn bonuses | - Shareable link<br>- QR code option<br>- Track referrals | P2 |
-| S-017 | As staff, I want to track my referrals so that I see my earnings | - Referral count<br>- Bonus earned (10%)<br>- Pending payouts | P2 |
+**Permissions:**
+- ✅ All Manager permissions
+- ✅ Full business analytics
+- ✅ Staff management (add/edit/remove)
+- ✅ VIP program management
+- ✅ System settings
+- ✅ Manual bookings (no deposit)
+- ✅ Revenue reporting
+- ✅ Course management
+- ✅ Recurring booking setup
 
 ---
 
-### Admin User Stories
+## 3. Core Problem Statement
 
-#### Dashboard & Analytics
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| A-001 | As admin, I want to see business overview so that I know daily performance | - Today's bookings<br>- Revenue<br>- Staff utilization | P0 |
-| A-002 | As admin, I want detailed analytics so that I make informed decisions | - Revenue trends<br>- Service popularity<br>- Peak times | P0 |
-| A-003 | As admin, I want staff performance metrics so that I evaluate team | - Bookings per staff<br>- Revenue per staff<br>- Client retention | P0 |
-| A-004 | As admin, I want client insights so that I understand my customers | - New vs returning<br>- VIP count<br>- Churn rate | P1 |
+### Primary Problem
+Beauty clients struggle to book and manage appointments efficiently, while salon operators lack unified tools for managing schedules, client relationships, and business performance.
 
-#### Staff Management
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| A-005 | As admin, I want to manage staff accounts so that I control access | - Add/edit/disable staff<br>- Role assignment<br>- Permissions | P0 |
-| A-006 | As admin, I want to set staff schedules so that coverage is optimal | - Shift assignment<br>- Break times<br>- Availability override | P0 |
-| A-007 | As admin, I want to approve time-off requests so that I maintain coverage | - Request list<br>- Approve/decline<br>- Reason required for decline | P0 |
-| A-008 | As admin, I want to view staff calendars so that I see full picture | - All staff view<br>- Filter by staff<br>- Conflict detection | P0 |
-
-#### Booking Management
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| A-009 | As admin, I want to book clients without deposit so that I have flexibility | - Override deposit<br>- Note reason<br>- Normal flow otherwise | P0 |
-| A-010 | As admin, I want to approve reschedule requests so that I control changes | - Request queue<br>- Approve/decline<br>- Reason required for decline | P0 |
-| A-011 | As admin, I want to set up recurring bookings so that VIPs are secured | - Weekly/bi-weekly options<br>- 6/12 month duration<br>- Auto-renewal option | P1 |
-| A-012 | As admin, I want to manage the waitlist so that slots are filled | - Waitlist queue<br>- Priority ordering<br>- One-tap booking | P1 |
-
-#### Client Management
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| A-013 | As admin, I want full client database so that I manage relationships | - Search/filter<br>- VIP status<br>- Booking history | P0 |
-| A-014 | As admin, I want to manage VIP status so that I reward loyal clients | - Manual VIP toggle<br>- Streak override<br>- VIP history | P0 |
-| A-015 | As admin, I want client notes access so that I understand relationships | - All staff notes visible<br>- Add admin notes<br>- Flag important | P0 |
-| A-016 | As admin, I want export capabilities so that I backup data | - CSV export<br>- PDF reports<br>- Data download | P1 |
-
-#### Settings & Configuration
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| A-017 | As admin, I want to manage services so that offerings are current | - Add/edit services<br>- Pricing updates<br>- Enable/disable | P0 |
-| A-018 | As admin, I want to set booking policies so that rules are enforced | - Cancellation window<br>- Deposit amounts<br>- Buffer times | P0 |
-| A-019 | As admin, I want to configure notifications so that communication is optimal | - Reminder timing<br>- Message templates<br>- Channel preferences | P1 |
-| A-020 | As admin, I want to manage business hours so that availability is correct | - Operating hours<br>- Holiday closures<br>- Special events | P0 |
-
-#### Communication
-| ID | User Story | Acceptance Criteria | Priority |
-|----|------------|---------------------|----------|
-| A-021 | As admin, I want to broadcast messages so that I reach all clients | - Select recipients<br>- Schedule send<br>- Template library | P1 |
-| A-022 | As admin, I want to view all messages so that I monitor communication | - Staff-client messages<br>- Search capability<br>- Flag inappropriate | P2 |
+### Solution
+A unified mobile platform providing:
+1. **Seamless Booking** - Multi-step booking with artist selection and instant confirmation
+2. **Client Loyalty** - VIP streak-based rewards encouraging retention
+3. **Operations Hub** - Centralized calendar, notes, and messaging for managers
+4. **Business Intelligence** - Real-time analytics and insights for owners
 
 ---
 
-## Feature Specifications
+## 4. Feature Hierarchy
 
-### F1: Authentication System
+### 4.1 Must-Have Features (MVP)
 
-**Description:** Secure user authentication supporting email/phone login with biometric options.
+| Feature | Client | Manager | Admin |
+|---------|--------|---------|-------|
+| Multi-step Booking Flow | ✅ | — | ✅ |
+| Service Catalog | ✅ | ✅ | ✅ |
+| Artist Selection | ✅ | — | — |
+| Calendar Management | — | ✅ | ✅ |
+| Client Notes | — | ✅ | ✅ |
+| Push Notifications | ✅ | ✅ | ✅ |
+| Payment Processing | ✅ | — | ✅ |
+| Profile Management | ✅ | ✅ | ✅ |
 
-**Components:**
-- Login Screen
-- Registration Screen
-- Password Reset Flow
-- Biometric Authentication
-- Session Management
+### 4.2 High Priority Features
 
-**Technical Requirements:**
-- Supabase Auth integration
-- JWT token management
-- Secure storage for credentials
-- Rate limiting on login attempts
-- Password strength requirements
+| Feature | Client | Manager | Admin |
+|---------|--------|---------|-------|
+| VIP Streak Program | ✅ | — | ✅ |
+| Messaging System | ✅ | ✅ | ✅ |
+| Appointment History | ✅ | ✅ | ✅ |
+| Refill Reminders | ✅ | ✅ | ✅ |
+| Client Database | — | ✅ | ✅ |
+| Personal Analytics | — | ✅ | ✅ |
 
-**Business Rules:**
-- Passwords: min 8 chars, 1 uppercase, 1 number
-- Session timeout: 30 days
-- Biometric: optional, after first login
-- Email verification required
+### 4.3 Nice-to-Have Features
 
----
-
-### F2: Service Catalog
-
-**Description:** Browsable catalog of all beauty services with categories, pricing, and details.
-
-**Components:**
-- Service List Screen
-- Service Detail Modal
-- Category Filter
-- Search Function
-- Price Display with Afterpay
-
-**Categories:**
-| Category | Services |
-|----------|----------|
-| Lash Extensions | Natural, Hybrid, Volume, Mega Volume |
-| Refills | Natural, Volume, Mega Volume |
-| Makeup | Bridal, Special Event |
-| Hair | Bridal Styling |
-| Courses | Training Programs |
-| Packages | Combo Deals |
-
-**Business Rules:**
-- First-time clients: Full Sets only
-- Refills: returning clients only
-- Afterpay: 4 installments display
-- Prices: GST inclusive
+| Feature | Client | Manager | Admin |
+|---------|--------|---------|-------|
+| Advanced Analytics | — | — | ✅ |
+| Staff Referral Links | — | ✅ | ✅ |
+| Course Enrollment | ✅ | — | ✅ |
+| Recurring Bookings | — | — | ✅ |
+| Photo Gallery | ✅ | ✅ | ✅ |
 
 ---
 
-### F3: Booking Engine
+## 5. Shared Component Architecture (DRY)
 
-**Description:** Multi-step appointment booking flow with artist selection, time picking, and payment.
+### 5.1 Component Sharing Strategy
 
-**Components:**
-- Service Selection Step
-- Artist Selection Step
-- Date/Time Picker
-- Booking Summary
-- Payment Screen
-- Confirmation Screen
-
-**Booking Flow:**
 ```
-Service → Artist → Date/Time → Summary → Payment → Confirmation
+src/
+├── components/                    # SHARED across all roles
+│   ├── ui/                       # Base UI primitives
+│   │   ├── Button.tsx           # Universal button with variants
+│   │   ├── Card.tsx             # Universal card container
+│   │   ├── Input.tsx            # Form inputs
+│   │   ├── Badge.tsx            # Status badges
+│   │   ├── Avatar.tsx           # User avatars
+│   │   ├── Modal.tsx            # Modal dialogs
+│   │   ├── Toast.tsx            # Notifications
+│   │   ├── Skeleton.tsx         # Loading states
+│   │   ├── Switch.tsx           # Toggle switches
+│   │   └── index.ts             # Barrel export
+│   │
+│   ├── layout/                   # Layout components
+│   │   ├── ScreenHeader.tsx     # Consistent screen headers
+│   │   ├── TabBar.tsx           # Bottom navigation (role-aware)
+│   │   ├── SafeArea.tsx         # Safe area wrapper
+│   │   ├── FloatingButton.tsx   # FAB component
+│   │   └── index.ts
+│   │
+│   └── common/                   # Shared business components
+│       ├── AppointmentCard.tsx  # Used: Client history, Manager calendar, Admin overview
+│       ├── ClientCard.tsx       # Used: Manager notes, Admin database
+│       ├── ServiceCard.tsx      # Used: Client booking, All service views
+│       ├── StatsCard.tsx        # Used: Manager analytics, Admin dashboard
+│       ├── CalendarView.tsx     # Used: Manager calendar, Admin calendar
+│       ├── MessageBubble.tsx    # Used: All messaging screens
+│       ├── NotificationItem.tsx # Used: All notification screens
+│       ├── AllergyAlert.tsx     # Used: Manager/Admin client views
+│       ├── VIPBadge.tsx         # Used: All client profile displays
+│       └── index.ts
+│
+├── features/                     # Feature-specific (role-owned)
+│   ├── auth/                     # Auth - shared by all
+│   ├── client/                   # Client-only features
+│   ├── manager/                  # Manager-only features
+│   └── admin/                    # Admin-only features
+│
+└── shared/                       # Shared utilities & hooks
+    ├── hooks/
+    │   ├── useAuth.ts           # Auth state (all roles)
+    │   ├── useAppointments.ts   # Appointment queries
+    │   ├── useMessages.ts       # Messaging
+    │   └── useNotifications.ts  # Push notifications
+    │
+    ├── utils/
+    │   ├── dateHelpers.ts       # Date formatting
+    │   ├── priceHelpers.ts      # Currency formatting
+    │   └── validationHelpers.ts # Form validation
+    │
+    └── constants/
+        ├── routes.ts            # Route constants
+        └── config.ts            # App configuration
 ```
 
-**Business Rules:**
-- Booking window: up to 30 days ahead
-- Deposit: required (except Admin bookings)
-- Buffer time: 15 min between appointments
-- Cancellation: 48hr policy
-- First-time: Full sets only
+### 5.2 Shared Component Matrix
 
-**Artist Constraints:**
-| Artist | Minimum Notice |
-|--------|----------------|
-| Beau | 2 hours |
-| All others | 24 hours |
+| Component | Client | Manager | Admin | Location |
+|-----------|--------|---------|-------|----------|
+| `Button` | ✅ | ✅ | ✅ | `components/ui/` |
+| `Card` | ✅ | ✅ | ✅ | `components/ui/` |
+| `Input` | ✅ | ✅ | ✅ | `components/ui/` |
+| `Badge` | ✅ | ✅ | ✅ | `components/ui/` |
+| `Modal` | ✅ | ✅ | ✅ | `components/ui/` |
+| `Avatar` | ✅ | ✅ | ✅ | `components/ui/` |
+| `ScreenHeader` | ✅ | ✅ | ✅ | `components/layout/` |
+| `TabBar` | ✅ | ✅ | ✅ | `components/layout/` |
+| `AppointmentCard` | ✅ | ✅ | ✅ | `components/common/` |
+| `ClientCard` | ❌ | ✅ | ✅ | `components/common/` |
+| `ServiceCard` | ✅ | ✅ | ✅ | `components/common/` |
+| `StatsCard` | ❌ | ✅ | ✅ | `components/common/` |
+| `CalendarView` | ❌ | ✅ | ✅ | `components/common/` |
+| `MessageBubble` | ✅ | ✅ | ✅ | `components/common/` |
+| `VIPBadge` | ✅ | ✅ | ✅ | `components/common/` |
+| `AllergyAlert` | ❌ | ✅ | ✅ | `components/common/` |
 
----
+### 5.3 Manager ↔ Admin Shared Features
 
-### F4: Calendar System
+These features use **identical components** with **role-based data filtering**:
 
-**Description:** Comprehensive calendar for viewing and managing appointments.
+| Feature | Shared Components | Manager Access | Admin Access |
+|---------|-------------------|----------------|--------------|
+| **Calendar** | `CalendarView`, `AppointmentCard`, `CalendarHeader` | Own schedule only | All staff schedules |
+| **Client Notes** | `ClientCard`, `NoteEditor`, `AllergyBadge` | Assigned clients | All clients |
+| **Messaging** | `MessageBubble`, `ChatList`, `MessageInput` | Client messages | All messages + staff |
+| **Analytics** | `StatsCard`, `ChartView`, `MetricTile` | Personal metrics | Business-wide metrics |
+| **Notifications** | `NotificationItem`, `NotificationList` | Own notifications | System-wide |
 
-**Components:**
-- Day View
-- Week View
-- Month Overview
-- Appointment Cards
-- Time Slot Grid
-- Availability Indicator
+### 5.4 Component Implementation Pattern
 
-**Features:**
-- Real-time sync
-- Conflict detection
-- Drag-to-reschedule (staff/admin)
-- Color-coded by service type
-- Staff filter (admin)
+```typescript
+// components/common/StatsCard.tsx
+// SHARED between Manager and Admin dashboards
 
----
+interface StatsCardProps {
+  title: string;
+  value: string | number;
+  change?: number;
+  changeLabel?: string;
+  icon: React.ComponentType;
+  variant?: 'default' | 'highlight' | 'warning';
+}
 
-### F5: VIP Loyalty Program
-
-**Description:** Streak-based loyalty program rewarding repeat clients.
-
-**Components:**
-- VIP Progress Tracker
-- Benefits Dashboard
-- Streak Counter
-- VIP Badge
-- Discount Display
-
-**Program Rules:**
-| Milestone | Benefit |
-|-----------|---------|
-| 10 consecutive visits | VIP Status achieved |
-| VIP Status | $100 annual gift pack |
-| VIP Discounts | $10-30 off services |
-| Lash Courses | $400 off enrollment |
-| Streak break | 3+ months gap resets streak |
-
-**Visual Indicators:**
-- Diamond badge on profile
-- Golden ring around avatar
-- VIP label throughout app
-- Special notification styling
-
----
-
-### F6: Client Notes System
-
-**Description:** Comprehensive note-taking for client preferences, allergies, and history.
-
-**Components:**
-- Notes List View
-- Note Editor
-- Allergy Flag System
-- Photo Gallery
-- Quick Tags
-
-**Note Types:**
-| Type | Description | Visibility |
-|------|-------------|------------|
-| Preference | Lash style, curl, length | Staff, Admin |
-| Allergy | Health concerns, reactions | All (highlighted) |
-| General | Conversation notes | Staff, Admin |
-| Admin | Business notes | Admin only |
-
-**Features:**
-- Rich text formatting
-- Photo attachments
-- Timestamp tracking
-- Staff attribution
-- Search capability
-
----
-
-### F7: Staff Dashboard
-
-**Description:** Performance and schedule dashboard for staff members.
-
-**Components:**
-- Daily Schedule
-- Weekly Overview
-- Stats Cards
-- Earnings Tracker
-- Performance Metrics
-
-**Metrics Displayed:**
-| Metric | Calculation |
-|--------|-------------|
-| Clients Served | Count per period |
-| Revenue Generated | Sum of services |
-| Utilization Rate | Booked / Available hours |
-| Average Rating | Client feedback average |
-| Referral Bonus | 10% of referred bookings |
-
----
-
-### F8: Admin Analytics
-
-**Description:** Comprehensive business intelligence dashboard.
-
-**Components:**
-- Revenue Charts
-- Booking Trends
-- Staff Leaderboard
-- Service Popularity
-- Client Demographics
-- Forecast Projections
-
-**Report Types:**
-| Report | Metrics |
-|--------|---------|
-| Daily Summary | Bookings, revenue, no-shows |
-| Weekly Trends | Comparison to previous |
-| Monthly Report | Full P&L breakdown |
-| Staff Performance | Individual metrics |
-| Service Analysis | Popularity, revenue |
-
----
-
-### F9: Notification System
-
-**Description:** Multi-channel notification system for reminders and alerts.
-
-**Components:**
-- Push Notification Handler
-- In-App Notification Center
-- SMS Integration (optional)
-- Email Notifications
-
-**Notification Types:**
-| Type | Trigger | Timing |
-|------|---------|--------|
-| Booking Confirmed | After payment | Immediate |
-| Appointment Reminder | Before appointment | 24hr, 2hr |
-| Refill Reminder | After service | 1.5-2.5 weeks |
-| VIP Progress | Streak milestone | On achievement |
-| Staff Alert | New booking | Immediate |
-| Pre-Appointment | Before client arrives | 30 min |
-
----
-
-### F10: Messaging System
-
-**Description:** In-app communication between clients and staff/admin.
-
-**Components:**
-- Conversation List
-- Chat Interface
-- Read Receipts
-- Quick Replies
-- Message Templates
-
-**Features:**
-- Real-time messaging
-- Beauty-themed read receipts (sparkles)
-- VIP badge indicators
-- Template responses
-- Admin oversight capability
-
----
-
-## User Flows
-
-### Client Booking Flow
-```
-┌─────────────┐
-│   Launch    │
-│    App      │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    No     ┌─────────────┐
-│  Logged In? │─────────▶│   Login/    │
-│             │           │  Register   │
-└──────┬──────┘           └──────┬──────┘
-       │ Yes                     │
-       ▼                         │
-┌─────────────┐◀─────────────────┘
-│    Home     │
-│   Screen    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Select    │
-│   Service   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Select    │
-│   Artist    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Select    │
-│ Date & Time │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Review    │
-│   Booking   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│    Pay      │
-│   Deposit   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Confirmation│
-│   Screen    │
-└─────────────┘
+const StatsCard: React.FC<StatsCardProps> = ({ ... }) => {
+  // Implementation used by both:
+  // - features/manager/dashboard/PersonalStats.tsx
+  // - features/admin/analytics/BusinessStats.tsx
+};
 ```
 
-### Staff Daily Workflow
-```
-┌─────────────┐
-│   Login     │
-│  (Biometric)│
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│  Dashboard  │
-│  Overview   │
-└──────┬──────┘
-       │
-       ├─────────────────┐
-       │                 │
-       ▼                 ▼
-┌─────────────┐   ┌─────────────┐
-│   Today's   │   │   Check     │
-│  Schedule   │   │   Stats     │
-└──────┬──────┘   └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│    View     │
-│  Upcoming   │
-│ Appointment │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Review    │
-│Client Notes │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│   Service   │
-│  Complete   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│    Add      │
-│   Notes     │
-└─────────────┘
-```
+### 5.5 Feature Module Pattern
 
-### Admin Management Flow
+Each feature module follows this structure:
+
 ```
-┌─────────────┐
-│    Admin    │
-│   Login     │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│           Admin Dashboard            │
-├─────────┬─────────┬────────┬────────┤
-│ Overview│  Staff  │ Clients│Analytics│
-└────┬────┴────┬────┴───┬────┴────┬───┘
-     │         │        │         │
-     ▼         ▼        ▼         ▼
-┌────────┐┌────────┐┌────────┐┌────────┐
-│Today's ││Manage  ││Client  ││Revenue │
-│Revenue ││Schedule││Database││Reports │
-└────────┘└────────┘└────────┘└────────┘
-     │         │        │         │
-     ▼         ▼        ▼         ▼
-┌────────┐┌────────┐┌────────┐┌────────┐
-│Approve ││Time-Off││VIP     ││Export  │
-│Requests││Requests││Status  ││Data    │
-└────────┘└────────┘└────────┘└────────┘
+features/{role}/{feature}/
+├── components/           # Feature-specific UI
+│   ├── FeatureScreen.tsx
+│   └── SubComponent.tsx
+├── hooks/               # Feature-specific hooks
+│   └── useFeature.ts
+├── types/               # Feature-specific types
+│   └── feature.types.ts
+├── styles/              # Feature-specific styles
+│   └── feature.styles.ts
+├── constants/           # Feature-specific constants
+│   └── feature.constants.ts
+└── utils/               # Feature-specific helpers
+    └── feature.helpers.ts
 ```
 
 ---
 
-## Information Architecture
+## 6. User Stories by Feature
 
-### Client App Navigation
-```
-Bottom Tab Navigation
-├── Home
-│   ├── Hero Section
-│   ├── Quick Book CTA
-│   ├── Service Preview
-│   ├── VIP Progress
-│   └── Waiting List
-├── Services
-│   ├── Category Filter
-│   └── Service Cards
-├── Book
-│   ├── Service Selection
-│   ├── Artist Selection
-│   ├── DateTime Picker
-│   ├── Summary
-│   └── Payment
-├── VIP
-│   ├── Status Card
-│   ├── Progress Tracker
-│   ├── Benefits List
-│   └── VIP History
-└── More (Profile)
-    ├── My Appointments
-    ├── My Notes
-    ├── Settings
-    ├── Courses
-    ├── Shop (external)
-    ├── About
-    ├── Contact
-    └── Logout
-```
+### 6.1 Authentication & Onboarding
 
-### Staff App Navigation
-```
-Bottom Tab Navigation
-├── Home
-│   ├── Today Overview
-│   ├── Next Appointment
-│   └── Quick Actions
-├── Calendar
-│   ├── Day View
-│   ├── Week View
-│   └── Month Overview
-├── Dashboard
-│   ├── Stats Grid
-│   ├── Earnings
-│   └── Performance
-├── Messages
-│   ├── Conversation List
-│   └── Chat View
-└── Notes
-    ├── Client List
-    ├── Note Editor
-    └── Search
-```
+#### US-AUTH-001: User Login
+**As a** user (any role)  
+**I want to** log in with my email and password  
+**So that** I can access my personalized dashboard
 
-### Admin App Navigation
-```
-Bottom Tab Navigation
-├── Dashboard
-│   ├── Overview Cards
-│   ├── Today's Bookings
-│   ├── Revenue Chart
-│   └── Alerts
-├── Clients
-│   ├── Client Database
-│   ├── VIP Management
-│   └── Waitlist
-├── Staff
-│   ├── Staff List
-│   ├── Schedules
-│   ├── Time-Off Requests
-│   └── Performance
-└── Analytics
-    ├── Revenue Reports
-    ├── Booking Trends
-    ├── Service Analysis
-    └── Export Options
-```
+**Acceptance Criteria:**
+- [ ] Email input with validation
+- [ ] Secure password field with show/hide toggle
+- [ ] "Remember me" checkbox
+- [ ] "Forgot password" link
+- [ ] Login button disabled until valid input
+- [ ] Error messages for invalid credentials
+- [ ] Redirect to role-appropriate dashboard on success
+- [ ] Session persistence across app restarts
+
+**Story Points:** 5  
+**Priority:** P0 (Must-have)
 
 ---
 
-## Database Schema
+#### US-AUTH-002: Password Reset
+**As a** user  
+**I want to** reset my password via email  
+**So that** I can regain access to my account
 
-### Entity Relationship Diagram
+**Acceptance Criteria:**
+- [ ] Email input for password reset request
+- [ ] Success message after request sent
+- [ ] Email with secure reset link
+- [ ] New password form with confirmation
+- [ ] Password strength indicator
+- [ ] Redirect to login after successful reset
 
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-AUTH-003: Biometric Login
+**As a** returning user  
+**I want to** log in using Face ID or fingerprint  
+**So that** I can access the app quickly and securely
+
+**Acceptance Criteria:**
+- [ ] Biometric prompt on app open (if enabled)
+- [ ] Fallback to password option
+- [ ] Option to enable/disable in settings
+- [ ] Works with both Face ID and Touch ID
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-AUTH-004: First-Time Client Onboarding
+**As a** new client  
+**I want to** complete my profile during signup  
+**So that** the salon has my preferences and health information
+
+**Acceptance Criteria:**
+- [ ] Name, phone, email collection
+- [ ] Allergy/sensitivity questionnaire
+- [ ] Preferred lash style selection
+- [ ] Notification preferences
+- [ ] Terms and conditions acceptance
+- [ ] Optional photo upload
+- [ ] Skip option for non-essential fields
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+### 6.2 Client Booking System
+
+#### US-BOOK-001: Browse Services
+**As a** client  
+**I want to** browse available lash services by category  
+**So that** I can find the right service for my needs
+
+**Acceptance Criteria:**
+- [ ] Category tabs (Mega Volume, Volume, Natural/Hybrid, etc.)
+- [ ] Service cards with image, name, duration, price
+- [ ] Expandable description for each service
+- [ ] First-time client restrictions clearly shown
+- [ ] "Full Set" vs "Refill" differentiation
+- [ ] Afterpay pricing displayed
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-BOOK-002: Select Artist
+**As a** client  
+**I want to** choose my preferred lash artist  
+**So that** I can book with someone who matches my style preferences
+
+**Acceptance Criteria:**
+- [ ] Artist cards with photo, name, tier badge
+- [ ] Specialty tags (Volume Expert, Bridal Specialist)
+- [ ] Experience level displayed
+- [ ] Tier pricing explanation (Premium +25%, Senior standard, Junior -15%)
+- [ ] Availability indicator
+- [ ] "Any Available" option
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-BOOK-003: Select Date & Time
+**As a** client  
+**I want to** pick an available appointment slot  
+**So that** I can book at a convenient time
+
+**Acceptance Criteria:**
+- [ ] Calendar view with available dates highlighted
+- [ ] Time slots shown after date selection
+- [ ] Unavailable slots grayed out
+- [ ] Artist's working hours respected
+- [ ] Minimum 2-hour advance booking
+- [ ] Time zone handling
+
+**Story Points:** 5  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-BOOK-004: Review & Confirm Booking
+**As a** client  
+**I want to** review my booking details before confirming  
+**So that** I can ensure everything is correct
+
+**Acceptance Criteria:**
+- [ ] Summary showing: service, artist, date, time, price
+- [ ] Add notes field for special requests
+- [ ] Cancellation policy displayed (48hr, deposit forfeit)
+- [ ] Total price with deposit amount
+- [ ] Edit option for each selection
+- [ ] Confirm button proceeds to payment
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-BOOK-005: Pay Deposit
+**As a** client  
+**I want to** pay my booking deposit securely  
+**So that** my appointment is confirmed
+
+**Acceptance Criteria:**
+- [ ] Deposit amount clearly shown
+- [ ] Credit card input with validation
+- [ ] Afterpay option with 4-payment breakdown
+- [ ] Apple Pay / Google Pay support
+- [ ] Processing indicator during payment
+- [ ] Confirmation screen with booking reference
+- [ ] Email/SMS confirmation sent
+- [ ] Error handling for failed payments
+
+**Story Points:** 8  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-BOOK-006: Reschedule Appointment
+**As a** client  
+**I want to** request to reschedule my appointment  
+**So that** I can change my booking if my plans change
+
+**Acceptance Criteria:**
+- [ ] Reschedule button on appointment detail
+- [ ] New date/time selection (same flow as booking)
+- [ ] Reason for rescheduling (optional)
+- [ ] Submit request for approval
+- [ ] Notification when approved/declined
+- [ ] 48-hour policy reminder
+- [ ] Decline shows reason from manager
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-BOOK-007: Cancel Appointment
+**As a** client  
+**I want to** cancel my appointment  
+**So that** I can free up the slot if I can't attend
+
+**Acceptance Criteria:**
+- [ ] Cancel button on appointment detail
+- [ ] Cancellation policy warning (deposit forfeit if <48hrs)
+- [ ] Confirmation dialog
+- [ ] Cancellation reason (optional)
+- [ ] Deposit status shown (refunded/forfeited)
+- [ ] Confirmation message
+- [ ] Slot becomes available for others
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-BOOK-008: First-Time Booking Restrictions
+**As a** first-time client  
+**I want to** understand my booking options  
+**So that** I know I can only book full sets or removals
+
+**Acceptance Criteria:**
+- [ ] Clear messaging that refills require previous full set
+- [ ] Refill options disabled with explanation
+- [ ] "Book Your First Full Set" CTA
+- [ ] After first appointment, refills unlocked
+- [ ] System tracks client appointment history
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-BOOK-009: Quick Rebook
+**As a** returning client  
+**I want to** quickly rebook the same service  
+**So that** I don't have to go through the full booking flow
+
+**Acceptance Criteria:**
+- [ ] "Rebook" button on past appointment card
+- [ ] Pre-filled service and artist
+- [ ] Jump directly to date/time selection
+- [ ] Option to modify selections
+- [ ] Same payment flow
+
+**Story Points:** 3  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.3 Client VIP Program
+
+#### US-VIP-001: View VIP Status
+**As a** client  
+**I want to** see my current VIP tier and progress  
+**So that** I understand my loyalty benefits
+
+**Acceptance Criteria:**
+- [ ] Current tier displayed (Bronze/Silver/Gold/Platinum)
+- [ ] Points/visits count
+- [ ] Progress bar to next tier
+- [ ] Next tier benefits preview
+- [ ] Tier badge on profile
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-VIP-002: Track Refill Streak
+**As a** VIP client  
+**I want to** see my refill streak status  
+**So that** I can maintain my discount
+
+**Acceptance Criteria:**
+- [ ] Current streak count (weeks)
+- [ ] Streak deadline (next refill due date)
+- [ ] Warning when streak at risk
+- [ ] Discount percentage based on streak
+- [ ] Streak history visualization
+- [ ] "Streak saved" indicator after booking
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-VIP-003: View VIP Benefits
+**As a** VIP member  
+**I want to** see all my available benefits  
+**So that** I can use them when booking
+
+**Acceptance Criteria:**
+- [ ] List of current tier benefits
+- [ ] Birthday discount (if birthday month)
+- [ ] Referral credits
+- [ ] Exclusive service access
+- [ ] Early booking window
+- [ ] Streak-based discounts
+
+**Story Points:** 3  
+**Priority:** P2 (Medium)
+
+---
+
+#### US-VIP-004: Refer a Friend
+**As a** client  
+**I want to** share a referral code  
+**So that** I can earn rewards when friends book
+
+**Acceptance Criteria:**
+- [ ] Unique referral code/link
+- [ ] Share via SMS, email, social
+- [ ] Track pending referrals
+- [ ] See earned rewards
+- [ ] Notification when referral completes
+
+**Story Points:** 5  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.4 Client Profile & History
+
+#### US-PROF-001: View Appointment History
+**As a** client  
+**I want to** see my past appointments  
+**So that** I can track my lash history
+
+**Acceptance Criteria:**
+- [ ] List of past appointments
+- [ ] Details: date, service, artist, price
+- [ ] Photos attached (if any)
+- [ ] Rebook same service button
+- [ ] Filter by date range
+- [ ] Total spent displayed
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-PROF-002: Update Profile
+**As a** client  
+**I want to** update my personal information  
+**So that** my details are current
+
+**Acceptance Criteria:**
+- [ ] Edit name, phone, email
+- [ ] Update profile photo
+- [ ] Change password
+- [ ] Update allergy information
+- [ ] Notification preferences
+- [ ] Save confirmation
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-PROF-003: View Upcoming Appointments
+**As a** client  
+**I want to** see my scheduled appointments  
+**So that** I can prepare for my visits
+
+**Acceptance Criteria:**
+- [ ] List of upcoming appointments
+- [ ] Countdown to next appointment
+- [ ] Quick actions: reschedule, cancel, message
+- [ ] Add to phone calendar option
+- [ ] Directions to salon
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-PROF-004: Set Custom Reminders
+**As a** client  
+**I want to** customize my appointment reminders  
+**So that** I receive notifications at my preferred times
+
+**Acceptance Criteria:**
+- [ ] Choose reminder timing (15min, 1hr, 24hr, etc.)
+- [ ] Enable/disable different reminder types
+- [ ] SMS vs push notification preference
+- [ ] Test reminder option
+
+**Story Points:** 2  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.5 Client Messaging
+
+#### US-MSG-001: Send Message to Salon
+**As a** client  
+**I want to** message the salon  
+**So that** I can ask questions or communicate special requests
+
+**Acceptance Criteria:**
+- [ ] Chat interface
+- [ ] Text message input
+- [ ] Send photos
+- [ ] Delivered/read indicators
+- [ ] Push notification for replies
+- [ ] Message history
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-MSG-002: Receive Message Notifications
+**As a** client  
+**I want to** be notified of new messages  
+**So that** I don't miss important communications
+
+**Acceptance Criteria:**
+- [ ] Push notification for new messages
+- [ ] Badge count on messages tab
+- [ ] Preview of message content
+- [ ] Tap to open conversation
+
+**Story Points:** 2  
+**Priority:** P1 (High)
+
+---
+
+### 6.6 Manager Calendar & Scheduling
+
+#### US-CAL-001: View Daily Schedule
+**As a** manager  
+**I want to** see my appointments for today  
+**So that** I can prepare for my day
+
+**Acceptance Criteria:**
+- [ ] Day view with time slots
+- [ ] Appointments shown with client name, service
+- [ ] Color coding by service type
+- [ ] Gap identification
+- [ ] Current time indicator
+- [ ] Quick client info on tap
+
+**Story Points:** 5  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-CAL-002: View Weekly Schedule
+**As a** manager  
+**I want to** see my week overview  
+**So that** I can plan ahead
+
+**Acceptance Criteria:**
+- [ ] Week grid view
+- [ ] Appointment blocks per day
+- [ ] Swipe to change weeks
+- [ ] Jump to today
+- [ ] Total appointments per day
+- [ ] Revenue per day (optional toggle)
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-CAL-003: View Appointment Details
+**As a** manager  
+**I want to** see full appointment details  
+**So that** I can prepare for the client
+
+**Acceptance Criteria:**
+- [ ] Client name, phone, photo
+- [ ] Service details and duration
+- [ ] Allergy/health alerts prominently shown
+- [ ] Client notes and preferences
+- [ ] Previous appointment history
+- [ ] VIP status badge
+- [ ] Payment status
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-CAL-004: Handle Reschedule Requests
+**As a** manager  
+**I want to** approve or decline reschedule requests  
+**So that** I can manage schedule changes
+
+**Acceptance Criteria:**
+- [ ] Pending requests notification badge
+- [ ] List of pending reschedules
+- [ ] Original and requested time shown
+- [ ] Approve with one tap
+- [ ] Decline requires reason
+- [ ] Client notified of decision
+- [ ] Calendar auto-updates on approval
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-CAL-005: Block Time Off
+**As a** manager  
+**I want to** block off unavailable time  
+**So that** clients can't book during those periods
+
+**Acceptance Criteria:**
+- [ ] Select date/time range
+- [ ] Reason for block (optional)
+- [ ] Recurring block option (weekly off)
+- [ ] Blocked time shown on calendar
+- [ ] Availability updates immediately
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-CAL-006: Request Time Off
+**As a** manager  
+**I want to** request vacation or leave  
+**So that** Admin can approve and cover my shifts
+
+**Acceptance Criteria:**
+- [ ] Date range selection
+- [ ] Reason field
+- [ ] Submit for Admin approval
+- [ ] View request status (pending/approved/declined)
+- [ ] Notification when decision made
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+### 6.7 Manager Client Notes
+
+#### US-NOTE-001: View Client Notes
+**As a** manager  
+**I want to** see notes for a client  
+**So that** I can provide personalized service
+
+**Acceptance Criteria:**
+- [ ] Client search/selection
+- [ ] Notes history chronologically
+- [ ] Allergy alerts at top
+- [ ] Photo history
+- [ ] Preferred styles noted
+- [ ] Last visit summary
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-NOTE-002: Add Client Note
+**As a** manager  
+**I want to** add notes after an appointment  
+**So that** I can record important details
+
+**Acceptance Criteria:**
+- [ ] Text note input
+- [ ] Attach photos
+- [ ] Tag categories (style, preference, concern)
+- [ ] Flag as important
+- [ ] Timestamp auto-added
+- [ ] Link to appointment
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-NOTE-003: View Allergy Information
+**As a** manager  
+**I want to** see client allergies before appointment  
+**So that** I can take appropriate precautions
+
+**Acceptance Criteria:**
+- [ ] Allergy alert prominently displayed
+- [ ] Allergy type and severity
+- [ ] Last updated date
+- [ ] Edit capability
+- [ ] Alert shown on appointment card
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-NOTE-004: Upload Before/After Photos
+**As a** manager  
+**I want to** upload photos of my work  
+**So that** I can track client lash history
+
+**Acceptance Criteria:**
+- [ ] Camera access for photos
+- [ ] Gallery selection option
+- [ ] Label as before/after
+- [ ] Link to appointment
+- [ ] View in client profile
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+### 6.8 Manager Analytics (Personal)
+
+#### US-ANAL-001: View Personal Stats
+**As a** manager  
+**I want to** see my performance metrics  
+**So that** I can track my productivity
+
+**Acceptance Criteria:**
+- [ ] Appointments this week/month
+- [ ] Revenue generated
+- [ ] Average rating
+- [ ] Client retention rate
+- [ ] Comparison to previous period
+- [ ] Top services performed
+
+**Story Points:** 5  
+**Priority:** P2 (Medium)
+
+---
+
+#### US-ANAL-002: View Earnings
+**As a** manager  
+**I want to** see my earnings breakdown  
+**So that** I understand my income
+
+**Acceptance Criteria:**
+- [ ] Daily/weekly/monthly totals
+- [ ] Service-by-service breakdown
+- [ ] Tips if applicable
+- [ ] Commission calculations
+- [ ] Export capability
+
+**Story Points:** 3  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.9 Manager Messaging
+
+#### US-MMSG-001: View Client Messages
+**As a** manager  
+**I want to** see messages from my clients  
+**So that** I can respond to their needs
+
+**Acceptance Criteria:**
+- [ ] Inbox with unread count
+- [ ] Client conversations list
+- [ ] Most recent message preview
+- [ ] Time since last message
+- [ ] Filter by unread
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-MMSG-002: Reply to Messages
+**As a** manager  
+**I want to** respond to client messages  
+**So that** I can communicate with them
+
+**Acceptance Criteria:**
+- [ ] Chat interface
+- [ ] Text and photo sending
+- [ ] Quick reply templates
+- [ ] Client sees read status
+- [ ] Push notification to client
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-MMSG-003: Quick Reply Templates
+**As a** manager  
+**I want to** use pre-written message templates  
+**So that** I can respond quickly to common questions
+
+**Acceptance Criteria:**
+- [ ] Template library
+- [ ] One-tap to insert template
+- [ ] Edit before sending
+- [ ] Common templates pre-loaded
+- [ ] Custom template creation
+
+**Story Points:** 2  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.10 Admin Dashboard & Analytics
+
+#### US-ADMIN-001: View Business Overview
+**As an** admin  
+**I want to** see a business dashboard  
+**So that** I understand overall performance
+
+**Acceptance Criteria:**
+- [ ] Total revenue (day/week/month/year)
+- [ ] Total bookings
+- [ ] New clients count
+- [ ] Average rating
+- [ ] Trend indicators (up/down)
+- [ ] Quick actions
+
+**Story Points:** 5  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-ADMIN-002: View Revenue Analytics
+**As an** admin  
+**I want to** see detailed revenue reports  
+**So that** I can understand business finances
+
+**Acceptance Criteria:**
+- [ ] Revenue chart (bar/line)
+- [ ] Filter by period
+- [ ] Revenue by service type
+- [ ] Revenue by staff member
+- [ ] Comparison to previous periods
+- [ ] Export capability
+
+**Story Points:** 8  
+**Priority:** P1 (High)
+
+---
+
+#### US-ADMIN-003: View Staff Performance
+**As an** admin  
+**I want to** see performance metrics per staff  
+**So that** I can manage my team effectively
+
+**Acceptance Criteria:**
+- [ ] Staff leaderboard
+- [ ] Bookings per staff member
+- [ ] Revenue per staff member
+- [ ] Average rating per staff
+- [ ] Client retention per staff
+- [ ] Filter by period
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-ADMIN-004: View Service Analytics
+**As an** admin  
+**I want to** see which services are most popular  
+**So that** I can optimize offerings
+
+**Acceptance Criteria:**
+- [ ] Services ranked by bookings
+- [ ] Services ranked by revenue
+- [ ] Service trends over time
+- [ ] Underperforming services identified
+- [ ] Price optimization suggestions
+
+**Story Points:** 5  
+**Priority:** P2 (Medium)
+
+---
+
+#### US-ADMIN-005: View Client Insights
+**As an** admin  
+**I want to** understand my client base  
+**So that** I can improve marketing and retention
+
+**Acceptance Criteria:**
+- [ ] New vs returning client ratio
+- [ ] VIP conversion rate
+- [ ] Average client lifetime value
+- [ ] Churn rate
+- [ ] Client acquisition sources
+
+**Story Points:** 5  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.11 Admin Staff Management
+
+#### US-STAFF-001: View Staff List
+**As an** admin  
+**I want to** see all staff members  
+**So that** I can manage my team
+
+**Acceptance Criteria:**
+- [ ] Staff cards with photo, name, role
+- [ ] Current status (active/on leave)
+- [ ] Quick actions per staff
+- [ ] Add new staff button
+- [ ] Search/filter
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-STAFF-002: Add Staff Member
+**As an** admin  
+**I want to** add new staff to the system  
+**So that** they can manage bookings
+
+**Acceptance Criteria:**
+- [ ] Name, email, phone input
+- [ ] Role selection (Manager)
+- [ ] Tier assignment (Premium/Senior/Junior)
+- [ ] Service categories assignment
+- [ ] Profile photo upload
+- [ ] Working hours setup
+- [ ] Send login credentials
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-STAFF-003: Edit Staff Details
+**As an** admin  
+**I want to** edit staff information  
+**So that** details stay current
+
+**Acceptance Criteria:**
+- [ ] Edit all staff fields
+- [ ] Change tier/pricing
+- [ ] Update service assignments
+- [ ] Modify schedule
+- [ ] Deactivate staff option
+- [ ] Change history tracked
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-STAFF-004: View Staff Schedules
+**As an** admin  
+**I want to** see all staff schedules  
+**So that** I can manage salon capacity
+
+**Acceptance Criteria:**
+- [ ] Calendar view with all staff
+- [ ] Color coded by staff member
+- [ ] Filter by individual staff
+- [ ] Identify gaps and conflicts
+- [ ] Total capacity per day
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-STAFF-005: Approve Time Off Requests
+**As an** admin  
+**I want to** review and approve/decline time off requests  
+**So that** I maintain adequate coverage
+
+**Acceptance Criteria:**
+- [ ] Pending requests queue
+- [ ] Staff name and dates requested
+- [ ] Reason for request shown
+- [ ] Approve with one tap
+- [ ] Decline requires reason
+- [ ] Staff notified of decision
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+### 6.12 Admin Client Management
+
+#### US-CLIENT-001: View Client Database
+**As an** admin  
+**I want to** see all clients  
+**So that** I can manage relationships
+
+**Acceptance Criteria:**
+- [ ] Client list with search
+- [ ] Sort by name, last visit, total spent
+- [ ] VIP status filter
+- [ ] Quick contact actions
+- [ ] Export capability
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-CLIENT-002: View Client Profile (Admin)
+**As an** admin  
+**I want to** see complete client details  
+**So that** I have full visibility
+
+**Acceptance Criteria:**
+- [ ] All client information
+- [ ] Complete appointment history
+- [ ] Total lifetime value
+- [ ] VIP status and progress
+- [ ] All notes from all staff
+- [ ] Payment history
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-CLIENT-003: Manage VIP Status
+**As an** admin  
+**I want to** manually adjust VIP status  
+**So that** I can reward special clients
+
+**Acceptance Criteria:**
+- [ ] Upgrade/downgrade tier
+- [ ] Add bonus points
+- [ ] Reset streak (with reason)
+- [ ] Grant special benefits
+- [ ] Add VIP notes
+- [ ] Change history tracked
+
+**Story Points:** 3  
+**Priority:** P2 (Medium)
+
+---
+
+### 6.13 Admin Booking Management
+
+#### US-ABOOK-001: Create Manual Booking
+**As an** admin  
+**I want to** create bookings without deposits  
+**So that** I can accommodate special cases
+
+**Acceptance Criteria:**
+- [ ] Select client (existing or new)
+- [ ] Select service and artist
+- [ ] Choose date/time
+- [ ] Skip deposit option (admin only)
+- [ ] Add booking notes
+- [ ] Client receives confirmation
+
+**Story Points:** 5  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-ABOOK-002: Create Recurring Booking
+**As an** admin  
+**I want to** set up recurring appointments  
+**So that** VIP clients have guaranteed slots
+
+**Acceptance Criteria:**
+- [ ] Select client
+- [ ] Choose service and artist
+- [ ] Set recurrence (weekly/bi-weekly)
+- [ ] Set duration (6 months, 12 months, ongoing)
+- [ ] Set preferred day/time
+- [ ] Generate all future bookings
+- [ ] Client sees recurring indicator
+
+**Story Points:** 8  
+**Priority:** P2 (Medium)
+
+---
+
+#### US-ABOOK-003: Override Booking Rules
+**As an** admin  
+**I want to** override booking restrictions  
+**So that** I can handle exceptions
+
+**Acceptance Criteria:**
+- [ ] Allow refill for first-time (with full set credit)
+- [ ] Book outside normal hours
+- [ ] Reduce/waive deposit
+- [ ] Double-book if needed
+- [ ] All overrides logged
+
+**Story Points:** 5  
+**Priority:** P2 (Medium)
+
+---
+
+#### US-ABOOK-004: View All Bookings
+**As an** admin  
+**I want to** see all bookings across all staff  
+**So that** I have complete visibility
+
+**Acceptance Criteria:**
+- [ ] Master calendar view
+- [ ] Filter by staff member
+- [ ] Filter by service type
+- [ ] Filter by date range
+- [ ] Search by client name
+- [ ] Export capability
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+### 6.14 Admin Settings
+
+#### US-SET-001: Manage Service Catalog
+**As an** admin  
+**I want to** edit services and pricing  
+**So that** offerings stay current
+
+**Acceptance Criteria:**
+- [ ] Add/edit/remove services
+- [ ] Set prices and durations
+- [ ] Assign to categories
+- [ ] Set staff assignments
+- [ ] Enable/disable services
+- [ ] Add service photos
+
+**Story Points:** 5  
+**Priority:** P1 (High)
+
+---
+
+#### US-SET-002: Manage Notifications
+**As an** admin  
+**I want to** configure notification settings  
+**So that** communication is appropriate
+
+**Acceptance Criteria:**
+- [ ] Set reminder timing (24hr, 2hr)
+- [ ] Enable/disable notification types
+- [ ] Customize message templates
+- [ ] Set business hours for notifications
+- [ ] Test notification sending
+
+**Story Points:** 5  
+**Priority:** P2 (Medium)
+
+---
+
+#### US-SET-003: Manage Business Hours
+**As an** admin  
+**I want to** set salon operating hours  
+**So that** bookings respect availability
+
+**Acceptance Criteria:**
+- [ ] Set hours per day of week
+- [ ] Set holiday closures
+- [ ] Special event hours
+- [ ] Booking buffer times
+- [ ] Immediate effect on availability
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+### 6.15 Notifications (All Roles)
+
+#### US-NOTIF-001: Receive Appointment Reminders
+**As a** user  
+**I want to** receive appointment reminders  
+**So that** I don't forget my appointments
+
+**Acceptance Criteria:**
+- [ ] Push notification at configured intervals
+- [ ] Notification shows date, time, service
+- [ ] Tap opens appointment detail
+- [ ] Option to snooze
+- [ ] Works when app is closed
+
+**Story Points:** 5  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-NOTIF-002: Receive Booking Confirmations
+**As a** client  
+**I want to** receive booking confirmation  
+**So that** I know my appointment is confirmed
+
+**Acceptance Criteria:**
+- [ ] Push notification immediately after booking
+- [ ] Email confirmation with details
+- [ ] SMS confirmation (optional)
+- [ ] Calendar invite attachment
+
+**Story Points:** 3  
+**Priority:** P0 (Must-have)
+
+---
+
+#### US-NOTIF-003: Receive Refill Reminders
+**As a** client  
+**I want to** receive refill reminders  
+**So that** I maintain my lashes
+
+**Acceptance Criteria:**
+- [ ] Notification at optimal refill time
+- [ ] Based on last appointment date
+- [ ] Quick book action from notification
+- [ ] Streak warning if applicable
+
+**Story Points:** 3  
+**Priority:** P1 (High)
+
+---
+
+#### US-NOTIF-004: Receive Approval Notifications
+**As a** manager  
+**I want to** be notified when Admin approves/declines my requests  
+**So that** I know the status of my time-off requests
+
+**Acceptance Criteria:**
+- [ ] Push notification on decision
+- [ ] Approval or decline clearly indicated
+- [ ] Reason shown if declined
+- [ ] Tap to view details
+
+**Story Points:** 2  
+**Priority:** P1 (High)
+
+---
+
+---
+
+## 7. User Flows by Role
+
+### 7.1 Client Flows
+
+#### Flow C1: New Client First Booking
 ```
-┌──────────────────┐       ┌──────────────────┐
-│      users       │       │    user_roles    │
-├──────────────────┤       ├──────────────────┤
-│ id (PK)          │◀──────│ user_id (FK)     │
-│ email            │       │ role             │
-│ phone            │       │ created_at       │
-│ created_at       │       └──────────────────┘
-└────────┬─────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         NEW CLIENT BOOKING FLOW                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────┐
+    │  START   │
+    └────┬─────┘
          │
          ▼
-┌──────────────────┐       ┌──────────────────┐
-│     profiles     │       │    vip_status    │
-├──────────────────┤       ├──────────────────┤
-│ id (PK)          │       │ id (PK)          │
-│ user_id (FK)     │◀──────│ profile_id (FK)  │
-│ first_name       │       │ streak_count     │
-│ last_name        │       │ is_vip           │
-│ avatar_url       │       │ vip_since        │
-│ date_of_birth    │       │ last_visit       │
-└────────┬─────────┘       └──────────────────┘
-         │
-         ▼
-┌──────────────────┐       ┌──────────────────┐
-│   appointments   │       │     services     │
-├──────────────────┤       ├──────────────────┤
-│ id (PK)          │       │ id (PK)          │
-│ client_id (FK)   │       │ name             │
-│ staff_id (FK)    │       │ description      │
-│ service_id (FK)  │◀──────│ price            │
-│ date             │       │ duration_mins    │
-│ time             │       │ category         │
-│ status           │       │ first_time_only  │
-│ deposit_paid     │       └──────────────────┘
-│ notes            │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐       ┌──────────────────┐
-│  client_notes    │       │  staff_schedule  │
-├──────────────────┤       ├──────────────────┤
-│ id (PK)          │       │ id (PK)          │
-│ client_id (FK)   │       │ staff_id (FK)    │
-│ staff_id (FK)    │       │ day_of_week      │
-│ note_type        │       │ start_time       │
-│ content          │       │ end_time         │
-│ is_allergy       │       │ is_available     │
-│ created_at       │       └──────────────────┘
-└──────────────────┘
-
-┌──────────────────┐       ┌──────────────────┐
-│    time_off      │       │    messages      │
-├──────────────────┤       ├──────────────────┤
-│ id (PK)          │       │ id (PK)          │
-│ staff_id (FK)    │       │ sender_id (FK)   │
-│ start_date       │       │ receiver_id (FK) │
-│ end_date         │       │ content          │
-│ reason           │       │ read_at          │
-│ status           │       │ created_at       │
-│ approved_by      │       └──────────────────┘
-└──────────────────┘
-
-┌──────────────────┐       ┌──────────────────┐
-│   notifications  │       │    payments      │
-├──────────────────┤       ├──────────────────┤
-│ id (PK)          │       │ id (PK)          │
-│ user_id (FK)     │       │ appointment_id   │
-│ type             │       │ amount           │
-│ title            │       │ payment_type     │
-│ body             │       │ status           │
-│ read_at          │       │ stripe_id        │
-│ created_at       │       │ created_at       │
-└──────────────────┘       └──────────────────┘
+┌─────────────────┐      ┌─────────────────┐
+│   Download App  │─────▶│  Welcome Screen │
+└─────────────────┘      └────────┬────────┘
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │  Create Account │
+                         │  - Email        │
+                         │  - Password     │
+                         │  - Phone        │
+                         └────────┬────────┘
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │   Onboarding    │
+                         │  - Preferences  │
+                         │  - Allergies    │
+                         │  - Style quiz   │
+                         └────────┬────────┘
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │   Home Screen   │
+                         │  "Book Now" CTA │
+                         └────────┬────────┘
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │ Select Service  │
+                         │ (Full Set Only) │◀──────────────────┐
+                         │ [Refills locked │                   │
+                         │  with tooltip]  │                   │
+                         └────────┬────────┘                   │
+                                  │                            │
+                                  ▼                            │
+                         ┌─────────────────┐                   │
+                         │  Select Artist  │                   │
+                         │ - View profiles │                   │
+                         │ - See pricing   │                   │
+                         │ - Check avail   │                   │
+                         └────────┬────────┘                   │
+                                  │                            │
+                                  ▼                            │
+                         ┌─────────────────┐                   │
+                         │ Select DateTime │                   │
+                         │ - Calendar view │                   │
+                         │ - Time slots    │                   │
+                         └────────┬────────┘                   │
+                                  │                            │
+                                  ▼                            │
+                         ┌─────────────────┐     ┌─────────────┤
+                         │ Review Booking  │     │ Edit        │
+                         │ - Summary       │─────▶ [Go back]   │
+                         │ - Add notes     │     │             │
+                         │ - View policy   │     └─────────────┘
+                         └────────┬────────┘
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │  Pay Deposit    │
+                         │ - Card / Apple  │
+                         │ - Afterpay      │
+                         └────────┬────────┘
+                                  │
+                         ┌────────┴────────┐
+                         ▼                 ▼
+                   ┌──────────┐     ┌──────────────┐
+                   │ Success! │     │ Payment Fail │
+                   │ - Conf # │     │ - Retry      │
+                   │ - Email  │     │ - Different  │
+                   │ - Push   │     │   method     │
+                   └────┬─────┘     └──────────────┘
+                        │
+                        ▼
+                   ┌──────────┐
+                   │   END    │
+                   │ (Home w/ │
+                   │ upcoming)│
+                   └──────────┘
 ```
 
-### Tables Definition
+---
+
+#### Flow C2: VIP Client Refill Booking
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         VIP REFILL BOOKING FLOW                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────┐
+    │  START   │
+    │ (VIP     │
+    │  Client) │
+    └────┬─────┘
+         │
+         ▼
+┌─────────────────┐      ┌─────────────────────────────────────┐
+│   Home Screen   │      │       VIP STATUS BANNER             │
+│                 │─────▶│  "Gold Member • 8 Week Streak 🔥"   │
+│                 │      │  "Refill Due in 3 Days"             │
+└────────┬────────┘      └─────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Quick Rebook   │ ◀─── "Same service, same artist, next slot"
+│  OR             │
+│  New Booking    │
+└────────┬────────┘
+         │
+         ├────────────────────────┐
+         │ Quick Rebook           │ New Booking
+         ▼                        ▼
+┌─────────────────┐      ┌─────────────────┐
+│ Confirm Details │      │ Full Booking    │
+│ - Same service  │      │ Flow (see C1)   │
+│ - Same artist   │      │                 │
+│ - Next slot     │      └─────────────────┘
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ VIP Discounts   │
+│ Applied Auto    │
+│ - Streak: 10%   │
+│ - Tier: 5%      │
+│ - Birthday: $20 │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Pay (Reduced)  │
+│  Deposit        │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   Success!      │
+│ "Streak now 9!" │
+│ "Next tier: 12" │
+└─────────────────┘
+```
+
+---
+
+#### Flow C3: Client Reschedule Request
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         RESCHEDULE REQUEST FLOW                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────┐
+│  START   │
+│ (Has     │
+│ booking) │
+└────┬─────┘
+     │
+     ▼
+┌─────────────────┐
+│ My Appointments │
+│ [Upcoming Tab]  │
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Tap Appointment │
+│ Detail View     │
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Actions Menu    │
+│ ┌─────────────┐ │
+│ │ Reschedule  │ │◀─── User taps
+│ ├─────────────┤ │
+│ │ Cancel      │ │
+│ ├─────────────┤ │
+│ │ Message     │ │
+│ └─────────────┘ │
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Policy Warning  │
+│ "<48hrs = fee"  │
+│ [Continue]      │
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Select New Date │
+│ & Time          │
+│ (Same artist)   │
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Add Reason      │
+│ (Optional)      │
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Submit Request  │
+│ "Pending        │
+│  Approval"      │
+└────────┬────────┘
+     │
+     │ ◀─── Notification to Manager/Admin
+     │
+┌────┴────────────────────────┐
+│                             │
+▼                             ▼
+┌────────────────┐    ┌────────────────┐
+│   APPROVED     │    │   DECLINED     │
+│ - Calendar     │    │ - Reason shown │
+│   updated      │    │ - Keep orig    │
+│ - Push notif   │    │ - Push notif   │
+│ - New confirm  │    │ - Contact opt  │
+└────────────────┘    └────────────────┘
+```
+
+---
+
+#### Flow C4: Client Profile & VIP Dashboard
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         CLIENT PROFILE FLOW                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────┐
+│  START   │
+│(Tap Prof)│
+└────┬─────┘
+     │
+     ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      PROFILE SCREEN                             │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  👤 Sarah Thompson                                       │   │
+│  │  ⭐ Gold VIP Member                                      │   │
+│  │  🔥 8 Week Streak                                        │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
+│  │ Upcoming    │  │  History    │  │   VIP       │             │
+│  │ Appointments│  │             │  │ Dashboard   │             │
+│  └─────────────┘  └─────────────┘  └─────────────┘             │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Quick Actions                                            │   │
+│  │ ├─ Edit Profile                                         │   │
+│  │ ├─ Notification Settings                                │   │
+│  │ ├─ Payment Methods                                      │   │
+│  │ ├─ Refer a Friend                                       │   │
+│  │ └─ Logout                                               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+         │
+         │ Tap VIP Dashboard
+         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      VIP DASHBOARD                              │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  GOLD MEMBER                                             │   │
+│  │  ████████████████░░░░ 80%                                │   │
+│  │  4 more visits to Platinum!                              │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  CURRENT STREAK: 8 Weeks 🔥                                     │
+│  Next refill by: Feb 5 to maintain streak                       │
+│                                                                 │
+│  YOUR BENEFITS:                                                 │
+│  ├─ 10% Streak Discount                                        │
+│  ├─ 5% Gold Member Discount                                    │
+│  ├─ Priority Booking Access                                    │
+│  └─ Free Birthday Treatment                                    │
+│                                                                 │
+│  [Share Referral Code]                                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 7.2 Manager Flows
+
+#### Flow M1: Manager Daily Workflow
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         MANAGER DAILY WORKFLOW                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────┐
+    │  START   │
+    │ (Morning)│
+    └────┬─────┘
+         │
+         ▼
+┌─────────────────┐
+│     LOGIN       │
+│ (Biometric)     │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    MANAGER DASHBOARD                            │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  TODAY'S OVERVIEW                                        │   │
+│  │  ├─ 6 Appointments                                       │   │
+│  │  ├─ First: 9:00 AM - Sarah (Volume Full Set)            │   │
+│  │  ├─ Last: 4:00 PM - Emma (Mega Volume Refill)           │   │
+│  │  └─ 2 Gaps Available                                     │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐                │
+│  │ 🔔 3 New   │  │ 📅 Calendar│  │ 📝 Notes   │                │
+│  │ Messages   │  │            │  │            │                │
+│  └────────────┘  └────────────┘  └────────────┘                │
+└─────────────────────────────────────────────────────────────────┘
+         │
+         ├─────────────────────────────────┐
+         │                                 │
+         ▼                                 ▼
+┌─────────────────┐               ┌─────────────────┐
+│ CHECK MESSAGES  │               │ VIEW CALENDAR   │
+│ - Client Qs     │               │ - Day view      │
+│ - Reply quickly │               │ - Check details │
+└────────┬────────┘               └────────┬────────┘
+         │                                 │
+         │                                 ▼
+         │                        ┌─────────────────┐
+         │                        │ TAP FIRST APPT  │
+         │                        │ - Sarah         │
+         │                        │ - Volume Full   │
+         │                        └────────┬────────┘
+         │                                 │
+         │                                 ▼
+         │                        ┌─────────────────────────────────────────┐
+         │                        │           CLIENT DETAIL                 │
+         │                        │  ┌──────────────────────────────────┐   │
+         │                        │  │ ⚠️ ALLERGY ALERT: Latex         │   │
+         │                        │  └──────────────────────────────────┘   │
+         │                        │  • Previous: Natural Hybrid (loved)     │
+         │                        │  • Preference: Dramatic curl            │
+         │                        │  • VIP: Silver Member                   │
+         │                        │  • Notes: "Sensitive eyes - gentle"     │
+         │                        └─────────────────────────────────────────┘
+         │                                 │
+         └─────────────────────────────────┤
+                                           │
+                                           ▼
+                                  ┌─────────────────┐
+                                  │ COMPLETE APPT   │
+                                  │ (End of day)    │
+                                  └────────┬────────┘
+                                           │
+                                           ▼
+                                  ┌─────────────────┐
+                                  │ ADD NOTES       │
+                                  │ - Photo before  │
+                                  │ - Photo after   │
+                                  │ - Style used    │
+                                  │ - Client mood   │
+                                  └────────┬────────┘
+                                           │
+                                           ▼
+                                  ┌─────────────────┐
+                                  │   END OF DAY    │
+                                  │ Personal Stats  │
+                                  │ - 6/6 complete  │
+                                  │ - $840 revenue  │
+                                  └─────────────────┘
+```
+
+---
+
+#### Flow M2: Handle Reschedule Request
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    MANAGER: HANDLE RESCHEDULE REQUEST                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────┐
+│ 🔔 PUSH NOTIFICATION                      │
+│ "Sarah requested to reschedule"           │
+│ Tap to review                             │
+└─────────────────┬─────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│                RESCHEDULE REQUEST DETAIL                    │
+│                                                             │
+│  Client: Sarah Thompson                                     │
+│  Original: Tue Jan 28, 10:00 AM                            │
+│  Requested: Thu Jan 30, 2:00 PM                            │
+│  Service: Volume Full Set                                   │
+│  Reason: "Work meeting conflict"                            │
+│                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐                  │
+│  │   ✓ APPROVE     │  │   ✗ DECLINE     │                  │
+│  └─────────────────┘  └─────────────────┘                  │
+└─────────────────────────────────────────────────────────────┘
+                  │
+         ┌───────┴───────┐
+         │               │
+         ▼               ▼
+┌─────────────────┐  ┌─────────────────┐
+│    APPROVE      │  │    DECLINE      │
+│                 │  │                 │
+│ - Auto-confirm  │  │ - Must provide  │
+│ - Calendar      │  │   reason:       │
+│   updates       │  │   ┌───────────┐ │
+│ - Client        │  │   │ Slot taken│ │
+│   notified      │  │   │ Too close │ │
+│ - Original slot │  │   │ Other___  │ │
+│   freed         │  │   └───────────┘ │
+└────────┬────────┘  └────────┬────────┘
+         │                    │
+         ▼                    ▼
+┌─────────────────┐  ┌─────────────────┐
+│ Client notified │  │ Client notified │
+│ "Approved! See  │  │ "Declined.      │
+│  you Thursday"  │  │  Reason: ___"   │
+└─────────────────┘  └─────────────────┘
+```
+
+---
+
+#### Flow M3: Add Client Notes After Appointment
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    MANAGER: ADD CLIENT NOTES                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│              APPOINTMENT COMPLETE                            │
+│  Sarah's Volume Full Set - 2 hours                          │
+│  [Mark Complete]                                             │
+└──────────────────────────────┬───────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│                     ADD NOTES                                │
+│                                                              │
+│  📷 Photos                                                   │
+│  ┌────────────┐  ┌────────────┐                             │
+│  │   Before   │  │   After    │                             │
+│  │  [+ Add]   │  │  [+ Add]   │                             │
+│  └────────────┘  └────────────┘                             │
+│                                                              │
+│  📝 Notes                                                    │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Used C-curl 12mm. Client loves dramatic look.         │ │
+│  │ Requested same style next time.                       │ │
+│  │ Eyes slightly sensitive today - used gentle adhesive. │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                                                              │
+│  🏷️ Tags                                                     │
+│  [Style: Dramatic] [Curl: C] [Sensitivity: Medium]          │
+│                                                              │
+│  ⚠️ Important? [ ] Mark this note as important              │
+│                                                              │
+│              [Save & Complete]                               │
+└──────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+                      ┌────────────────┐
+                      │ Notes Saved ✓  │
+                      │ Back to        │
+                      │ Dashboard      │
+                      └────────────────┘
+```
+
+---
+
+#### Flow M4: Request Time Off
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    MANAGER: REQUEST TIME OFF                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────┐
+│ Calendar │
+│ [+ Block │
+│   Time]  │
+└────┬─────┘
+     │
+     ▼
+┌──────────────────────────────────────────────────────────────┐
+│                  TIME OFF REQUEST                            │
+│                                                              │
+│  Type:                                                       │
+│  ○ Block hours (same day)                                   │
+│  ● Request time off (requires approval)                     │
+│                                                              │
+│  Start Date: [Feb 10, 2025] 📅                              │
+│  End Date:   [Feb 14, 2025] 📅                              │
+│                                                              │
+│  Reason:                                                     │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Family vacation - pre-planned trip                     │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                                                              │
+│              [Submit Request]                                │
+└──────────────────────────────────────────────────────────────┘
+     │
+     ▼
+┌──────────────────────────────────────────────────────────────┐
+│                  REQUEST SUBMITTED                           │
+│                                                              │
+│  ✓ Your request has been sent to Admin                      │
+│                                                              │
+│  Status: ⏳ Pending Approval                                 │
+│                                                              │
+│  You'll receive a notification when                         │
+│  Admin reviews your request.                                │
+│                                                              │
+│  [View My Requests]   [Back to Calendar]                    │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 7.3 Admin Flows
+
+#### Flow A1: Admin Business Review
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         ADMIN BUSINESS REVIEW FLOW                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────┐
+│  START   │
+│ (Weekly) │
+└────┬─────┘
+     │
+     ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          ADMIN DASHBOARD                                    │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                     THIS WEEK AT A GLANCE                           │   │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │   │
+│  │  │ $23,870  │  │   126    │  │    24    │  │   4.9    │            │   │
+│  │  │ Revenue  │  │ Bookings │  │New Client│  │  Rating  │            │   │
+│  │  │  ↑18%    │  │  ↑12%    │  │   ↑8%    │  │  ↑0.1    │            │   │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘            │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  QUICK ACTIONS                                                      │    │
+│  │  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐       │    │
+│  │  │ Analytics  │ │ Staff      │ │ Clients    │ │ Settings   │       │    │
+│  │  └────────────┘ └────────────┘ └────────────┘ └────────────┘       │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────────┘
+     │
+     │───────────────────────────────────────────────────┐
+     │                                                   │
+     ▼                                                   ▼
+┌──────────────────────────────────────┐    ┌──────────────────────────────────┐
+│          ANALYTICS DEEP DIVE          │    │        STAFF PERFORMANCE         │
+│                                        │    │                                  │
+│  Revenue Trend (7 months)              │    │  ┌──────────────────────────┐   │
+│  ┌────────────────────────────────┐   │    │  │ 1. Lash Mama   $8,560    │   │
+│  │     ▄                          │   │    │  │    42 bookings │ ★ 5.0   │   │
+│  │   ▄ █                          │   │    │  ├──────────────────────────┤   │
+│  │ ▄ █ █ ▄                        │   │    │  │ 2. Nikki       $6,420    │   │
+│  │ █ █ █ █ ▄ █                    │   │    │  │    38 bookings │ ★ 4.9   │   │
+│  │ █ █ █ █ █ █ █                  │   │    │  ├──────────────────────────┤   │
+│  │ Jul Aug Sep Oct Nov Dec Jan    │   │    │  │ 3. Beau        $4,280    │   │
+│  └────────────────────────────────┘   │    │  │    28 bookings │ ★ 4.8   │   │
+│                                        │    │  └──────────────────────────┘   │
+│  Service Breakdown:                    │    │                                  │
+│  • Mega Volume: 35% ($8,420)          │    │  [View All Staff] [Add Staff]    │
+│  • Volume: 24% ($5,640)               │    │                                  │
+│  • Refills: 18% ($4,280)              │    └──────────────────────────────────┘
+│                                        │
+│  [Export Report] [Share]              │
+└──────────────────────────────────────┘
+```
+
+---
+
+#### Flow A2: Admin Manual Booking (No Deposit)
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ADMIN: MANUAL BOOKING (NO DEPOSIT)                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────┐
+│  START   │
+│ (Admin)  │
+└────┬─────┘
+     │
+     ▼
+┌─────────────────┐
+│ Dashboard       │
+│ [+ New Booking] │ ◀─── Admin-only button
+└────────┬────────┘
+     │
+     ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    CREATE BOOKING                           │
+│                                                             │
+│  Client: [Search or Add New] ▼                              │
+│          ┌────────────────────────────────────────────┐     │
+│          │ 🔍 Sarah Thompson                          │     │
+│          │    Jessica Williams                        │     │
+│          │    + Add New Client                        │     │
+│          └────────────────────────────────────────────┘     │
+│                                                             │
+│  Service: [Mega Volume Full Set] ▼                          │
+│  Artist: [Assign to Self / Select Manager] ▼                │
+│  Date: [Calendar Picker]                                    │
+│  Time: [Available Slots]                                    │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ ☑️ SKIP DEPOSIT (Admin Override)                    │   │ ◀─── Admin-only
+│  │    Reason: [VIP / Personal / Promo] ▼               │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  Notes: [________________________________]                  │
+│                                                             │
+│              [Create Booking]                               │
+└─────────────────────────────────────────────────────────────┘
+     │
+     ▼
+┌─────────────────┐
+│ Confirmation    │
+│ - No payment    │
+│ - Client notif  │
+│ - On calendar   │
+│ - Logged as     │
+│   "Admin Book"  │
+└─────────────────┘
+```
+
+---
+
+#### Flow A3: Admin Recurring Booking Setup
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ADMIN: RECURRING BOOKING SETUP                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────┐
+│       VIP CLIENT PROFILE             │
+│  Sarah Thompson • Platinum           │
+│                                      │
+│  [Set Up Recurring ✨]               │ ◀─── Admin-only
+└─────────────────┬────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  RECURRING BOOKING SETUP                    │
+│                                                             │
+│  ┌───────────────────────────────────────────────────┐     │
+│  │ Preferred Service: Volume Refill ▼                │     │
+│  │ Preferred Artist: Lash Mama ▼                     │     │
+│  └───────────────────────────────────────────────────┘     │
+│                                                             │
+│  Recurrence Pattern:                                        │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │ ○ Weekly (Every Tuesday)                           │    │
+│  │ ● Every 2 Weeks (Bi-weekly)                        │    │
+│  │ ○ Every 3 Weeks                                    │    │
+│  └────────────────────────────────────────────────────┘    │
+│                                                             │
+│  Preferred Day: [Tuesday] ▼                                 │
+│  Preferred Time: [10:00 AM] ▼                               │
+│                                                             │
+│  Duration:                                                  │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │ ○ 6 Months (12 appointments)                       │    │
+│  │ ○ 12 Months (24 appointments)                      │    │
+│  │ ● Ongoing (Until cancelled)                        │    │
+│  └────────────────────────────────────────────────────┘    │
+│                                                             │
+│  First Appointment: [Jan 28, 2025]                          │
+│                                                             │
+│  Payment Terms:                                             │
+│  ☑️ Auto-charge saved payment method                       │
+│  ☐ No deposit required (VIP perk)                          │
+│                                                             │
+│         [Preview Schedule]  [Create Recurring]              │
+└─────────────────────────────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  SCHEDULE PREVIEW                           │
+│                                                             │
+│  ✅ Jan 28, 2025 - 10:00 AM                                │
+│  ✅ Feb 11, 2025 - 10:00 AM                                │
+│  ✅ Feb 25, 2025 - 10:00 AM                                │
+│  ✅ Mar 11, 2025 - 10:00 AM                                │
+│  ...                                                        │
+│                                                             │
+│  Conflicts: None                                            │
+│                                                             │
+│         [← Back]  [Confirm All Bookings]                    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Flow A4: Admin Staff Management
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ADMIN: STAFF MANAGEMENT                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────┐
+│       STAFF LIST                     │
+│  [+ Add New Staff]                   │
+└─────────────────┬────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    STAFF MEMBERS                            │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ 👤 Nikki Tran                                        │  │
+│  │    Senior Lash Artist • Active                       │  │
+│  │    Today: 5 appointments | $680                      │  │
+│  │    [View] [Edit] [Schedule]                          │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ 👤 Beau Williams                                     │  │
+│  │    Manager • Active                                  │  │
+│  │    Today: 4 appointments | $520                      │  │
+│  │    [View] [Edit] [Schedule]                          │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ 👤 Natali Chen                                       │  │
+│  │    Junior Lash Artist • Active                       │  │
+│  │    Today: 3 appointments | $360                      │  │
+│  │    [View] [Edit] [Schedule]                          │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                             │
+│  PENDING REQUESTS                                           │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │ ⏳ Nikki - Time Off Request                          │  │
+│  │    Feb 10-14, 2025 | Family vacation                 │  │
+│  │    [Approve] [Decline]                               │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Flow A5: Admin Approve/Decline Time Off
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     ADMIN: TIME OFF APPROVAL                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────┐
+│ 🔔 NOTIFICATION                           │
+│ "Nikki requested time off Feb 10-14"      │
+│ Tap to review                             │
+└─────────────────┬─────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│               TIME OFF REQUEST DETAIL                       │
+│                                                             │
+│  Staff: Nikki Tran                                          │
+│  Dates: Feb 10-14, 2025 (5 days)                           │
+│  Reason: "Family vacation - pre-planned trip"               │
+│                                                             │
+│  IMPACT ANALYSIS:                                           │
+│  ┌───────────────────────────────────────────────────┐     │
+│  │ ⚠️ 8 appointments affected                        │     │
+│  │ • 6 can be reassigned                             │     │
+│  │ • 2 client-requested Nikki specifically           │     │
+│  └───────────────────────────────────────────────────┘     │
+│                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐                  │
+│  │   ✓ APPROVE     │  │   ✗ DECLINE     │                  │
+│  └─────────────────┘  └─────────────────┘                  │
+└─────────────────────────────────────────────────────────────┘
+                  │
+         ┌───────┴───────┐
+         │               │
+         ▼               ▼
+┌─────────────────┐  ┌─────────────────────────────────┐
+│    APPROVE      │  │           DECLINE               │
+│                 │  │                                 │
+│ - Dates blocked │  │ Reason (required):              │
+│ - Nikki notified│  │ ┌─────────────────────────────┐│
+│ - Clients       │  │ │ Not enough coverage during  ││
+│   contacted for │  │ │ peak Valentine's season.    ││
+│   reassignment  │  │ │ Can we discuss alternative? ││
+│                 │  │ └─────────────────────────────┘│
+│                 │  │                                 │
+│                 │  │ [Send Decline]                  │
+└─────────────────┘  └─────────────────────────────────┘
+```
+
+---
+
+## 8. Database Schema
+
+### 8.1 Entity Relationship Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              DATABASE SCHEMA                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌───────────────┐         ┌───────────────┐         ┌───────────────┐
+    │    users      │         │ appointments  │         │   services    │
+    ├───────────────┤         ├───────────────┤         ├───────────────┤
+    │ id (PK)       │────┐    │ id (PK)       │    ┌────│ id (PK)       │
+    │ email         │    │    │ client_id (FK)│◀───┘    │ name          │
+    │ phone         │    │    │ staff_id (FK) │◀───┐    │ category      │
+    │ full_name     │    │    │ service_id(FK)│─────────│ duration_mins │
+    │ role          │    │    │ date_time     │         │ base_price    │
+    │ created_at    │    │    │ status        │         │ description   │
+    │ avatar_url    │    └───▶│ deposit_paid  │         └───────────────┘
+    └───────────────┘         │ notes         │
+           │                  │ created_at    │
+           │                  └───────────────┘
+           │                         │
+           ▼                         │
+    ┌───────────────┐               │
+    │  vip_status   │               │
+    ├───────────────┤               │
+    │ id (PK)       │               │
+    │ user_id (FK)  │◀──────────────┘
+    │ tier          │
+    │ points        │
+    │ streak_weeks  │
+    │ streak_start  │
+    │ benefits      │
+    └───────────────┘
+
+    ┌───────────────┐         ┌───────────────┐         ┌───────────────┐
+    │ client_notes  │         │   messages    │         │staff_schedules│
+    ├───────────────┤         ├───────────────┤         ├───────────────┤
+    │ id (PK)       │         │ id (PK)       │         │ id (PK)       │
+    │ client_id(FK) │         │ sender_id(FK) │         │ staff_id (FK) │
+    │ author_id(FK) │         │ receiver_id   │         │ day_of_week   │
+    │ content       │         │ content       │         │ start_time    │
+    │ category      │         │ read_at       │         │ end_time      │
+    │ is_allergy    │         │ created_at    │         │ is_available  │
+    │ photos        │         └───────────────┘         └───────────────┘
+    │ created_at    │
+    └───────────────┘
+
+    ┌───────────────┐         ┌───────────────┐         ┌───────────────┐
+    │   payments    │         │ notifications │         │   referrals   │
+    ├───────────────┤         ├───────────────┤         ├───────────────┤
+    │ id (PK)       │         │ id (PK)       │         │ id (PK)       │
+    │ appt_id (FK)  │         │ user_id (FK)  │         │ referrer_id   │
+    │ amount        │         │ type          │         │ referee_id    │
+    │ method        │         │ title         │         │ code          │
+    │ status        │         │ body          │         │ status        │
+    │ provider_ref  │         │ read          │         │ reward_amt    │
+    │ created_at    │         │ created_at    │         │ created_at    │
+    └───────────────┘         └───────────────┘         └───────────────┘
+
+    ┌───────────────┐         ┌───────────────┐
+    │ time_off_reqs │         │recurring_books│
+    ├───────────────┤         ├───────────────┤
+    │ id (PK)       │         │ id (PK)       │
+    │ staff_id (FK) │         │ client_id(FK) │
+    │ start_date    │         │ staff_id (FK) │
+    │ end_date      │         │ service_id(FK)│
+    │ reason        │         │ frequency     │
+    │ status        │         │ preferred_day │
+    │ admin_notes   │         │ preferred_time│
+    │ created_at    │         │ is_active     │
+    └───────────────┘         └───────────────┘
+```
+
+### 8.2 Table Definitions
 
 ```sql
--- User Roles (CRITICAL: Separate from profiles)
-create type public.app_role as enum ('client', 'staff', 'admin');
-
-create table public.user_roles (
-    id uuid primary key default gen_random_uuid(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    role app_role not null default 'client',
-    created_at timestamptz default now(),
-    unique (user_id, role)
+-- Users Table (Client, Manager, Admin)
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  phone VARCHAR(20),
+  full_name VARCHAR(100) NOT NULL,
+  role VARCHAR(20) NOT NULL CHECK (role IN ('client', 'manager', 'admin')),
+  avatar_url TEXT,
+  allergies JSONB DEFAULT '[]',
+  preferences JSONB DEFAULT '{}',
+  notification_settings JSONB DEFAULT '{"push": true, "email": true, "sms": false}',
+  tier VARCHAR(20) DEFAULT 'junior' CHECK (tier IN ('premium', 'senior', 'junior')), -- For managers
+  service_categories JSONB DEFAULT '[]', -- Services this manager can perform
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Profiles
-create table public.profiles (
-    id uuid primary key default gen_random_uuid(),
-    user_id uuid references auth.users(id) on delete cascade unique not null,
-    first_name text not null,
-    last_name text not null,
-    phone text,
-    avatar_url text,
-    date_of_birth date,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
-);
-
--- Services
-create table public.services (
-    id uuid primary key default gen_random_uuid(),
-    name text not null,
-    description text,
-    price decimal(10,2) not null,
-    duration_mins integer not null,
-    category text not null,
-    first_time_only boolean default false,
-    is_active boolean default true,
-    sort_order integer default 0,
-    created_at timestamptz default now()
+-- Services Catalog
+CREATE TABLE services (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) NOT NULL,
+  category VARCHAR(50) NOT NULL,
+  description TEXT,
+  duration_mins INTEGER NOT NULL,
+  base_price DECIMAL(10,2) NOT NULL,
+  deposit_amount DECIMAL(10,2) NOT NULL,
+  image_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  requires_full_set BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Appointments
-create type public.appointment_status as enum (
-    'pending', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show'
+CREATE TABLE appointments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES users(id) NOT NULL,
+  staff_id UUID REFERENCES users(id) NOT NULL,
+  service_id UUID REFERENCES services(id) NOT NULL,
+  scheduled_at TIMESTAMPTZ NOT NULL,
+  duration_mins INTEGER NOT NULL,
+  status VARCHAR(20) DEFAULT 'confirmed' 
+    CHECK (status IN ('pending', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show')),
+  deposit_paid BOOLEAN DEFAULT false,
+  deposit_waived BOOLEAN DEFAULT false,
+  deposit_waived_reason TEXT,
+  total_price DECIMAL(10,2) NOT NULL,
+  discount_applied DECIMAL(10,2) DEFAULT 0,
+  notes TEXT,
+  is_recurring BOOLEAN DEFAULT false,
+  recurring_id UUID,
+  created_by UUID REFERENCES users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-create table public.appointments (
-    id uuid primary key default gen_random_uuid(),
-    client_id uuid references public.profiles(id) not null,
-    staff_id uuid references public.profiles(id) not null,
-    service_id uuid references public.services(id) not null,
-    scheduled_at timestamptz not null,
-    duration_mins integer not null,
-    status appointment_status default 'pending',
-    deposit_amount decimal(10,2),
-    deposit_paid boolean default false,
-    notes text,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
-);
-
--- VIP Status
-create table public.vip_status (
-    id uuid primary key default gen_random_uuid(),
-    profile_id uuid references public.profiles(id) unique not null,
-    streak_count integer default 0,
-    is_vip boolean default false,
-    vip_since timestamptz,
-    last_visit_at timestamptz,
-    streak_broken_at timestamptz,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
+-- VIP Status Tracking
+CREATE TABLE vip_status (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) UNIQUE NOT NULL,
+  tier VARCHAR(20) DEFAULT 'bronze' 
+    CHECK (tier IN ('bronze', 'silver', 'gold', 'platinum')),
+  total_points INTEGER DEFAULT 0,
+  current_streak_weeks INTEGER DEFAULT 0,
+  streak_start_date DATE,
+  streak_last_visit DATE,
+  lifetime_visits INTEGER DEFAULT 0,
+  lifetime_spend DECIMAL(10,2) DEFAULT 0,
+  benefits_used JSONB DEFAULT '[]',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Client Notes
-create type public.note_type as enum ('preference', 'allergy', 'general', 'admin');
-
-create table public.client_notes (
-    id uuid primary key default gen_random_uuid(),
-    client_id uuid references public.profiles(id) not null,
-    author_id uuid references public.profiles(id) not null,
-    note_type note_type default 'general',
-    content text not null,
-    is_pinned boolean default false,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
+CREATE TABLE client_notes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES users(id) NOT NULL,
+  author_id UUID REFERENCES users(id) NOT NULL,
+  appointment_id UUID REFERENCES appointments(id),
+  content TEXT NOT NULL,
+  category VARCHAR(50),
+  is_allergy_related BOOLEAN DEFAULT false,
+  is_important BOOLEAN DEFAULT false,
+  photos JSONB DEFAULT '[]',
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Staff Schedule
-create table public.staff_schedules (
-    id uuid primary key default gen_random_uuid(),
-    staff_id uuid references public.profiles(id) not null,
-    day_of_week integer not null check (day_of_week between 0 and 6),
-    start_time time not null,
-    end_time time not null,
-    is_available boolean default true,
-    created_at timestamptz default now()
+-- Messaging
+CREATE TABLE messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  sender_id UUID REFERENCES users(id) NOT NULL,
+  receiver_id UUID REFERENCES users(id) NOT NULL,
+  content TEXT NOT NULL,
+  attachments JSONB DEFAULT '[]',
+  read_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Staff Schedules
+CREATE TABLE staff_schedules (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  staff_id UUID REFERENCES users(id) NOT NULL,
+  day_of_week INTEGER NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  is_available BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Time Off Requests
-create type public.time_off_status as enum ('pending', 'approved', 'declined');
-
-create table public.time_off_requests (
-    id uuid primary key default gen_random_uuid(),
-    staff_id uuid references public.profiles(id) not null,
-    start_date date not null,
-    end_date date not null,
-    reason text,
-    status time_off_status default 'pending',
-    reviewed_by uuid references public.profiles(id),
-    decline_reason text,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
+CREATE TABLE time_off_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  staff_id UUID REFERENCES users(id) NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  reason TEXT,
+  status VARCHAR(20) DEFAULT 'pending'
+    CHECK (status IN ('pending', 'approved', 'declined')),
+  admin_notes TEXT,
+  reviewed_by UUID REFERENCES users(id),
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Messages
-create table public.messages (
-    id uuid primary key default gen_random_uuid(),
-    sender_id uuid references public.profiles(id) not null,
-    receiver_id uuid references public.profiles(id) not null,
-    content text not null,
-    read_at timestamptz,
-    created_at timestamptz default now()
+-- Time Blocks (for blocking specific hours)
+CREATE TABLE time_blocks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  staff_id UUID REFERENCES users(id) NOT NULL,
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ NOT NULL,
+  reason VARCHAR(100),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Payments
-create type public.payment_status as enum ('pending', 'completed', 'failed', 'refunded');
-
-create table public.payments (
-    id uuid primary key default gen_random_uuid(),
-    appointment_id uuid references public.appointments(id),
-    amount decimal(10,2) not null,
-    payment_type text not null,
-    status payment_status default 'pending',
-    stripe_payment_id text,
-    created_at timestamptz default now()
+CREATE TABLE payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  appointment_id UUID REFERENCES appointments(id) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  type VARCHAR(20) CHECK (type IN ('deposit', 'full', 'refund')),
+  method VARCHAR(20) CHECK (method IN ('card', 'afterpay', 'apple_pay', 'google_pay', 'cash')),
+  status VARCHAR(20) CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
+  provider_reference VARCHAR(255),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Notifications
-create table public.notifications (
-    id uuid primary key default gen_random_uuid(),
-    user_id uuid references auth.users(id) not null,
-    type text not null,
-    title text not null,
-    body text,
-    data jsonb,
-    read_at timestamptz,
-    created_at timestamptz default now()
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) NOT NULL,
+  type VARCHAR(50) NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  body TEXT,
+  data JSONB DEFAULT '{}',
+  read BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Referrals
+CREATE TABLE referrals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  referrer_id UUID REFERENCES users(id) NOT NULL,
+  referee_id UUID REFERENCES users(id),
+  code VARCHAR(20) UNIQUE NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending' 
+    CHECK (status IN ('pending', 'completed', 'expired')),
+  reward_amount DECIMAL(10,2) DEFAULT 25.00,
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Recurring Bookings
+CREATE TABLE recurring_bookings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES users(id) NOT NULL,
+  staff_id UUID REFERENCES users(id) NOT NULL,
+  service_id UUID REFERENCES services(id) NOT NULL,
+  frequency VARCHAR(20) CHECK (frequency IN ('weekly', 'biweekly', 'triweekly', 'monthly')),
+  preferred_day INTEGER CHECK (preferred_day BETWEEN 0 AND 6),
+  preferred_time TIME NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE,
+  is_ongoing BOOLEAN DEFAULT false,
+  is_active BOOLEAN DEFAULT true,
+  created_by UUID REFERENCES users(id) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Reschedule Requests
+CREATE TABLE reschedule_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  appointment_id UUID REFERENCES appointments(id) NOT NULL,
+  requested_datetime TIMESTAMPTZ NOT NULL,
+  reason TEXT,
+  status VARCHAR(20) DEFAULT 'pending'
+    CHECK (status IN ('pending', 'approved', 'declined')),
+  decline_reason TEXT,
+  reviewed_by UUID REFERENCES users(id),
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```
 
 ---
 
-## Component Library
+## 9. Technical Architecture
 
-### Shared UI Components
+### 9.1 Directory Structure
 
-| Component | Description | Props |
-|-----------|-------------|-------|
-| `Button` | Primary action button with variants | variant, size, loading, disabled, onPress |
-| `Card` | Container with shadow and border | style, children, gradient |
-| `Input` | Text input with label | label, placeholder, value, onChangeText, error |
-| `Badge` | Status/label indicator | variant, children |
-| `Avatar` | User profile image | source, size, vip, online |
-| `ScreenHeader` | Consistent screen headers | title, subtitle, showBack, rightAction |
-| `BottomSheet` | Modal from bottom | visible, onClose, children |
-| `LoadingSpinner` | Loading indicator | size, color |
-| `EmptyState` | Empty list placeholder | icon, title, description, action |
-| `Divider` | Visual separator | style |
-
-### Feature Components
-
-| Component | Feature | Description |
-|-----------|---------|-------------|
-| `ServiceCard` | Services | Service display with book CTA |
-| `AppointmentCard` | Calendar | Appointment summary card |
-| `VIPProgressBar` | VIP | Visual streak progress |
-| `StatsCard` | Dashboard | Metric display card |
-| `NoteCard` | Notes | Client note display |
-| `MessageBubble` | Messages | Chat message bubble |
-| `CalendarDay` | Calendar | Day cell in calendar |
-| `TimeSlot` | Booking | Available time slot |
-| `ArtistCard` | Booking | Staff selection card |
-
-### Layout Components
-
-| Component | Description |
-|-----------|-------------|
-| `SafeAreaWrapper` | Safe area handling |
-| `KeyboardAvoidingWrapper` | Keyboard handling |
-| `ScrollContainer` | Scrollable content |
-| `TabBar` | Bottom navigation |
-| `Header` | Top navigation |
+```
+lash-mama-mobile/
+├── app/                              # Expo Router - ROUTES ONLY
+│   ├── _layout.tsx                  # Root layout with auth provider
+│   ├── index.tsx                    # Entry redirect
+│   │
+│   ├── (auth)/                      # Auth group
+│   │   ├── _layout.tsx
+│   │   ├── login.tsx
+│   │   ├── register.tsx
+│   │   ├── forgot-password.tsx
+│   │   └── onboarding.tsx
+│   │
+│   ├── (client)/                    # Client group
+│   │   ├── _layout.tsx             # Tab navigator
+│   │   ├── index.tsx               # Home
+│   │   ├── services/
+│   │   ├── book/
+│   │   ├── appointments/
+│   │   ├── vip.tsx
+│   │   ├── messages.tsx
+│   │   └── profile.tsx
+│   │
+│   ├── (manager)/                   # Manager group
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx               # Dashboard
+│   │   ├── calendar/
+│   │   ├── clients/
+│   │   ├── notes.tsx
+│   │   ├── messages.tsx
+│   │   └── profile.tsx
+│   │
+│   └── (admin)/                     # Admin group
+│       ├── _layout.tsx
+│       ├── index.tsx               # Dashboard
+│       ├── analytics/
+│       ├── staff/
+│       ├── clients/
+│       ├── calendar.tsx
+│       ├── vip-management.tsx
+│       ├── messages.tsx
+│       └── settings.tsx
+│
+├── src/
+│   ├── features/                    # Feature modules (see 5.5)
+│   ├── components/                  # Shared components (see 5.1)
+│   ├── services/                    # API layer
+│   ├── lib/                         # Infrastructure
+│   ├── shared/                      # Shared utilities
+│   └── theme/                       # Design system
+│
+├── assets/
+├── app.json
+├── package.json
+└── tsconfig.json
+```
 
 ---
 
-## Design System
+## 10. Design System
 
-### Color Palette
+### 10.1 Color Palette
 
 ```typescript
-const colors = {
+export const colors = {
   // Primary - Luxury Gold
   gold: {
     DEFAULT: '#C9A871',
-    light: '#D4B88A',
-    dark: '#B8975F',
-    subtle: 'rgba(201, 168, 113, 0.15)',
+    light: '#D4B88C',
+    dark: '#B8935E',
+    muted: '#C9A87133',
   },
   
   // Background - Warm Cream
   cream: {
     DEFAULT: '#FAF7F2',
-    light: '#FFFDF9',
-    dark: '#F5F1E8',
+    light: '#FFFDFB',
+    dark: '#F5F0E8',
   },
   
-  // Text - Charcoal
+  // Text - Rich Charcoal
   charcoal: {
     DEFAULT: '#2C2C2C',
     light: '#4A4A4A',
     muted: '#6B6B6B',
-  },
-  
-  // Accent - Warm Beige
-  beige: {
-    DEFAULT: '#E8E0D4',
-    light: '#F0EBE3',
-    dark: '#D9CFC1',
   },
   
   // Semantic
@@ -1113,577 +2630,190 @@ const colors = {
   warning: '#FF9800',
   error: '#F44336',
   info: '#2196F3',
-};
-```
-
-### Typography
-
-```typescript
-const typography = {
-  // Headers - Serif
-  h1: { fontFamily: 'Georgia', fontSize: 32, fontWeight: '700' },
-  h2: { fontFamily: 'Georgia', fontSize: 28, fontWeight: '600' },
-  h3: { fontFamily: 'Georgia', fontSize: 24, fontWeight: '600' },
-  h4: { fontFamily: 'Georgia', fontSize: 20, fontWeight: '600' },
   
-  // Body - Sans-serif
-  body: { fontFamily: 'System', fontSize: 16, fontWeight: '400' },
-  bodySmall: { fontFamily: 'System', fontSize: 14, fontWeight: '400' },
+  // VIP Tiers
+  vip: {
+    bronze: '#CD7F32',
+    silver: '#C0C0C0',
+    gold: '#FFD700',
+    platinum: '#E5E4E2',
+  },
+};
+```
+
+### 10.2 Typography
+
+```typescript
+export const typography = {
+  fonts: {
+    serif: 'Georgia',
+    sans: 'System',
+  },
   
-  // UI Elements
-  button: { fontFamily: 'System', fontSize: 16, fontWeight: '600' },
-  label: { fontFamily: 'System', fontSize: 12, fontWeight: '500' },
-  caption: { fontFamily: 'System', fontSize: 11, fontWeight: '400' },
-};
-```
-
-### Spacing Scale
-
-```typescript
-const spacing = {
-  0: 0,
-  0.5: 2,
-  1: 4,
-  2: 8,
-  3: 12,
-  4: 16,
-  5: 20,
-  6: 24,
-  8: 32,
-  10: 40,
-  12: 48,
-  16: 64,
-  20: 80,
-};
-```
-
-### Border Radius
-
-```typescript
-const borderRadius = {
-  none: 0,
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  '2xl': 24,
-  full: 9999,
-};
-```
-
-### Shadows
-
-```typescript
-const shadows = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-  },
-  lg: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
+  sizes: {
+    xs: 12,
+    sm: 14,
+    base: 16,
+    lg: 18,
+    xl: 20,
+    '2xl': 24,
+    '3xl': 30,
+    '4xl': 36,
   },
 };
 ```
 
 ---
 
-## Technical Architecture
+## 11. API Specifications
 
-### Directory Structure
-
-```
-lash-mama-mobile/
-├── app/                          # Expo Router (routes only)
-│   ├── _layout.tsx              # Root layout
-│   ├── index.tsx                # Entry redirect
-│   ├── (auth)/                  # Auth routes
-│   │   ├── _layout.tsx
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   ├── (client)/                # Client routes
-│   │   ├── _layout.tsx
-│   │   ├── index.tsx            # Home
-│   │   ├── services.tsx
-│   │   ├── book.tsx
-│   │   ├── vip.tsx
-│   │   └── profile.tsx
-│   ├── (staff)/                 # Staff routes
-│   │   ├── _layout.tsx
-│   │   ├── index.tsx            # Home
-│   │   ├── calendar/
-│   │   ├── dashboard/
-│   │   ├── messages.tsx
-│   │   └── notes.tsx
-│   └── (admin)/                 # Admin routes
-│       ├── _layout.tsx
-│       ├── index.tsx            # Dashboard
-│       ├── clients.tsx
-│       ├── staff.tsx
-│       └── analytics.tsx
-│
-├── src/
-│   ├── components/              # Shared components
-│   │   ├── ui/                  # Base UI components
-│   │   │   ├── Button.tsx
-│   │   │   ├── Card.tsx
-│   │   │   ├── Input.tsx
-│   │   │   └── index.ts
-│   │   └── layout/              # Layout components
-│   │       ├── ScreenHeader.tsx
-│   │       ├── BottomSheet.tsx
-│   │       └── index.ts
-│   │
-│   ├── features/                # Feature modules
-│   │   ├── auth/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   ├── types/
-│   │   │   └── utils/
-│   │   ├── client/
-│   │   │   ├── home/
-│   │   │   ├── services/
-│   │   │   ├── booking/
-│   │   │   ├── vip/
-│   │   │   └── profile/
-│   │   ├── staff/
-│   │   │   ├── home/
-│   │   │   ├── calendar/
-│   │   │   ├── dashboard/
-│   │   │   ├── messages/
-│   │   │   └── notes/
-│   │   └── admin/
-│   │       ├── dashboard/
-│   │       ├── clients/
-│   │       ├── staff/
-│   │       └── analytics/
-│   │
-│   ├── services/                # API layer
-│   │   ├── auth.api.ts
-│   │   ├── appointments.api.ts
-│   │   ├── services.api.ts
-│   │   ├── clients.api.ts
-│   │   ├── staff.api.ts
-│   │   └── notifications.api.ts
-│   │
-│   ├── lib/                     # Infrastructure
-│   │   ├── supabase.ts
-│   │   ├── auth.ts
-│   │   └── storage.ts
-│   │
-│   ├── hooks/                   # Global hooks
-│   │   ├── useAuth.ts
-│   │   ├── useNotifications.ts
-│   │   └── useRole.ts
-│   │
-│   ├── types/                   # Global types
-│   │   ├── database.ts
-│   │   ├── navigation.ts
-│   │   └── index.ts
-│   │
-│   ├── utils/                   # Global utilities
-│   │   ├── date.ts
-│   │   ├── format.ts
-│   │   └── validation.ts
-│   │
-│   └── theme/                   # Design tokens
-│       ├── colors.ts
-│       ├── typography.ts
-│       ├── spacing.ts
-│       ├── shadows.ts
-│       ├── gradients.ts
-│       ├── borderRadius.ts
-│       └── index.ts
-│
-├── assets/                      # Static assets
-│   ├── images/
-│   ├── fonts/
-│   └── icons/
-│
-├── app.json                     # Expo config
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-### Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Framework | React Native 0.73+ |
-| Navigation | Expo Router 3.x |
-| State Management | React Context + Hooks |
-| Backend | Supabase |
-| Authentication | Supabase Auth |
-| Database | PostgreSQL (via Supabase) |
-| Storage | Supabase Storage |
-| Payments | Stripe |
-| Push Notifications | Expo Notifications |
-| Styling | StyleSheet (Native) |
-| Gradients | expo-linear-gradient |
-
-### Security Considerations
-
-1. **Authentication**
-   - JWT-based auth via Supabase
-   - Biometric authentication (FaceID/TouchID)
-   - Secure token storage (expo-secure-store)
-
-2. **Authorization**
-   - Role-based access control (RBAC)
-   - Row Level Security (RLS) on all tables
-   - Server-side role verification
-
-3. **Data Protection**
-   - HTTPS only communication
-   - Encrypted storage for sensitive data
-   - PCI compliance for payments (via Stripe)
-
-4. **Privacy**
-   - GDPR compliance features
-   - Data export capability
-   - Account deletion flow
-
----
-
-## API Specifications
-
-### Authentication
+### 11.1 Service Layer Methods
 
 ```typescript
-// auth.api.ts
+// services/auth.api.ts
+export const authApi = {
+  login: (email: string, password: string) => Promise<User>,
+  register: (data: RegisterDTO) => Promise<User>,
+  logout: () => Promise<void>,
+  resetPassword: (email: string) => Promise<void>,
+  updatePassword: (newPassword: string) => Promise<void>,
+};
 
-interface AuthResponse {
-  user: User | null;
-  session: Session | null;
-  error: Error | null;
-}
+// services/appointments.api.ts
+export const appointmentsApi = {
+  // Client
+  getUpcoming: (userId: string) => Promise<Appointment[]>,
+  getHistory: (userId: string) => Promise<Appointment[]>,
+  getAvailableSlots: (serviceId: string, staffId: string, date: Date) => Promise<TimeSlot[]>,
+  create: (data: CreateAppointmentDTO) => Promise<Appointment>,
+  requestReschedule: (id: string, newDateTime: Date, reason?: string) => Promise<void>,
+  cancel: (id: string, reason?: string) => Promise<void>,
+  
+  // Manager
+  getByStaff: (staffId: string, dateRange: DateRange) => Promise<Appointment[]>,
+  approveReschedule: (id: string) => Promise<void>,
+  declineReschedule: (id: string, reason: string) => Promise<void>,
+  addNotes: (id: string, notes: string) => Promise<void>,
+  
+  // Admin
+  getAll: (dateRange: DateRange) => Promise<Appointment[]>,
+  createManual: (data: CreateManualBookingDTO) => Promise<Appointment>,
+  createRecurring: (data: CreateRecurringDTO) => Promise<RecurringBooking>,
+};
 
-// Sign up
-signUp(email: string, password: string): Promise<AuthResponse>
+// services/staff.api.ts
+export const staffApi = {
+  getAll: () => Promise<Staff[]>,
+  getById: (id: string) => Promise<Staff>,
+  create: (data: CreateStaffDTO) => Promise<Staff>,
+  update: (id: string, data: UpdateStaffDTO) => Promise<Staff>,
+  deactivate: (id: string) => Promise<void>,
+  getSchedule: (id: string, dateRange: DateRange) => Promise<Schedule>,
+  updateSchedule: (id: string, schedule: Schedule) => Promise<void>,
+  
+  // Time Off
+  requestTimeOff: (data: TimeOffRequestDTO) => Promise<TimeOffRequest>,
+  getTimeOffRequests: (staffId?: string) => Promise<TimeOffRequest[]>,
+  approveTimeOff: (id: string) => Promise<void>,
+  declineTimeOff: (id: string, reason: string) => Promise<void>,
+};
 
-// Sign in
-signIn(email: string, password: string): Promise<AuthResponse>
-
-// Sign out
-signOut(): Promise<void>
-
-// Get current session
-getSession(): Promise<Session | null>
-
-// Reset password
-resetPassword(email: string): Promise<void>
-```
-
-### Appointments
-
-```typescript
-// appointments.api.ts
-
-interface Appointment {
-  id: string;
-  client_id: string;
-  staff_id: string;
-  service_id: string;
-  scheduled_at: string;
-  duration_mins: number;
-  status: AppointmentStatus;
-  deposit_paid: boolean;
-  notes?: string;
-}
-
-// Create appointment
-createAppointment(data: CreateAppointmentDto): Promise<Appointment>
-
-// Get appointments (filtered)
-getAppointments(filters: AppointmentFilters): Promise<Appointment[]>
-
-// Update appointment status
-updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<Appointment>
-
-// Cancel appointment
-cancelAppointment(id: string, reason?: string): Promise<void>
-
-// Get available slots
-getAvailableSlots(staffId: string, date: string): Promise<TimeSlot[]>
-```
-
-### Services
-
-```typescript
-// services.api.ts
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration_mins: number;
-  category: string;
-  first_time_only: boolean;
-  is_active: boolean;
-}
-
-// Get all services
-getServices(): Promise<Service[]>
-
-// Get services by category
-getServicesByCategory(category: string): Promise<Service[]>
-
-// Get service by ID
-getServiceById(id: string): Promise<Service>
-```
-
-### Clients
-
-```typescript
-// clients.api.ts
-
-interface Client {
-  id: string;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  phone?: string;
-  avatar_url?: string;
-  vip_status?: VIPStatus;
-}
-
-// Get all clients (admin)
-getClients(filters?: ClientFilters): Promise<Client[]>
-
-// Get client by ID
-getClientById(id: string): Promise<Client>
-
-// Update client profile
-updateClient(id: string, data: UpdateClientDto): Promise<Client>
-
-// Get client notes
-getClientNotes(clientId: string): Promise<ClientNote[]>
-
-// Add client note
-addClientNote(clientId: string, note: CreateNoteDto): Promise<ClientNote>
-```
-
-### Staff
-
-```typescript
-// staff.api.ts
-
-interface Staff {
-  id: string;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  avatar_url?: string;
-  bio?: string;
-  specialties?: string[];
-  minimum_notice_hours: number;
-}
-
-// Get all staff
-getStaff(): Promise<Staff[]>
-
-// Get staff by ID
-getStaffById(id: string): Promise<Staff>
-
-// Get staff schedule
-getStaffSchedule(staffId: string, weekStart: string): Promise<Schedule[]>
-
-// Request time off
-requestTimeOff(data: TimeOffRequest): Promise<TimeOffRequest>
-
-// Get time off requests (admin)
-getTimeOffRequests(status?: TimeOffStatus): Promise<TimeOffRequest[]>
-
-// Approve/decline time off (admin)
-updateTimeOffRequest(id: string, status: TimeOffStatus, reason?: string): Promise<void>
+// services/analytics.api.ts
+export const analyticsApi = {
+  // Manager (personal)
+  getPersonalStats: (staffId: string, period: Period) => Promise<PersonalStats>,
+  
+  // Admin (business)
+  getRevenue: (period: Period) => Promise<RevenueData>,
+  getBookingStats: (period: Period) => Promise<BookingStats>,
+  getStaffPerformance: (period: Period) => Promise<StaffPerformance[]>,
+  getServiceBreakdown: (period: Period) => Promise<ServiceStats[]>,
+  getClientMetrics: (period: Period) => Promise<ClientMetrics>,
+};
 ```
 
 ---
 
-## Success Metrics
+## 12. Success Metrics
 
-### Key Performance Indicators (KPIs)
+### 12.1 Key Performance Indicators
 
-| Metric | Definition | Target | Measurement |
-|--------|------------|--------|-------------|
-| Daily Active Users | Unique users per day | 100+ | Analytics |
-| Booking Conversion | Visits to bookings | >40% | Analytics |
-| No-Show Rate | Missed appointments | <5% | Database |
-| VIP Conversion | Clients reaching VIP | >20% | Database |
-| App Rating | Store rating | 4.8+ | App Stores |
-| Retention (30-day) | Users returning | >60% | Analytics |
-| NPS Score | Net Promoter Score | >50 | Surveys |
-
-### Business Metrics
-
-| Metric | Current | 6-Month Target | 12-Month Target |
-|--------|---------|----------------|-----------------|
-| Monthly Bookings | 240 | 400 | 600 |
-| Monthly Revenue | $48K | $80K | $120K |
-| Active Clients | 150 | 300 | 500 |
-| VIP Clients | 0 | 50 | 100 |
-| Staff Utilization | 60% | 75% | 85% |
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **Daily Bookings** | 15+ per day | Count of confirmed appointments |
+| **Monthly Revenue** | $25,000+ | Sum of completed payments |
+| **Client Retention** | 70%+ | Clients with 2+ visits in 90 days |
+| **VIP Conversion** | 40%+ | Clients reaching Silver tier |
+| **Streak Maintenance** | 60%+ | VIPs maintaining 4+ week streaks |
+| **App Rating** | 4.5+ stars | App Store / Play Store rating |
+| **Booking Completion** | 85%+ | Bookings started vs completed |
+| **No-Show Rate** | <5% | Missed appointments |
 
 ---
 
-## Release Phases
+## 13. Release Plan
 
-### Phase 1: MVP (8 weeks)
+### Phase 1: MVP (Weeks 1-4)
+- [ ] Client: Registration, Login, Service browsing
+- [ ] Client: Booking flow with payment
+- [ ] Client: Appointment management
+- [ ] Manager: Calendar view
+- [ ] Manager: Appointment details
+- [ ] Push notifications (basic)
 
-**Goal:** Core booking functionality
+### Phase 2: Operations (Weeks 5-6)
+- [ ] Manager: Client notes
+- [ ] Manager: Reschedule handling
+- [ ] Manager: Time off requests
+- [ ] Manager: Messaging
+- [ ] Admin: Staff management
+- [ ] Admin: Basic analytics
 
-**Features:**
-- ✅ User authentication
-- ✅ Service catalog
-- ✅ Basic booking flow
-- ✅ Payment processing
-- ✅ Appointment management
-- ✅ Push notifications
-- ✅ Client profile
+### Phase 3: Loyalty (Weeks 7-8)
+- [ ] Client: VIP dashboard
+- [ ] Client: Streak tracking
+- [ ] Client: Referral program
+- [ ] Admin: VIP management
 
-**Deliverables:**
-- iOS TestFlight build
-- Android internal testing
-
----
-
-### Phase 2: Staff Tools (4 weeks)
-
-**Goal:** Staff efficiency
-
-**Features:**
-- ✅ Staff calendar
-- ✅ Client notes system
-- ✅ Dashboard with stats
-- ✅ Time-off requests
-- ✅ Pre-appointment alerts
-
-**Deliverables:**
-- Staff app section
-- Admin approval flows
+### Phase 4: Advanced (Weeks 9-10)
+- [ ] Admin: Advanced analytics
+- [ ] Admin: Recurring bookings
+- [ ] Admin: System settings
+- [ ] All: Performance optimization
+- [ ] All: Final polish
 
 ---
 
-### Phase 3: VIP Program (4 weeks)
+## 14. Appendix
 
-**Goal:** Client retention
-
-**Features:**
-- ✅ VIP streak tracking
-- ✅ Benefits display
-- ✅ Discount application
-- ✅ VIP badge system
-- ✅ Progress notifications
-
-**Deliverables:**
-- VIP feature set
-- Loyalty mechanics
-
----
-
-### Phase 4: Admin Tools (4 weeks)
-
-**Goal:** Business management
-
-**Features:**
-- ✅ Analytics dashboard
-- ✅ Staff management
-- ✅ Client database
-- ✅ Report exports
-- ✅ Business settings
-
-**Deliverables:**
-- Admin panel
-- Reporting system
-
----
-
-### Phase 5: Enhancements (Ongoing)
-
-**Goal:** Polish and growth
-
-**Features:**
-- 🔲 In-app messaging
-- 🔲 Recurring bookings
-- 🔲 Referral system
-- 🔲 Course enrollment
-- 🔲 Afterpay integration
-- 🔲 Shop integration
-
----
-
-## Appendix
-
-### A. Glossary
+### 14.1 Glossary
 
 | Term | Definition |
 |------|------------|
-| VIP | Client with 10+ consecutive bookings |
-| Streak | Consecutive bookings within 3-month windows |
-| Refill | Maintenance appointment for existing lashes |
-| Full Set | Complete lash application for new/reset clients |
-| Deposit | Pre-payment to confirm booking |
+| **Full Set** | Complete lash application on bare lashes |
+| **Refill** | Maintenance appointment to replace grown-out lashes |
+| **Streak** | Consecutive weeks with refill appointments |
+| **Tier** | VIP level (Bronze → Silver → Gold → Platinum) |
+| **Deposit** | Upfront payment to confirm booking |
+| **Manager** | Staff member with calendar and client note access |
+| **Admin** | Business owner with full system access |
 
-### B. Business Rules Summary
+### 14.2 Business Rules Summary
 
-| Rule | Description |
-|------|-------------|
-| First-time booking | Full sets only, no refills |
-| Cancellation policy | 48 hours notice, deposit forfeiture |
-| VIP qualification | 10 consecutive visits |
-| VIP streak break | 3+ months gap resets streak |
-| Beau minimum notice | 2 hours |
-| Other staff notice | 24 hours |
-| Staff referral bonus | 10% of referred booking |
+1. **First-time clients** can only book Full Sets or Removals
+2. **Deposits** are required for all client bookings (Admin can waive)
+3. **Cancellations** within 48 hours forfeit deposit
+4. **Reschedules** require Manager/Admin approval
+5. **VIP streaks** break after 3 weeks without refill
+6. **Recurring bookings** are Admin-only privilege
+7. **Time off requests** require Admin approval
 
-### C. Integration Points
+### 14.3 Contact
 
-| System | Purpose | Integration Type |
-|--------|---------|-----------------|
-| Supabase | Backend & Auth | Native SDK |
-| Stripe | Payments | SDK + Webhooks |
-| Expo Notifications | Push alerts | Expo SDK |
-| Shopify | Product shop | External link |
-| Google/Apple Calendar | Export | Calendar invite |
-
-### D. Compliance Requirements
-
-| Requirement | Implementation |
-|-------------|----------------|
-| Privacy Policy | Required for app stores |
-| Terms of Service | Required for app stores |
-| GDPR | Data export, deletion |
-| PCI DSS | Stripe handles (offload) |
-| Accessibility | WCAG 2.1 AA target |
+**Project Owner:** Lash Mama (Purni)  
+**Document Author:** Development Team  
+**Last Review:** January 2025
 
 ---
 
-## Document Control
-
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | Jan 2026 | Product Team | Initial release |
-
----
-
-**Next Steps:**
-1. Review with stakeholders
-2. Prioritize backlog items
-3. Create sprint plans
-4. Begin development
-
----
-
-*This document is the source of truth for the Lash Mama mobile application. All development should reference this PRD for feature specifications and requirements.*
+*This document is maintained alongside the codebase and updated with each release.*
