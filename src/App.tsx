@@ -35,6 +35,11 @@ const App = () => {
     setShowSplash(false);
   };
 
+  const replaySplash = () => {
+    sessionStorage.removeItem('hasSeenSplash');
+    setShowSplash(true);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -58,6 +63,13 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          {/* Dev button to replay splash */}
+          <button
+            onClick={replaySplash}
+            className="fixed bottom-4 right-4 z-50 px-4 py-2 bg-gold text-white rounded-xl shadow-lg hover:bg-gold-dark transition-colors text-sm font-medium"
+          >
+            ✨ Replay Splash
+          </button>
         </UserRoleProvider>
       </TooltipProvider>
     </QueryClientProvider>
